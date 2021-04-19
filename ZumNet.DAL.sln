@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "Base\Src\Base.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Src\Sample.csproj", "{4A8642C5-B931-49CE-BD69-724D29D2B319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDac", "ServiceDac\ServiceDac.csproj", "{387E3AFE-8D34-4257-BDEC-1FFAD46FB111}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDac", "ServiceDac\Src\ServiceDac.csproj", "{387E3AFE-8D34-4257-BDEC-1FFAD46FB111}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
