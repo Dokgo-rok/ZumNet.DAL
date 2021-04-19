@@ -189,5 +189,26 @@ namespace ZumNet.DAL.Base
             si.AddValue("Query", this.QueryString);
             si.AddValue("CommandType", this._commandType);
         }
+
+        /// <summary>
+        /// Parameter에 설정된 Value값 찾기
+        /// </summary>
+        /// <param name="parameterName"></param>
+        /// <returns></returns>
+        public object GetParamValue(string parameterName)
+        {
+			if (this._sqlParams != null)
+			{
+				foreach (var sqlParam in this._sqlParams)
+				{
+					if (String.Compare(sqlParam.ParameterName, parameterName, true) == 0)
+					{
+                        return sqlParam.Value;
+					}
+				}
+			}
+
+            return null;
+        }
     }
 }

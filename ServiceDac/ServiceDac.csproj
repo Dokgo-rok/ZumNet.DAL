@@ -4,15 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4A8642C5-B931-49CE-BD69-724D29D2B319}</ProjectGuid>
+    <ProjectGuid>{387E3AFE-8D34-4257-BDEC-1FFAD46FB111}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ZumNet.DAL.Sample</RootNamespace>
-    <AssemblyName>ZumNet.DAL.Sample</AssemblyName>
+    <RootNamespace>ServiceDac</RootNamespace>
+    <AssemblyName>ZumNet.DAL.ServiceDac</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\bin\Debug\ZumNet.DAL.Sample.xml</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\ZumNet.DAL.ServiceDac.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,22 +44,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\Debug\ZumNet.DAL.Base.dll</HintPath>
     </Reference>
-    <Reference Include="ZumNet.Framework.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Exception, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Logger.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EvaluationDac.cs" />
+    <Compile Include="PortalDac.cs" />
+    <Compile Include="ProcessDac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
