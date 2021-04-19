@@ -1182,36 +1182,6 @@ namespace ServiceDac
 		}
 
 		/// <summary>
-		/// 분류 정보 쿼리
-		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="categoryID"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public SqlDataReader SelectCategoryInfo(int domainID, int categoryID, string xfAlias, int messageID)
-		{
-			SqlDataReader drReturn = null;
-
-			//SqlParameter[] parameters = new SqlParameter[]
-			//{
-			//	ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
-			//	ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, categoryID),
-			//	ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
-			//	ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID)
-			//};
-
-			//ParamData pData = new ParamData("admin.ph_up_SelectXFormCategoryInfo", parameters);
-
-			//using (DbBase db = new DbBase())
-			//{
-			//	drReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			//}
-
-			return drReturn;
-		}
-
-		/// <summary>
 		/// 질문/답변 (답변채택으로 질문 완료처리)
 		/// </summary>
 		public int SetQnaSelectAnswer(int messageID, string xfAlias, int parentID)
@@ -1512,5 +1482,36 @@ namespace ServiceDac
 		}
 
 		#endregion
+
+
+		/// <summary>
+		/// 분류 정보 쿼리
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <returns></returns>
+		public SqlDataReader SelectCategoryInfo(int domainID, int categoryID, string xfAlias, int messageID)
+		{
+			SqlDataReader drReturn = null;
+
+			//SqlParameter[] parameters = new SqlParameter[]
+			//{
+			//	ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
+			//	ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, categoryID),
+			//	ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+			//	ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID)
+			//};
+
+			//ParamData pData = new ParamData("admin.ph_up_SelectXFormCategoryInfo", parameters);
+
+			//using (DbBase db = new DbBase())
+			//{
+			//	drReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			//}
+
+			return drReturn;
+		}
 	}
 }
