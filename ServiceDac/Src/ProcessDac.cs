@@ -56,7 +56,8 @@ namespace ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				workID = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				workID = int.Parse(pData.GetParamValue("@wid").ToString());
 			}
 
 			return iReturn;

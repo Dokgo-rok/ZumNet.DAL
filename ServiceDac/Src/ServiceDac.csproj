@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EvaluationDac.cs" />
+    <Compile Include="XFormDac.cs" />
     <Compile Include="PortalDac.cs" />
     <Compile Include="ProcessDac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
