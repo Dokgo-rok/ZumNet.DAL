@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDac.cs" />
+    <Compile Include="CodeDac.cs" />
+    <Compile Include="CompetencyDac.cs" />
     <Compile Include="DomainDac.cs" />
     <Compile Include="EvaluationDac.cs" />
     <Compile Include="FolderDac.cs" />
