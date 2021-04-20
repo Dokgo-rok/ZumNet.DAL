@@ -10,7 +10,7 @@ using ZumNet.DAL.Base;
 
 namespace ZumNet.DAL.ServiceDac
 {
-	public class BasicDac : DacBase
+	public class BaseDac : DacBase
 	{
 		/// <summary>
 		/// 게시물 이동

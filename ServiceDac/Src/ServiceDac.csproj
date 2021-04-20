@@ -46,13 +46,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BasicDac.cs" />
+    <Compile Include="BaseDac.cs" />
     <Compile Include="DomainDac.cs" />
     <Compile Include="EvaluationDac.cs" />
     <Compile Include="FolderDac.cs" />
     <Compile Include="GroupDac.cs" />
     <Compile Include="HistoryDac.cs" />
     <Compile Include="ReferenceDac.cs" />
+    <Compile Include="RelationDac.cs" />
+    <Compile Include="ResourceDac.cs" />
+    <Compile Include="SpecificationDac.cs" />
     <Compile Include="UserDac.cs" />
     <Compile Include="XFormDac.cs" />
     <Compile Include="ProcessDac.cs" />
