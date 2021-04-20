@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ZumNet.DAL.Base;
 
-namespace ServiceDac
+namespace ZumNet.DAL.ServiceDac
 {
 	public class EvaluationDac : DacBase
 	{
