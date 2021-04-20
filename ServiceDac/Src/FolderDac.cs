@@ -895,112 +895,58 @@ namespace ServiceDac
 		/// <summary>
 		/// 위치(Navigation)가져오기
 		/// </summary>		
-		public SqlDataReader GetFolderNavigationUrl(int domainID, int categoryID, string selectedID)
+		public DataSet GetFolderNavigationUrl(int domainID, int categoryID, string selectedID)
 		{
-			SqlDataReader dr = null;
+			DataSet dsReturn = null;
 
-			//DBHelperSQL comDH = null;
-			
-			//string strSP = "admin.ph_up_GetFolderNavagation";
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@select_id", SqlDbType.VarChar, 63, selectedID)
+			};
 
-			////실행 시간 준비는 변수 선언 다음에 한다.
-			//_executionTimeLog.Prepare();
+			ParamData pData = new ParamData("admin.ph_up_GetFolderNavagation", parameters);
 
-			//SqlParameter param1 = Utility.AddSqlParameters("@dn_id", SqlDbType.Int, 4, domainID);
-			//SqlParameter param2 = Utility.AddSqlParameters("@ct_id", SqlDbType.Int, 4, categoryID);
-			//SqlParameter param3 = Utility.AddSqlParameters("@select_id", SqlDbType.VarChar, 63, selectedID);
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			//SqlParameter[] sqlParameters = new SqlParameter[] { param1, param2, param3 };
-
-			//try
-			//{
-			//	comDH = new DBHelperSQL();
-
-			//	if (connect.GetType() == "".GetType())
-			//	{
-			//		dr = comDH.ExecuteReader((string)connect, "", strSP, 15, sqlParameters);
-			//	}
-			//	else
-			//	{
-			//		dr = comDH.ExecuteReader((SqlConnection)connect, "", strSP, 15, sqlParameters);
-			//	}
-
-			//	comDH.Dispose();
-
-			//	_executionTimeLog.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()
-			//										, System.Reflection.MethodInfo.GetCurrentMethod());
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (comDH != null)
-			//	{
-			//		comDH.Dispose();
-			//	}
-
-			//	ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			//}
-
-			return dr;
+			return dsReturn;
 		}
 
 		/// <summary>
 		/// 트리 구조 가져오기
 		/// </summary>		
-		public SqlDataReader GetTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID, string openFolderInfo, string isAdmin, string permission, int objectType, int objectID, string extraInfo)
+		public DataSet GetTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID, string openFolderInfo, string isAdmin, string permission, int objectType, int objectID, string extraInfo)
 		{
-			SqlDataReader dr = null;
+			DataSet dsReturn = null;
 
-			//DBHelperSQL comDH = null;
-			
-			//string strSP = "admin.ph_up_GetTreeObject";
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@select_id", SqlDbType.VarChar, 63, selectedID),
+				ParamSet.Add4Sql("@select_type", SqlDbType.VarChar, 2, selectedType),
+				ParamSet.Add4Sql("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel),
+				ParamSet.Add4Sql("@cur_userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@open_fd", SqlDbType.VarChar, 63, openFolderInfo),
+				ParamSet.Add4Sql("@admin", SqlDbType.Char, 1, isAdmin),
+				ParamSet.Add4Sql("@permission", SqlDbType.VarChar, 20, permission),
+				ParamSet.Add4Sql("@object_type", SqlDbType.Int, 4, objectType),
+				ParamSet.Add4Sql("@object_id", SqlDbType.Int, 4, objectID),
+				ParamSet.Add4Sql("@extra_info", SqlDbType.VarChar, 50, extraInfo)
+			};
 
-			////실행 시간 준비는 변수 선언 다음에 한다.
-			//_executionTimeLog.Prepare();
+			ParamData pData = new ParamData("admin.ph_up_GetTreeObject", parameters);
 
-			//SqlParameter param1 = Utility.AddSqlParameters("@dn_id", SqlDbType.Int, 4, domainID);
-			//SqlParameter param2 = Utility.AddSqlParameters("@ct_id", SqlDbType.Int, 4, categoryID);
-			//SqlParameter param3 = Utility.AddSqlParameters("@select_id", SqlDbType.VarChar, 63, selectedID);
-			//SqlParameter param4 = Utility.AddSqlParameters("@select_type", SqlDbType.VarChar, 2, selectedType);
-			//SqlParameter param5 = Utility.AddSqlParameters("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel);
-			//SqlParameter param6 = Utility.AddSqlParameters("@cur_userid", SqlDbType.Int, 4, userID);
-			//SqlParameter param7 = Utility.AddSqlParameters("@open_fd", SqlDbType.VarChar, 63, openFolderInfo);
-			//SqlParameter param8 = Utility.AddSqlParameters("@admin", SqlDbType.Char, 1, isAdmin);
-			//SqlParameter param9 = Utility.AddSqlParameters("@permission", SqlDbType.VarChar, 20, permission);
-			//SqlParameter param10 = Utility.AddSqlParameters("@object_type", SqlDbType.Int, 4, objectType);
-			//SqlParameter param11 = Utility.AddSqlParameters("@object_id", SqlDbType.Int, 4, objectID);
-			//SqlParameter param12 = Utility.AddSqlParameters("@extra_info", SqlDbType.VarChar, 50, extraInfo);
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			//SqlParameter[] sqlParameters = new SqlParameter[] { param1, param2, param3, param4, param5, param6, param7, param8, param9, param10, param11, param12 };
-
-			//try
-			//{
-			//	comDH = new DBHelperSQL();
-
-			//	if (connect.GetType() == "".GetType())
-			//	{
-			//		dr = comDH.ExecuteReader((string)connect, "", strSP, 15, sqlParameters);
-			//	}
-			//	else
-			//	{
-			//		dr = comDH.ExecuteReader((SqlConnection)connect, "", strSP, 15, sqlParameters);
-			//	}
-
-			//	comDH.Dispose();
-
-			//	_executionTimeLog.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()
-			//										, System.Reflection.MethodInfo.GetCurrentMethod());
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (comDH != null)
-			//	{
-			//		comDH.Dispose();
-			//	}
-
-			//	ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			//}
-
-			return dr;
+			return dsReturn;
 		}
 
 		/// <summary>
@@ -1020,60 +966,33 @@ namespace ServiceDac
 		/// <param name="objectID"></param>
 		/// <param name="extraInfo"></param>
 		/// <returns></returns>
-		public SqlDataReader GetFavoriteTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID
+		public DataSet GetFavoriteTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID
 		, string openFolderInfo, string isAdmin, string permission, string extraInfo)
 		{
-			SqlDataReader dr = null;
+			DataSet dsReturn = null;
 
-			//DBHelperSQL comDH = null;
-			
-			//string strSP = "admin.ph_up_GetTreeObject_Favorite";
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@select_id", SqlDbType.VarChar, 63, selectedID),
+				ParamSet.Add4Sql("@select_type", SqlDbType.VarChar, 2, selectedType),
+				ParamSet.Add4Sql("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel),
+				ParamSet.Add4Sql("@cur_userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@open_fd", SqlDbType.VarChar, 63, openFolderInfo),
+				ParamSet.Add4Sql("@admin", SqlDbType.Char, 1, isAdmin),
+				ParamSet.Add4Sql("@permission", SqlDbType.VarChar, 20, permission),
+				ParamSet.Add4Sql("@extra_info", SqlDbType.VarChar, 50, extraInfo)
+			};
 
-			////실행 시간 준비는 변수 선언 다음에 한다.
-			//_executionTimeLog.Prepare();
+			ParamData pData = new ParamData("admin.ph_up_GetTreeObject_Favorite", parameters);
 
-			//SqlParameter param1 = Utility.AddSqlParameters("@dn_id", SqlDbType.Int, 4, domainID);
-			//SqlParameter param2 = Utility.AddSqlParameters("@ct_id", SqlDbType.Int, 4, categoryID);
-			//SqlParameter param3 = Utility.AddSqlParameters("@select_id", SqlDbType.VarChar, 63, selectedID);
-			//SqlParameter param4 = Utility.AddSqlParameters("@select_type", SqlDbType.VarChar, 2, selectedType);
-			//SqlParameter param5 = Utility.AddSqlParameters("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel);
-			//SqlParameter param6 = Utility.AddSqlParameters("@cur_userid", SqlDbType.Int, 4, userID);
-			//SqlParameter param7 = Utility.AddSqlParameters("@open_fd", SqlDbType.VarChar, 63, openFolderInfo);
-			//SqlParameter param8 = Utility.AddSqlParameters("@admin", SqlDbType.Char, 1, isAdmin);
-			//SqlParameter param9 = Utility.AddSqlParameters("@permission", SqlDbType.VarChar, 20, permission);
-			//SqlParameter param10 = Utility.AddSqlParameters("@extra_info", SqlDbType.VarChar, 50, extraInfo);
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			//SqlParameter[] sqlParameters = new SqlParameter[] { param1, param2, param3, param4, param5, param6, param7, param8, param9, param10 };
-
-			//try
-			//{
-			//	comDH = new DBHelperSQL();
-
-			//	if (connect.GetType() == "".GetType())
-			//	{
-			//		dr = comDH.ExecuteReader((string)connect, "", strSP, 15, sqlParameters);
-			//	}
-			//	else
-			//	{
-			//		dr = comDH.ExecuteReader((SqlConnection)connect, "", strSP, 15, sqlParameters);
-			//	}
-
-			//	comDH.Dispose();
-
-			//	_executionTimeLog.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()
-			//										, System.Reflection.MethodInfo.GetCurrentMethod());
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (comDH != null)
-			//	{
-			//		comDH.Dispose();
-			//	}
-
-			//	ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			//}
-
-			return dr;
+			return dsReturn;
 		}
 	}
 }

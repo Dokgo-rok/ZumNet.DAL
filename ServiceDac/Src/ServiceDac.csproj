@@ -49,6 +49,7 @@
     <Compile Include="DomainDac.cs" />
     <Compile Include="EvaluationDac.cs" />
     <Compile Include="FolderDac.cs" />
+    <Compile Include="GroupDac.cs" />
     <Compile Include="XFormDac.cs" />
     <Compile Include="PortalDac.cs" />
     <Compile Include="ProcessDac.cs" />

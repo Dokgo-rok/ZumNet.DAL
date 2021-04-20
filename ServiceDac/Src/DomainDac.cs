@@ -1274,70 +1274,26 @@ namespace ServiceDac
 		/// <param name="expandedLevel"></param>
 		/// <param name="selectedID"></param>
 		/// <returns></returns>
-		public ArrayList GetBaseTreeObject(int domainID, string selectedType, int expandedLevel, int selectedID)
+		public DataSet GetBaseTreeObject(int domainID, string selectedType, int expandedLevel, int selectedID)
 		{
-			ArrayList rowList = null;
+			DataSet dsReturn = null;
 
-			//DBHelperSQL comDH = null;
-			//SqlDataReader dr = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@objecttype", SqlDbType.Char, 2, selectedType),
+				ParamSet.Add4Sql("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel),
+				ParamSet.Add4Sql("@selected", SqlDbType.Int, 4, selectedID)
+			};
 
-			//string strSP = "admin.ph_up_GetTreeObjectForAdmin";
+			ParamData pData = new ParamData("admin.ph_up_GetTreeObjectForAdmin", parameters);
 
-			////실행 시간 준비는 변수 선언 다음에 한다.
-			//_executionTimeLog.Prepare();
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			//SqlParameter param1 = Utility.AddSqlParameters("@dn_id", SqlDbType.Int, 4, domainID);
-			//SqlParameter param2 = Utility.AddSqlParameters("@objecttype", SqlDbType.Char, 2, selectedType);
-			//SqlParameter param3 = Utility.AddSqlParameters("@expandlevel", SqlDbType.SmallInt, 2, expandedLevel);
-			//SqlParameter param4 = Utility.AddSqlParameters("@selected", SqlDbType.Int, 4, selectedID);
-
-			//SqlParameter[] sqlParameters = new SqlParameter[] { param1, param2, param3, param4 };
-
-			//try
-			//{
-			//	comDH = new DBHelperSQL();
-
-			//	if (connect.GetType() == "".GetType())
-			//	{
-			//		dr = comDH.ExecuteReader((string)connect, "", strSP, 15, sqlParameters);
-			//	}
-			//	else
-			//	{
-			//		dr = comDH.ExecuteReader((SqlConnection)connect, "", strSP, 15, sqlParameters);
-			//	}
-
-			//	comDH.Dispose();
-
-			//	if (dr.HasRows)
-			//	{
-			//		rowList = new ArrayList();
-
-			//		while (dr.Read())
-			//		{
-			//			object[] values = new object[dr.FieldCount];
-			//			dr.GetValues(values);
-			//			rowList.Add(values);
-			//		}
-
-			//		rowList.TrimToSize();
-			//	}
-			//	dr.Close();
-
-			//	//실행 시간 실행은 로직 마지막에 위치한다.
-			//	_executionTimeLog.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()
-			//										, System.Reflection.MethodInfo.GetCurrentMethod());
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (comDH != null)
-			//	{
-			//		comDH.Dispose();
-			//	}
-
-			//	ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			//}
-
-			return rowList;
+			return dsReturn;
 		}
 
 		/// <summary>
@@ -1349,55 +1305,28 @@ namespace ServiceDac
 		/// <param name="isAdmin">IsAdmin</param>
 		/// <param name="position">Position</param>
 		/// <returns></returns>
-		public SqlDataReader GetMenuList(int domainID, int categoryID, int userID, string isAdmin, string position, string language)
+		public DataSet GetMenuList(int domainID, int categoryID, int userID, string isAdmin, string position, string language)
 		{
-			SqlDataReader dr = null;
+			DataSet dsReturn = null;
 
-			//DBHelperSQL comDH = null;
-			//string strSP = "admin.ph_up_MenuGetList";
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@admin", SqlDbType.Char, 1, isAdmin),
+				ParamSet.Add4Sql("@pos", SqlDbType.Char, 1, position),
+				ParamSet.Add4Sql("@language", SqlDbType.VarChar, 2, language)
+			};
 
-			////실행 시간 준비는 변수 선언 다음에 한다.
-			//_executionTimeLog.Prepare();
+			ParamData pData = new ParamData("admin.ph_up_MenuGetList", parameters);
 
-			//SqlParameter param1 = Utility.AddSqlParameters("@dn_id", SqlDbType.Int, 4, domainID);
-			//SqlParameter param2 = Utility.AddSqlParameters("@ct_id", SqlDbType.Int, 4, categoryID);
-			//SqlParameter param3 = Utility.AddSqlParameters("@userid", SqlDbType.Int, 4, userID);
-			//SqlParameter param4 = Utility.AddSqlParameters("@admin", SqlDbType.Char, 1, isAdmin);
-			//SqlParameter param5 = Utility.AddSqlParameters("@pos", SqlDbType.Char, 1, position);
-			//SqlParameter param6 = Utility.AddSqlParameters("@language", SqlDbType.VarChar, 2, language);
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			//SqlParameter[] sqlParameters = new SqlParameter[] { param1, param2, param3, param4, param5, param6 };
-
-			//try
-			//{
-			//	comDH = new DBHelperSQL();
-
-			//	if (connect.GetType() == "".GetType())
-			//	{
-			//		dr = comDH.ExecuteReader((string)connect, "", strSP, 15, sqlParameters);
-			//	}
-			//	else
-			//	{
-			//		dr = comDH.ExecuteReader((SqlConnection)connect, "", strSP, 15, sqlParameters);
-			//	}
-
-			//	comDH.Dispose();
-
-			//	//실행 시간 실행은 로직 마지막에 위치한다.
-			//	_executionTimeLog.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()
-			//										, System.Reflection.MethodInfo.GetCurrentMethod());
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (comDH != null)
-			//	{
-			//		comDH.Dispose();
-			//	}
-
-			//	ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			//}
-
-			return dr;
+			return dsReturn;
 		}
 	}
 }

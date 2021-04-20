@@ -1492,26 +1492,26 @@ namespace ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <returns></returns>
-		public SqlDataReader SelectCategoryInfo(int domainID, int categoryID, string xfAlias, int messageID)
+		public DataSet SelectCategoryInfo(int domainID, int categoryID, string xfAlias, int messageID)
 		{
-			SqlDataReader drReturn = null;
+			DataSet dsReturn = null;
 
-			//SqlParameter[] parameters = new SqlParameter[]
-			//{
-			//	ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
-			//	ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, categoryID),
-			//	ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
-			//	ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID)
-			//};
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID)
+			};
 
-			//ParamData pData = new ParamData("admin.ph_up_SelectXFormCategoryInfo", parameters);
+			ParamData pData = new ParamData("admin.ph_up_SelectXFormCategoryInfo", parameters);
 
-			//using (DbBase db = new DbBase())
-			//{
-			//	drReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			//}
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 
-			return drReturn;
+			return dsReturn;
 		}
 	}
 }
