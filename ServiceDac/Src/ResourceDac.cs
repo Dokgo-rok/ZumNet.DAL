@@ -6,7 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ZumNet.DAL.Base;
+using ZumNet.Framework.Base;
+using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
