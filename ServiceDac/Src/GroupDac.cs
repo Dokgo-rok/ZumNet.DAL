@@ -14,6 +14,15 @@ namespace ZumNet.DAL.ServiceDac
 	public class GroupDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public GroupDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
+		/// <summary>
 		/// 구성원,소속 및 하위그룹 관리
 		/// </summary>		
 		public int ChangeBaseGroupNestedInfo(int domainID, int groupID, string groupType, string changedInfo)

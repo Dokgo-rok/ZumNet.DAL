@@ -14,6 +14,15 @@ namespace ZumNet.DAL.ServiceDac
 	public class FolderDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public FolderDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
+		/// <summary>
 		/// FD DisplayName 변경
 		/// </summary>
 		public int ChangeBaseFolderName(int folderID, string newName)

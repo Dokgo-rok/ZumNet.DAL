@@ -14,6 +14,15 @@ namespace ZumNet.DAL.ServiceDac
 	public class HistoryDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public HistoryDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
+		/// <summary>
 		/// 문서 보존년한
 		/// </summary>
 		/// <param name="domainID"></param>

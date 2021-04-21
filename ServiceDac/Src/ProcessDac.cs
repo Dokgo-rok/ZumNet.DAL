@@ -14,6 +14,15 @@ namespace ZumNet.DAL.ServiceDac
 	public class ProcessDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public ProcessDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
+		/// <summary>
 		/// WorkItem 생성
 		/// </summary>
 		/// <param name="oID"></param>

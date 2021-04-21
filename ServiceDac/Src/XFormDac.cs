@@ -14,6 +14,14 @@ namespace ZumNet.DAL.ServiceDac
 	public class XFormDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public XFormDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+		/// <summary>
 		/// 양식정보 쿼리
 		/// </summary>
 		/// <param name="xfAlias"></param>

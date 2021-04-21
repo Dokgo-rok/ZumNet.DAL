@@ -14,6 +14,14 @@ namespace ZumNet.DAL.ServiceDac
 	public class EvaluationDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public EvaluationDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+		/// <summary>
 		/// 포인트 정보 입력
 		/// </summary>
 		/// <param name="pointInfo"></param>

@@ -14,6 +14,15 @@ namespace ZumNet.DAL.ServiceDac
 	public class RelationDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public RelationDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
+		/// <summary>
 		/// 덧글 암호
 		/// </summary>
 		/// <param name="messageID"></param>

@@ -11,8 +11,19 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class UserDac : DacBase
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public UserDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
 		/// <summary>
 		/// Check Duble Alias Check
 		/// </summary>		

@@ -14,6 +14,14 @@ namespace ZumNet.DAL.ServiceDac
 	public class DomainDac : DacBase
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		public DomainDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+		/// <summary>
 		/// XML 형식으로 Authority 변경
 		/// </summary>
 		/// <param name="actionKind">Authority Type</param>

@@ -11,8 +11,17 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
-	public class ReferenceDacc : DacBase
+	public class ReferenceDac : DacBase
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public ReferenceDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
+
 		/// <summary>
 		/// 관리툴에서 게시물 쿼리
 		/// </summary>
