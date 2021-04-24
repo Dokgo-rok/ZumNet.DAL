@@ -11,8 +11,19 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class BaseDac : DacBase
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public BaseDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
 		/// <summary>
 		/// 게시물 이동
 		/// </summary>

@@ -11,8 +11,19 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class CodeDac : DacBase
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public CodeDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
 		/// <summary>
 		/// 관리되는 코드값을 가져온다.
 		/// </summary>

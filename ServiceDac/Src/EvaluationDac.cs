@@ -11,6 +11,9 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class EvaluationDac : DacBase
 	{
 		/// <summary>

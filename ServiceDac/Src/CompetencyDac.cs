@@ -11,8 +11,19 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class CompetencyDac : DacBase
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		public CompetencyDac(string connectionString = "") : base(connectionString)
+		{
+
+		}
+
 		/// <summary>
 		/// 포인트 정보 입력
 		/// </summary>
