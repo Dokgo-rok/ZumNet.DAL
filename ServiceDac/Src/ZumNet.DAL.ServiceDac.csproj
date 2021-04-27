@@ -58,6 +58,7 @@
     <Compile Include="ResourceDac.cs" />
     <Compile Include="SpecificationDac.cs" />
     <Compile Include="UserDac.cs" />
+    <Compile Include="WorkItemDac.cs" />
     <Compile Include="XFormDac.cs" />
     <Compile Include="ProcessDac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
