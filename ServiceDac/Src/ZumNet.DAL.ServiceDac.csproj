@@ -56,6 +56,7 @@
     <Compile Include="ReferenceDac.cs" />
     <Compile Include="RelationDac.cs" />
     <Compile Include="ResourceDac.cs" />
+    <Compile Include="SmsDac.cs" />
     <Compile Include="SpecificationDac.cs" />
     <Compile Include="UserDac.cs" />
     <Compile Include="WorkItemDac.cs" />
