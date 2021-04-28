@@ -25,6 +25,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public BaseDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// 게시물 이동
 		/// </summary>
 		/// <param name="userID"></param>

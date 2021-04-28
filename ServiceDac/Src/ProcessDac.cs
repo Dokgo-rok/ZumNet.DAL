@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public ProcessDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// WorkItem 생성

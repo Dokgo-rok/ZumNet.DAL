@@ -25,6 +25,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public CodeDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// 관리되는 코드값을 가져온다.
 		/// </summary>
 		public DataSet SelectCodeDescription(string key1, string key2, string key3)

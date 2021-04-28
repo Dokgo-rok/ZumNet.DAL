@@ -22,6 +22,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public WorkItemDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// 초기 프로세스를 구성한다. 시스템 처리중인 상태로 목록에 표시되지 않느다.
 		/// </summary>
 		/// <param name="dnID">도메인 식별자</param>

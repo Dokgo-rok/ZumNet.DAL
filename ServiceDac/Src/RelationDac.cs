@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public RelationDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// 덧글 암호

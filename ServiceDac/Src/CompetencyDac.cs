@@ -25,6 +25,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public CompetencyDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// 포인트 정보 입력
 		/// </summary>
 		/// <param name="pointInfo"></param>

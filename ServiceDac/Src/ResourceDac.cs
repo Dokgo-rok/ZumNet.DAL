@@ -25,6 +25,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public ResourceDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// 일정 참여자 가져오기
 		/// </summary>
 		/// <param name="messageID"></param>

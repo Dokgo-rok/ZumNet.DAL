@@ -24,6 +24,14 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public SmsDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
 		#region SMS 메시지 관리
 		/// <summary>
 		/// SMS  Message 발송 기록 / 예약 등록

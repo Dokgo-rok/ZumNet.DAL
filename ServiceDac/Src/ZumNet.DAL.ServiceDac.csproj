@@ -40,7 +40,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZumNet.Framework">
+    <Reference Include="ZumNet.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>

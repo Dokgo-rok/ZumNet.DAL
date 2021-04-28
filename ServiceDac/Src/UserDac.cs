@@ -25,6 +25,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 
+		/// </summary>
+		public UserDac(SqlConnection connection) : base(connection)
+		{
+
+		}
+
+		/// <summary>
 		/// Check Duble Alias Check
 		/// </summary>		
 		public int CheckBaseDoubleAlias(string objectAlias, string objectType, out string strReturn)

@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public HistoryDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// 문서 보존년한

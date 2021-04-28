@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public FolderDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// FD DisplayName 변경

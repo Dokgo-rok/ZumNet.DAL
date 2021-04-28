@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public GroupDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// 구성원,소속 및 하위그룹 관리

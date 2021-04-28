@@ -24,6 +24,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		public ReferenceDac(SqlConnection connection) : base(connection)
+		{
+
+		}
 
 		/// <summary>
 		/// 관리툴에서 게시물 쿼리
