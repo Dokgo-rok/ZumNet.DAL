@@ -4,22 +4,22 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Reflection;
 
-using ZumNet.Framework.Common;
-using ZumNet.DAL.Base;
+using ZumNet.Framework.Base;
+using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.Sample
 {
     /// <summary>
     /// 
     /// </summary>
-    public class SampleManager : global::System.MarshalByRefObject, System.IDisposable
+    public class SampleManager : DacBase
     {
         //private ZumNet.Framework.Logger.TimeStamp _timeStamp = null;
 
         /// <summary>
         /// 
         /// </summary>
-        public SampleManager()
+        public SampleManager(string connectionString = "") : base(connectionString)
         {
             //_timeStamp = new ZumNet.Framework.Logger.TimeStamp();
         }
@@ -27,7 +27,7 @@ namespace ZumNet.DAL.Sample
         /// <summary>
         /// 
         /// </summary>
-        public void Dispose()
+        public SampleManager(SqlConnection connection) : base(connection)
         {
             //if (_timeStamp != null) _timeStamp = null;
         }
@@ -35,18 +35,14 @@ namespace ZumNet.DAL.Sample
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dbConn"></param>
         /// <param name="userId"></param>
         /// <param name="grId"></param>
         /// <returns></returns>
-        public DataSet GetUserInfo(object dbConn, int userId, int grId)
+        public DataSet GetUserInfo(int userId, int grId)
         {
-            //_timeStamp.Prepare();
+            DataSet ds = null;
 
             //DbConnect.GetString 호출 30~50ms 소요
-            //string strConnectString = (dbConn.Length > 0) ? dbConn : DbConnect.GetString("", DbConnect.INITIAL_CATALOG.INIT_CAT_MAIN);
-            if (dbConn.GetType() == "".GetType() && (string)dbConn == "") dbConn = DbConnect.GetString(DbConnect.INITIAL_CATALOG.INIT_CAT_BASE);
-            DataSet ds = null;
 
             SqlParameter[] parameters = new SqlParameter[] {
                 ParamSet.Add4Sql("@userid", SqlDbType.Int, userId),
@@ -59,7 +55,7 @@ namespace ZumNet.DAL.Sample
 
             using (DbBase db = new DbBase())
             {
-                ds = db.ExecuteDatasetNTx(dbConn, MethodInfo.GetCurrentMethod(), pData);
+                ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
             //_timeStamp.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString(), System.Reflection.MethodBase.GetCurrentMethod());
 
@@ -69,33 +65,27 @@ namespace ZumNet.DAL.Sample
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dbConn"></param>
         /// <param name="alias"></param>
         /// <param name="oType"></param>
         /// <returns></returns>
-        public string CheckBaseDoubleAlias(object dbConn, string alias, string oType)
+        public string CheckBaseDoubleAlias(string alias, string oType)
         {
             //_timeStamp.Prepare();
+            string strReturn = "";
 
             //DbConnect.GetString 호출 20~70ms 소요
-            //string strConnectString = (dbConn.Length > 0) ? dbConn : DbConnect.GetString("", DbConnect.INITIAL_CATALOG.INIT_CAT_MAIN);
-            if (dbConn.GetType() == "".GetType() && (string)dbConn == "") dbConn = DbConnect.GetString(DbConnect.INITIAL_CATALOG.INIT_CAT_BASE);
-            string strReturn = "";
 
             SqlParameter[] parameters = new SqlParameter[] {
                 ParamSet.Add4Sql("@object_alias", SqlDbType.VarChar, 30, alias),
                 ParamSet.Add4Sql("@object_type", SqlDbType.VarChar, 20, oType),
                 ParamSet.Add4Sql("@result", SqlDbType.Char, 1, ParameterDirection.Output)
             };
-            //parameters[0] = ParamSet.Add4Sql("@object_alias", SqlDbType.VarChar, 30, alias);
-            //parameters[1] = ParamSet.Add4Sql("@object_type", SqlDbType.VarChar, 20, oType);
-            //parameters[2] = ParamSet.Add4Sql("@result", SqlDbType.Char, 1, ParameterDirection.Output);
 
             ParamData pData = new ParamData("admin.ph_up_BaseAliasDblCheck", parameters);
 
             using (DbBase db = new DbBase())
             {
-                strReturn = db.ExecuteNonQueryNTx(dbConn, MethodInfo.GetCurrentMethod(), pData);
+                strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
             //_timeStamp.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString(), System.Reflection.MethodBase.GetCurrentMethod());
 
@@ -105,7 +95,6 @@ namespace ZumNet.DAL.Sample
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dbConn"></param>
         /// <param name="userid"></param>
         /// <param name="personNo1"></param>
         /// <param name="personNo2"></param>
@@ -113,13 +102,11 @@ namespace ZumNet.DAL.Sample
         /// <param name="sortKey"></param>
         /// <param name="careerSubject"></param>
         /// <returns></returns>
-        public string UpdateUserInfo(object dbConn, int userid, string personNo1, string personNo2, string birth, string sortKey, string careerSubject)
+        public string UpdateUserInfo(int userid, string personNo1, string personNo2, string birth, string sortKey, string careerSubject)
         {
             //_timeStamp.Prepare();
 
             //DbConnect.GetString 호출 20~70ms 소요
-            //string strConnectString = (dbConn.Length > 0) ? dbConn : DbConnect.GetString("", DbConnect.INITIAL_CATALOG.INIT_CAT_MAIN);
-            if (dbConn.GetType() == "".GetType() && (string)dbConn == "") dbConn = DbConnect.GetString(DbConnect.INITIAL_CATALOG.INIT_CAT_BASE);
             string strReturn = "";
 
             SqlParameter[] parameters = new SqlParameter[] {
@@ -144,7 +131,7 @@ VALUES (@userid, @sortkey, @career) -- raise error
 
             using (DbBase db = new DbBase())
             {
-                strReturn = db.ExecuteNonQueryTx(dbConn, MethodInfo.GetCurrentMethod(), pData);
+                strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
             //_timeStamp.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString(), System.Reflection.MethodBase.GetCurrentMethod());
 
@@ -154,7 +141,6 @@ VALUES (@userid, @sortkey, @career) -- raise error
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dbConn"></param>
         /// <param name="msgId"></param>
         /// <param name="userId"></param>
         /// <param name="subject"></param>
@@ -164,14 +150,12 @@ VALUES (@userid, @sortkey, @career) -- raise error
         /// <param name="alarmdate"></param>
         /// <param name="priority"></param>
         /// <returns></returns>
-        public string SetUserAnniversary(object dbConn, int msgId, int userId, string subject, string description
+        public string SetUserAnniversary(int msgId, int userId, string subject, string description
                         , string anniDate, string anniDateType, string alarmdate, string priority)
         {
             //_timeStamp.Prepare();
 
             //DbConnect.GetString 호출 20~70ms 소요
-            //string strConnectString = (dbConn.Length > 0) ? dbConn : DbConnect.GetString(dbConn, DbConnect.INITIAL_CATALOG.INIT_CAT_MAIN);
-            if (dbConn.GetType() == "".GetType() && (string)dbConn == "") dbConn = DbConnect.GetString(DbConnect.INITIAL_CATALOG.INIT_CAT_BASE);
             string strReturn = "";
 
             SqlParameter[] parameters = new SqlParameter[] {
@@ -189,7 +173,7 @@ VALUES (@userid, @sortkey, @career) -- raise error
 
             using (DbBase db = new DbBase())
             {
-                strReturn = db.ExecuteNonQueryTx(dbConn, MethodInfo.GetCurrentMethod(), pData);
+                strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
             //_timeStamp.MeasureExecutionTime(System.Threading.Thread.CurrentThread.ManagedThreadId.ToString(), System.Reflection.MethodBase.GetCurrentMethod());
 
