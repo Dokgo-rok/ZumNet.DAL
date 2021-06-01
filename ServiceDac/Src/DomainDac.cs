@@ -63,7 +63,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>	
 		/// <param name="objectID">Object ID</param>
 		/// <param name="objectType">Object Type</param>
-		/// <param name="aclinfo">ACL Information</param>
+		/// <param name="aclInfo">ACL Information</param>
 		/// <returns></returns>
 		public int ChangeBaseACL(int objectID, string objectType, string aclInfo)
 		{
@@ -1317,12 +1317,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 메뉴 가져오기
-		/// </summary>	
-		/// <param name="domainID">Domain ID</param>
-		/// <param name="categoryID">CategoryID</param>
-		/// <param name="userID">User ID</param>
-		/// <param name="isAdmin">IsAdmin</param>
-		/// <param name="position">Position</param>
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="userID"></param>
+		/// <param name="isAdmin"></param>
+		/// <param name="position"></param>
+		/// <param name="language"></param>
 		/// <returns></returns>
 		public DataSet GetMenuList(int domainID, int categoryID, int userID, string isAdmin, string position, string language)
 		{
