@@ -50,6 +50,7 @@
     <Compile Include="CodeDac.cs" />
     <Compile Include="CompetencyDac.cs" />
     <Compile Include="DomainDac.cs" />
+    <Compile Include="EApprovalDac.cs" />
     <Compile Include="EvaluationDac.cs" />
     <Compile Include="FolderDac.cs" />
     <Compile Include="GroupDac.cs" />

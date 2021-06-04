@@ -46,7 +46,7 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@key3", SqlDbType.VarChar, 63, key3)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_DomainSearchUsers", parameters);
+			ParamData pData = new ParamData("admin.ph_up_SelectCodeDescription", parameters);
 
 			using (DbBase db = new DbBase())
 			{
