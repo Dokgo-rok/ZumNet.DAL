@@ -718,9 +718,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 로그온 정보 가져오기
 		/// </summary>
-		/// <param name="logonID">Logon ID</param>
-		/// <param name="logonIP">Logon Computer IP</param>
-		/// <param name="logonBrowser">Logon Computer Browser</param>
+		/// <param name="logonID"></param>
+		/// <param name="logonIP"></param>
+		/// <param name="logonBrowser"></param>
+		/// <param name="password"></param>
 		/// <returns></returns>
 		public DataSet GetLogonUserInfo(string logonID, string logonIP, string logonBrowser, string password)
 		{

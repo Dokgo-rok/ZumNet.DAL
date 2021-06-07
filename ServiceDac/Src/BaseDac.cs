@@ -1767,8 +1767,34 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 최초 PH_XF_KNOWLEDGE 테이블 값 저장
 		/// </summary>
+		/// <param name="msgType"></param>
+		/// <param name="inherited"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="creatorCN"></param>
+		/// <param name="creatorGrade"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="creatorDeptID"></param>
+		/// <param name="creatorDeptCode"></param>
+		/// <param name="coRegistrant"></param>
+		/// <param name="createDate"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="docNumber"></param>
+		/// <param name="docLevel"></param>
+		/// <param name="keepYear"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <returns></returns>
 		public int InsertXfKnowledge(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID
-					, string creatorDeptCode, string coRegistrant, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2, out int oid)
+					, string creatorDeptCode, string coRegistrant, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -1806,8 +1832,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 			}
 
 			return iReturn;
@@ -1816,10 +1841,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// PH_XF_KNOWLEDGE 테이블 값 변경(임저장함에서 수정저장)
 		/// </summary>
-		public int UpdateXfKnowledge(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+		public string UpdateXfKnowledge(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
 					, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -1846,10 +1871,10 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>

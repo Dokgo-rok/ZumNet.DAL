@@ -1275,11 +1275,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// 사용자 비밀번호 정보
 		/// </summary>
 		/// <param name="logonID"></param>
-		/// <param name="password"></param>
 		/// <returns></returns>
-		public int GetUserPassword(string logonID, out string password)
+		public string GetUserPassword(string logonID)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -1291,11 +1290,10 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				password = pData.GetParamValue("@password").ToString();
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -35,9 +35,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 관리되는 코드값을 가져온다.
 		/// </summary>
-		public DataSet SelectCodeDescription(string key1, string key2, string key3)
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <param name="key3"></param>
+		/// <returns></returns>
+		public ArrayList SelectCodeDescription(string key1, string key2, string key3)
 		{
-			DataSet dsReturn = null;
+			ArrayList rowList = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -50,19 +54,25 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				rowList = db.ExecuteListNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return dsReturn;
+			return rowList;
 		}
 
 		/// <summary>
 		/// 관리되는 코드 저장
 		/// </summary>
-		public int InsertCodeDescription(string key1, string key2, string key3, string item1, string item2, string item3, string item4, string item5)
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <param name="key3"></param>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <param name="item3"></param>
+		/// <param name="item4"></param>
+		/// <param name="item5"></param>
+		public void InsertCodeDescription(string key1, string key2, string key3, string item1, string item2, string item3, string item4, string item5)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@key1", SqlDbType.VarChar, 63, key1),
@@ -79,19 +89,23 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 관리되는 코드 변경
 		/// </summary>
-		public int UpdateCodeDescription(string key1, string key2, string key3, string item1, string item2, string item3, string item4, string item5)
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <param name="key3"></param>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <param name="item3"></param>
+		/// <param name="item4"></param>
+		/// <param name="item5"></param>
+		public void UpdateCodeDescription(string key1, string key2, string key3, string item1, string item2, string item3, string item4, string item5)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@key1", SqlDbType.VarChar, 63, key1),
@@ -108,19 +122,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 관리되는 코드 삭제
 		/// </summary>
-		public int DeleteCodeDescription(string key1, string key2, string key3)
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <param name="key3"></param>
+		public void DeleteCodeDescription(string key1, string key2, string key3)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@key1", SqlDbType.VarChar, 63, key1),
@@ -132,10 +145,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 	}
 }
