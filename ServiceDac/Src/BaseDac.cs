@@ -16,10 +16,10 @@ namespace ZumNet.DAL.ServiceDac
 	/// </summary>
 	public class BaseDac : DacBase
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public BaseDac(string connectionString = "") : base(connectionString)
+        /// <summary>
+        /// 
+        /// </summary>
+        public BaseDac(string connectionString = "") : base(connectionString)
 		{
 
 		}
@@ -37,11 +37,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="userID"></param>
 		/// <param name="moveInfo"></param>
-		/// <returns></returns>
-		public int MoveBaseMessage(int userID, string moveInfo)
+		public void MoveBaseMessage(int userID, string moveInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@UserID", SqlDbType.Int, 4, userID),
@@ -52,10 +49,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -63,9 +58,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
-		public int RemoveBaseMessage(string xfAlias, string messageID, out string returnMessageID)
+		/// <returns>returnMessageID</returns>
+		public int RemoveBaseMessage(string xfAlias, string messageID)
 		{
 			int iReturn = 0;
 
@@ -80,8 +74,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = pData.GetParamValue("@RetMessageID").ToString();
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = pData.GetParamValue("@RetMessageID").ToString();
 			}
 
 			return iReturn;
@@ -93,9 +87,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="userID"></param>
 		/// <param name="messageID"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
-		public int RestoreBaseMessage(string xfAlias, int userID, string messageID, out string returnMessageID)
+		/// <returns>returnMessageID</returns>
+		public int RestoreBaseMessage(string xfAlias, int userID, string messageID)
 		{
 			int iReturn = 0;
 
@@ -111,8 +104,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = pData.GetParamValue("@RetMessageID").ToString();
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = pData.GetParamValue("@RetMessageID").ToString();
 			}
 
 			return iReturn;
@@ -124,11 +117,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="folderID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int DeleteAnonymousMessage(int folderID, string xfAlias, string messageID)
+		public void DeleteAnonymousMessage(int folderID, string xfAlias, string messageID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID),
@@ -140,10 +130,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -153,11 +141,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="userID"></param>
-		/// <returns></returns>
-		public int DeleteBoardMessage(int folderID, string xfAlias, string messageID, int userID)
+		public void DeleteBoardMessage(int folderID, string xfAlias, string messageID, int userID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID),
@@ -170,10 +155,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -189,11 +172,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="sortKey"></param>
 		/// <param name="priority"></param>
 		/// <param name="inherited"></param>
-		/// <returns></returns>
-		public int CreateLinkSiteMessage(int folderID, string xfAlias, int messageID, int parentMessageID, int creatorID, string name, string url, int sortKey, int priority, string inherited)
+		public void CreateLinkSiteMessage(int folderID, string xfAlias, int messageID, int parentMessageID, int creatorID, string name, string url, int sortKey, int priority, string inherited)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@folderid", SqlDbType.Int, 4, folderID),
@@ -212,10 +192,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -225,6 +203,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="parentMessageID"></param>
+		/// <param name="creator"></param>
 		/// <param name="creatorID"></param>
 		/// <param name="creatorDeptID"></param>
 		/// <param name="creatorDeptName"></param>
@@ -240,11 +219,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="fileType"></param>
 		/// <param name="prefix"></param>
 		/// <param name="location"></param>
-		/// <returns></returns>
-		public int CreateAlbumMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string subject, string bodyText, string inherited, string expiredDate, int imgID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string location)
+		public void CreateAlbumMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string subject, string bodyText, string inherited, string expiredDate, int imgID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string location)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@folderid", SqlDbType.Int, 4, folderID),
@@ -273,10 +249,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -286,6 +260,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="parentMessageID"></param>
+		/// <param name="creator"></param>
 		/// <param name="creatorID"></param>
 		/// <param name="creatorDeptID"></param>
 		/// <param name="creatorDeptName"></param>
@@ -296,15 +271,19 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="inherited"></param>
 		/// <param name="expiredDate"></param>
 		/// <param name="popupDate"></param>
-		/// <param name="isFile"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="fileCount"></param>
 		/// <param name="fileInfo"></param>
 		/// <param name="isHot"></param>
 		/// <param name="reserved1"></param>
-		/// <returns></returns>
-		public int CreateBoardMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine, string taskid, string taskactivity, int salesstep)
+		/// <param name="isPopup"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="topLine"></param>
+		/// <param name="taskid"></param>
+		/// <param name="taskactivity"></param>
+		/// <param name="salesstep"></param>
+		public void CreateBoardMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine, string taskid, string taskactivity, int salesstep)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID),
@@ -339,10 +318,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -351,11 +328,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="creatorID"></param>
 		/// <param name="messageID"></param>
 		/// <param name="folderID"></param>
-		/// <returns></returns>
-		public int DeleteDiscussMessage(int creatorID, int messageID, int folderID)
+		public void DeleteDiscussMessage(int creatorID, int messageID, int folderID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@CreatorID", SqlDbType.Int, 4, creatorID),
@@ -367,10 +341,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -381,6 +353,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="messageID"></param>
 		/// <param name="parentMessageID"></param>
 		/// <param name="creatorName"></param>
+		/// <param name="creatorID"></param>
 		/// <param name="password"></param>
 		/// <param name="subject"></param>
 		/// <param name="body"></param>
@@ -391,9 +364,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isFile"></param>
 		/// <param name="topLine"></param>
 		/// <param name="fileInfo"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
-		public int CreateAnonymousMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creatorName, int creatorID, string password, string subject, string body, string bodyText, string inherited, string publishDate, string Priority, string isFile, string topLine, string fileInfo, out int returnMessageID)
+		/// <returns>returnMessageID</returns>
+		public int CreateAnonymousMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creatorName, int creatorID, string password, string subject, string body, string bodyText, string inherited, string publishDate, string Priority, string isFile, string topLine, string fileInfo)
 		{
 			int iReturn = 0;
 
@@ -422,8 +394,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = int.Parse(pData.GetParamValue("@ReturnMsgID").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = Convert.ToInt32(pData.GetParamValue("@ReturnMsgID").ToString());
 			}
 
 			return iReturn;
@@ -441,11 +413,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="creatorDeptID"></param>
 		/// <param name="isFile"></param>
 		/// <param name="fileInfo"></param>
-		/// <returns></returns>
-		public int CreateDiscussMessage(int folderID, int messageID, string xfAlias, string subject, string body, int creatorID, int creatorDeptID, string isFile, string fileInfo)
+		public void CreateDiscussMessage(int folderID, int messageID, string xfAlias, string subject, string body, int creatorID, int creatorDeptID, string isFile, string fileInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fdid", SqlDbType.Int, 4, folderID),
@@ -463,38 +432,29 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 문서 게시물의 등록정보 변경
 		/// </summary>
 		/// <param name="xfAlias"></param>
-		/// <param name="folderId"></param>
+		/// <param name="inherited"></param>
+		/// <param name="folderID"></param>
 		/// <param name="messageID"></param>
 		/// <param name="registeredFile"></param>
 		/// <param name="subject"></param>
 		/// <param name="comment"></param>
 		/// <param name="keyword1"></param>
 		/// <param name="keyword2"></param>
-		/// <param name="oldKnowledgeFolderID"></param>
-		/// <param name="newKnowledgeFolderID"></param>
-		/// <param name="knowledgeMode"></param>
-		/// <param name="knowledgeAlias"></param>
 		/// <param name="newFolderID"></param>
-		/// <param name="newAlias"></param>
 		/// <param name="oldFolderID"></param>
 		/// <param name="keepYear"></param>
 		/// <param name="isChange"></param>
 		/// <param name="fileItem"></param>
-		/// <returns></returns>
-		public int ModifyDocProperty(string xfAlias, string inherited, int folderID, int messageID, string registeredFile, string subject, string comment, string keyword1, string keyword2, int newFolderID, int oldFolderID, int keepYear, string isChange, string fileItem)
+		public void ModifyDocProperty(string xfAlias, string inherited, int folderID, int messageID, string registeredFile, string subject, string comment, string keyword1, string keyword2, int newFolderID, int oldFolderID, int keepYear, string isChange, string fileItem)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@XfAlias", SqlDbType.NVarChar, 30, xfAlias),
@@ -517,10 +477,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -543,11 +501,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="keepYear"></param>
 		/// <param name="docType"></param>
 		/// <param name="doc_number"></param>
-		/// <returns></returns>
-		public int CreateDocFile(int domainID, string xfAlias, int messageID, int creatorID, int groupID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string location, string autoDeleted, int docLevel, int keepYear, int docType, string doc_number)
+		public void CreateDocFile(int domainID, string xfAlias, int messageID, int creatorID, int groupID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string location, string autoDeleted, int docLevel, int keepYear, int docType, string doc_number)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@DN_ID", SqlDbType.Int, 4, domainID),
@@ -573,10 +528,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -585,29 +538,22 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="folderID"></param>
 		/// <param name="messageID"></param>
-		/// <param name="parentMessageID"></param>
 		/// <param name="inherited"></param>
 		/// <param name="registeredFile"></param>
-		/// <param name="msgType"></param>
 		/// <param name="subject"></param>
 		/// <param name="comment"></param>
-		/// <param name="expiredDate"></param>
-		/// <param name="bodyText"></param>
 		/// <param name="keyword1"></param>
 		/// <param name="keyword2"></param>
 		/// <param name="creatorID"></param>
 		/// <param name="creatorDeptID"></param>
 		/// <param name="creatorDept"></param>
-		/// <param name="coCreatorID"></param>
-		/// <param name="linkedMessageExist"></param>
-		/// <param name="linkedMessageXfAlias"></param>
-		/// <param name="linkedMessageID"></param>
-		/// <param name="relationCategoryID"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
+		/// <param name="taskID"></param>
+		/// <param name="taskAcitivity"></param>
+		/// <param name="salesStep"></param>
+		/// <returns>returnMessageID</returns>
 		public int CreateDocMessage(string xfAlias, int folderID, int messageID, string inherited, string registeredFile
 			, string subject, string comment, string keyword1, string keyword2, int creatorID, int creatorDeptID, string creatorDept
-			, int taskID, string taskAcitivity, int salesStep, out int returnMessageID)
+			, int taskID, string taskAcitivity, int salesStep)
 		{
 			int iReturn = 0;
 
@@ -635,8 +581,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = int.Parse(pData.GetParamValue("@ReturnMsgID").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = Convert.ToInt32(pData.GetParamValue("@ReturnMsgID").ToString());
 			}
 
 			return iReturn;
@@ -650,11 +596,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="newFolderID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="attType"></param>
-		/// <returns></returns>
-		public int MoveDocMessage(int messageID, int oldFolderID, int newFolderID, string xfAlias, string attType)
+		public void MoveDocMessage(int messageID, int oldFolderID, int newFolderID, string xfAlias, string attType)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, messageID),
@@ -668,10 +611,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -679,11 +620,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int DeleteDocMessage(string xfAlias, int messageID)
+		public void DeleteDocMessage(string xfAlias, int messageID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@XFAlias", SqlDbType.VarChar, 30, xfAlias),
@@ -694,10 +632,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -711,11 +647,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="userID"></param>
 		/// <param name="expiredDate"></param>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int HandleOfficePortal(string actKind, int domainID, int opID, int categoryID, string opName, int userID, string expiredDate, string xmlData)
+		public void HandleOfficePortal(string actKind, int domainID, int opID, int categoryID, string opName, int userID, string expiredDate, string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@act_kind", SqlDbType.Char, 1, actKind),
@@ -732,10 +665,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -751,8 +682,6 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="expiredDate"></param>
 		/// <param name="expectedDate"></param>
 		/// <param name="registeredFile"></param>
-		/// <param name="startDate"></param>
-		/// <param name="endDate"></param>
 		/// <param name="creatorID"></param>
 		/// <param name="creatorDeptID"></param>
 		/// <param name="creatorDept"></param>
@@ -763,9 +692,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isFile"></param>
 		/// <param name="fileInfo"></param>
 		/// <param name="hasprocess"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
-		public int SetSuggestMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string inherited, string subject, string messageType, string expiredDate, string expectedDate, string registeredFile, int creatorID, int creatorDeptID, string creatorDept, int coCreatorID, string bodyData, string bodyText, int relationCategoryID, string isFile, string fileInfo, int hasprocess, string hasLinkedDoc, string linkedDocInfo, out int returnMessageID)
+		/// <param name="hasLinkedDoc"></param>
+		/// <param name="linkedDocInfo"></param>
+		/// <returns>returnMessageID</returns>
+		public int SetSuggestMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string inherited, string subject
+							, string messageType, string expiredDate, string expectedDate, string registeredFile, int creatorID, int creatorDeptID
+							, string creatorDept, int coCreatorID, string bodyData, string bodyText, int relationCategoryID
+							, string isFile, string fileInfo, int hasprocess, string hasLinkedDoc, string linkedDocInfo)
 		{
 			int iReturn = 0;
 
@@ -800,8 +733,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = int.Parse(pData.GetParamValue("@ReturnMsgID").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = Convert.ToInt32(pData.GetParamValue("@ReturnMsgID").ToString());
 			}
 
 			return iReturn;
@@ -833,9 +766,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isFile"></param>
 		/// <param name="fileInfo"></param>
 		/// <param name="hasprocess"></param>
-		/// <param name="returnMessageID"></param>
+		/// <param name="hasLinkedDoc"></param>
+		/// <param name="linkedDocInfo"></param>
 		/// <returns></returns>
-		public int SetQnAMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string inherited, string priority, string subject, string messageType, string topLine, string expiredDate, string expectedDate, string hasAttachFile, string creator, int creatorID, int creatorDeptID, string creatorDept, string replyMail, string bodyData, string bodyText, int relationCategoryID, string isFile, string fileInfo, int hasprocess, string hasLinkedDoc, string linkedDocInfo, out int returnMessageID)
+		public int SetQnAMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string inherited, string priority
+						, string subject, string messageType, string topLine, string expiredDate, string expectedDate, string hasAttachFile
+						, string creator, int creatorID, int creatorDeptID, string creatorDept, string replyMail, string bodyData, string bodyText
+						, int relationCategoryID, string isFile, string fileInfo, int hasprocess, string hasLinkedDoc, string linkedDocInfo)
 		{
 			int iReturn = 0;
 
@@ -873,8 +810,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = int.Parse(pData.GetParamValue("@ReturnMsgID").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = Convert.ToInt32(pData.GetParamValue("@ReturnMsgID").ToString());
 			}
 
 			return iReturn;
@@ -883,9 +820,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 일정 작성
 		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="groupID"></param>
-		/// <param name="userID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
 		/// <param name="scheduleType"></param>
 		/// <param name="taskID"></param>
 		/// <param name="inherited"></param>
@@ -906,12 +842,12 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="creatorDeptID"></param>
 		/// <param name="isFile"></param>
 		/// <param name="fileInfo"></param>
-		/// <param name="returnMessageID"></param>
-		/// <returns></returns>
+		/// <param name="strTaskActivity"></param>
+		/// <returns>returnMessageID</returns>
 		public int CreateScheduleMain(string objectType, int objectID, string scheduleType, int taskID
-			, string inherited, string subject, string bodyData, string location, int state, string priority, string periodFrom
-			, string startTime, string periodTo, string endTime, int term, string repeatType, string alarm, int creatorID
-			, string creatorDeptName, int creatorDeptID, string isFile, string fileInfo, string strTaskActivity, out int returnMessageID)
+				, string inherited, string subject, string bodyData, string location, int state, string priority, string periodFrom
+				, string startTime, string periodTo, string endTime, int term, string repeatType, string alarm, int creatorID
+				, string creatorDeptName, int creatorDeptID, string isFile, string fileInfo, string strTaskActivity)
 		{
 			int iReturn = 0;
 
@@ -947,8 +883,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				returnMessageID = int.Parse(pData.GetParamValue("@msgid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//returnMessageID = Convert.ToInt32(pData.GetParamValue("@msgid").ToString());
 			}
 
 			return iReturn;
@@ -957,15 +893,12 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 일정 삭제 - 원본이면 삭제일 기록, 아니면 인스턴스 삭제
 		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="groupID"></param>
-		/// <param name="userID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
 		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int DeleteSchedule(string objectType, int objectID, int messageID, string attType)
+		/// <param name="attType"></param>
+		public void DeleteSchedule(string objectType, int objectID, int messageID, string attType)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objecttype", SqlDbType.Char, 2, objectType),
@@ -978,10 +911,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1003,11 +934,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="alarm"></param>
 		/// <param name="isFile"></param>
 		/// <param name="fileInfo"></param>
-		/// <returns></returns>
-		public int ModifyScheduleContents(int messageID, int actor, string scheduleType, string inherited, string subject, string bodyData, string location, string priority, string periodFrom, string startTime, string periodTo, string endTime, int term, string alarm, string isFile, string fileInfo)
+		public void ModifyScheduleContents(int messageID, int actor, string scheduleType, string inherited, string subject
+								, string bodyData, string location, string priority, string periodFrom, string startTime
+								, string periodTo, string endTime, int term, string alarm, string isFile, string fileInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
@@ -1032,14 +962,12 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// 설문 분류 생성
 		/// </summary>
 		/// <param name="msgID"></param>
 		/// <param name="mode"></param>
@@ -1047,11 +975,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="className"></param>
 		/// <param name="subClass"></param>
 		/// <param name="items"></param>
-		/// <returns></returns>
-		public int CreatePollClassMessage(int msgID, string mode, int classCode, string className, string subClass, string items)
+		public void CreatePollClassMessage(int msgID, string mode, int classCode, string className, string subClass, string items)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgID", SqlDbType.Int, 4, msgID),
@@ -1066,21 +991,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 설문 작성
 		/// </summary>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int CreatePollMessage(string xmlData)
+		public void CreatePollMessage(string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xmlData", SqlDbType.NText, xmlData)
@@ -1090,21 +1010,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn; 
 		}
 
 		/// <summary>
 		/// 설문 삭제
 		/// </summary>
 		/// <param name="msgID"></param>
-		/// <returns></returns>
-		public int DeletePollMessage(string msgID)
+		public void DeletePollMessage(string msgID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 2000, msgID)
@@ -1114,22 +1029,20 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 설문 수정
 		/// </summary>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int ModifyPollMessage(string xmlData, out int ReturnMessageID)
+		/// <returns>ReturnMessageID</returns>
+		public int ModifyPollMessage(string xmlData)
 		{
 			int iReturn = 0;
 
-			SqlParameter[] parameters = new SqlParameter[]
+            SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xmlData", SqlDbType.NText, xmlData),
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, ParameterDirection.Output)
@@ -1139,8 +1052,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				ReturnMessageID = int.Parse(pData.GetParamValue("@msgid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//ReturnMessageID = Convert.ToInt32(pData.GetParamValue("@msgid").ToString());
 			}
 
 			return iReturn;
@@ -1149,14 +1062,12 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 설문 참여 대상자 등록, 및 등록된 대상자 삭제
 		/// </summary>
-		/// <param name="mode">등록 : 'reg', 삭제 : 'del'</param>
+		/// <param name="dnid"></param>
+		/// <param name="mode"></param>
 		/// <param name="messageID"></param>
 		/// <param name="participant"></param>
-		/// <returns></returns>
-		public int SetPollParticipant(int dnid, string mode, int messageID, string participant)
+		public void SetPollParticipant(int dnid, string mode, int messageID, string participant)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, dnid),
@@ -1169,23 +1080,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		///  설문 기간연장
+		/// 설문 기간연장
 		/// </summary>
 		/// <param name="messageID"></param>
 		/// <param name="fdID"></param>
-		/// <param name="periodDate"></param>
-		/// <returns></returns>
-		public int ChangePollPeriodToDate(int messageID, int fdID, string periodTo)
+		/// <param name="periodTo"></param>
+		public void ChangePollPeriodToDate(int messageID, int fdID, string periodTo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
@@ -1197,21 +1103,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 설문 참여
 		/// </summary>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int CreatePollParticipant(string xmlData)
+		public void CreatePollParticipant(string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xmlData", SqlDbType.NText, xmlData)
@@ -1221,24 +1122,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		///  설문 그룹화 수정/삭제
+		/// 설문 그룹화 수정/삭제
 		/// </summary>
 		/// <param name="msgID"></param>
 		/// <param name="mode"></param>
 		/// <param name="items"></param>
+		/// <param name="className"></param>
+		/// <param name="subClass"></param>
 		/// <param name="classCode"></param>
-		/// <returns></returns>
-		public int ModifyPollClassMessage(int msgID, int mode, string items, string className, string subClass, int classCode)
+		public void ModifyPollClassMessage(int msgID, int mode, string items, string className, string subClass, int classCode)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgID", SqlDbType.Int, 4, msgID),
@@ -1253,10 +1151,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1264,6 +1160,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="folderID"></param>
 		/// <param name="xFAlias"></param>
+		/// <param name="messageID"></param>
 		/// <param name="Inherited"></param>
 		/// <param name="creatorID"></param>
 		/// <param name="creatorName"></param>
@@ -1280,15 +1177,15 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="fileSize"></param>
 		/// <param name="fileType"></param>
 		/// <param name="prefix"></param>
-		/// <returns></returns>
-		public int CreateLibraryMessage(int folderID, string xFAlias, string Inherited, int creatorID, string creatorName, int managedID, string managedName, string subject, string bodyText, string author, string publisher, int price, string hasBookImg, string fileName, string savedName, string fileSize, string fileType, string prefix, string messageID)
+		public void CreateLibraryMessage(int folderID, string xFAlias, int messageID, string Inherited, int creatorID, string creatorName
+								, int managedID, string managedName, string subject, string bodyText, string author, string publisher
+								, int price, string hasBookImg, string fileName, string savedName, string fileSize, string fileType, string prefix)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID),
 				ParamSet.Add4Sql("@XFAlias", SqlDbType.NVarChar, 30, xFAlias),
+				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, messageID),
 				ParamSet.Add4Sql("@Inherited", SqlDbType.Char, 1, Inherited),
 				ParamSet.Add4Sql("@CreatorID", SqlDbType.Int, 4, creatorID),
 				ParamSet.Add4Sql("@CreatorName", SqlDbType.NVarChar, 100, creatorName),
@@ -1304,18 +1201,15 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@SavedName", SqlDbType.VarChar, 100, savedName),
 				ParamSet.Add4Sql("@FileSize", SqlDbType.VarChar, 20, fileSize),
 				ParamSet.Add4Sql("@FileType", SqlDbType.VarChar, 10, fileType),
-				ParamSet.Add4Sql("@Prefix", SqlDbType.VarChar, 15, prefix),
-				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, int.Parse(messageID))
+				ParamSet.Add4Sql("@Prefix", SqlDbType.VarChar, 15, prefix)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BookSetWrite", parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1326,11 +1220,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="displayName"></param>
 		/// <param name="userID"></param>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int CreateOfficePortal(int oldOpID, int categoryID, string displayName, int userID, string xmlData)
+		public void CreateOfficePortal(int oldOpID, int categoryID, string displayName, int userID, string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@OLD_OP_ID", SqlDbType.Int, 4, oldOpID),
@@ -1344,23 +1235,19 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		/// H_XFORM_FD  State 변경
+		///  H_XFORM_FD  State 변경
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="state"></param>
-		/// <returns></returns>
-		public int ModifyProcessXFormState(string xfAlias, int messageID, int state, string taskActivity)
+		/// <param name="taskActivity"></param>
+		public void ModifyProcessXFormState(string xfAlias, int messageID, int state, string taskActivity)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
@@ -1373,24 +1260,19 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// Category 변경
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="folderID"></param>
 		/// <param name="attType"></param>
-		/// <returns></returns>
-		public int ModifyProcessXFormCategory(string xfAlias, int messageID, int folderID, string attType)
+		public void ModifyProcessXFormCategory(string xfAlias, int messageID, int folderID, string attType)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
@@ -1403,16 +1285,13 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 명함 회사정보 등록/수정
 		/// </summary>
-		/// <param name="command"></param>
 		/// <param name="actionKind"></param>
 		/// <param name="clientID"></param>
 		/// <param name="domainID"></param>
@@ -1434,9 +1313,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="comInherited"></param>
 		/// <param name="comCreator"></param>
 		/// <param name="comReserved1"></param>
-		/// <param name="clientID"></param>
-		/// <returns></returns>
-		public int SetAddressClient(string actionKind, int clientID, int domainID, int folderID, string clientAlias, string shortName, string comName, string locale, string comZipCode, string comAddr, string comDetailAddr, string comPhone, string comFax, string homePage, string ceo, string ceoPhone, string live, string comDesc, string comInherited, int comCreator, string comReserved1, out int outClientID)
+		/// <returns>ClientID</returns>
+		public int SetAddressClient(string actionKind, int clientID, int domainID, int folderID, string clientAlias, string shortName
+						, string comName, string locale, string comZipCode, string comAddr, string comDetailAddr, string comPhone, string comFax
+						, string homePage, string ceo, string ceoPhone, string live, string comDesc, string comInherited, int comCreator, string comReserved1)
 		{
 			int iReturn = 0;
 
@@ -1470,8 +1350,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				outClientID = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//outClientID = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -1480,7 +1360,6 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 명함 등록/수정
 		/// </summary>
-		/// <param name="command"></param>
 		/// <param name="actionKind"></param>
 		/// <param name="cardID"></param>
 		/// <param name="domainID"></param>
@@ -1503,9 +1382,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="cardCreator"></param>
 		/// <param name="creatorDeptID"></param>
 		/// <param name="cardReserved1"></param>
-		/// <param name="outCardID"></param>
-		/// <returns></returns>
-		public int SetAddressCard(string actionKind, int cardID, int domainID, int clientID, string cardName, string department, string grade, string scope, string cardClass, string mobile, string officePhone, string officeFax, string homePhone, string mail, string homeZipCode, string homeAddr, string homeDetailAddr, string cardDescription, string cardInherited, int cardCreator, int creatorDeptID, string cardReserved1, out int outCardID)
+		/// <returns>CardID</returns>
+		public int SetAddressCard(string actionKind, int cardID, int domainID, int clientID, string cardName, string department
+							, string grade, string scope, string cardClass, string mobile, string officePhone, string officeFax
+							, string homePhone, string mail, string homeZipCode, string homeAddr, string homeDetailAddr
+							, string cardDescription, string cardInherited, int cardCreator, int creatorDeptID, string cardReserved1)
 		{
 			int iReturn = 0;
 
@@ -1540,8 +1421,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				outCardID = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//outCardID = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -1553,11 +1434,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="actionKind"></param>
 		/// <param name="cardID"></param>
 		/// <param name="clientID"></param>
-		/// <returns></returns>
-		public int DeleteAddress(string actionKind, string cardID, string clientID)
+		public void DeleteAddress(string actionKind, string cardID, string clientID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 1, actionKind),
@@ -1569,10 +1447,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1580,11 +1456,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int DeleteLinkedDoc(string xfAlias, int messageID)
+		public void DeleteLinkedDoc(string xfAlias, int messageID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@XFAlias", SqlDbType.VarChar, 30, xfAlias),
@@ -1595,10 +1468,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1617,12 +1488,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="deleteDate"></param>
 		/// <param name="expiredDate"></param>
 		/// <param name="fileInfo"></param>
-		/// <returns></returns>
-		public int ChangeBaseMessage(int domainID, int folderID, int categoryID, int messageID, int creatorID, int deptID, string xfAlias
-		, string hasFileCount, string hasNewFile, string subject, string deleteDate, string expiredDate, string fileInfo)
+		public void ChangeBaseMessage(int domainID, int folderID, int categoryID, int messageID, int creatorID, int deptID, string xfAlias
+						, string hasFileCount, string hasNewFile, string subject, string deleteDate, string expiredDate, string fileInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@domainID", SqlDbType.Int, 4, domainID),
@@ -1644,10 +1512,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1658,11 +1524,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="messageID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="bodyInfo"></param>
-		/// <returns></returns>
-		public int ChangeBaseMessageBody(int domainID, int folderID, int messageID, string xfAlias, string bodyInfo)
+		public void ChangeBaseMessageBody(int domainID, int folderID, int messageID, string xfAlias, string bodyInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@domainID", SqlDbType.Int, 4, domainID),
@@ -1676,10 +1539,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1687,11 +1548,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="messageID"></param>
 		/// <param name="applyDate"></param>
-		/// <returns></returns>
-		public int SetSuggestApplyDate(int messageID, string applyDate)
+		public void SetSuggestApplyDate(int messageID, string applyDate)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, messageID),
@@ -1702,10 +1560,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1713,11 +1569,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int DeleteProcessInstance(string xfAlias, int messageID)
+		public void DeleteProcessInstance(string xfAlias, int messageID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@XFAlias", SqlDbType.VarChar, 30, xfAlias),
@@ -1728,17 +1581,19 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 양식정보 쿼리
 		/// </summary>
-		/// <param name="xfAlias"></param>
+		/// <param name="dnID"></param>
+		/// <param name="ctID"></param>
+		/// <param name="fdID"></param>
+		/// <param name="userID"></param>
 		/// <param name="messageID"></param>
+		/// <param name="xfAlias"></param>
 		/// <returns></returns>
 		public DataSet SearchKMDocInfo(int dnID, int ctID, int fdID, int userID, int messageID, string xfAlias)
 		{
@@ -1792,9 +1647,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="keepYear"></param>
 		/// <param name="reserved1"></param>
 		/// <param name="reserved2"></param>
-		/// <returns></returns>
-		public int InsertXfKnowledge(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID
-					, string creatorDeptCode, string coRegistrant, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
+		/// <returns>oid</returns>
+		public int InsertXFKnowledge(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID
+								, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID, string creatorDeptCode, string coRegistrant
+								, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+								, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -1841,11 +1698,27 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// PH_XF_KNOWLEDGE 테이블 값 변경(임저장함에서 수정저장)
 		/// </summary>
-		public string UpdateXfKnowledge(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
-					, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
+		/// <param name="messageID"></param>
+		/// <param name="msgType"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="coRegistrant"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="docNumber"></param>
+		/// <param name="docLevel"></param>
+		/// <param name="keepYear"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		public void UpdateXFKnowledge(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant
+							, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+							, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
-			string strReturn = "";
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, messageID),
@@ -1871,17 +1744,43 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return strReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XF_SUGGEST 테이블 값 저장
 		/// </summary>
-		public int InsertXfSuggest(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID
-					, string creatorDeptCode, string coRegistrant, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2, out int oid)
+		/// <param name="msgType"></param>
+		/// <param name="inherited"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="creatorCN"></param>
+		/// <param name="creatorGrade"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="creatorDeptID"></param>
+		/// <param name="creatorDeptCode"></param>
+		/// <param name="coRegistrant"></param>
+		/// <param name="createDate"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="docNumber"></param>
+		/// <param name="docLevel"></param>
+		/// <param name="keepYear"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <returns>oid</returns>
+		public int InsertXFSuggest(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID
+							, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID, string creatorDeptCode, string coRegistrant
+							, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+							, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -1919,8 +1818,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -1929,11 +1828,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// PH_XF_SUGGEST 테이블 값 변경(임저장함에서 수정저장)
 		/// </summary>
-		public int UpdateXfSuggest(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
-					, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
+		public void UpdateXFSuggest(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant
+							, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+							, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, messageID),
@@ -1959,17 +1857,48 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XF_INFORMATION 테이블 값 저장
 		/// </summary>
-		public int InsertXfInformation(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID
-					, string creatorDeptCode, string coRegistrant, string createDate, string publishDate, string expiredDate, string infoGetDate, string infoGetRout, string infoSource, string hasAttachFile, string isPublic, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2, out int oid)
+		/// <param name="msgType"></param>
+		/// <param name="inherited"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="creatorCN"></param>
+		/// <param name="creatorGrade"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="creatorDeptID"></param>
+		/// <param name="creatorDeptCode"></param>
+		/// <param name="coRegistrant"></param>
+		/// <param name="createDate"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="infoGetDate"></param>
+		/// <param name="infoGetRout"></param>
+		/// <param name="infoSource"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="isPublic"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="docNumber"></param>
+		/// <param name="docLevel"></param>
+		/// <param name="keepYear"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <returns></returns>
+		public int InsertXFInformation(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID
+								, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID, string creatorDeptCode, string coRegistrant
+								, string createDate, string publishDate, string expiredDate, string infoGetDate, string infoGetRout, string infoSource
+								, string hasAttachFile, string isPublic, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel
+								, string keepYear, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -2011,8 +1940,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -2021,11 +1950,32 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// PH_XF_INFORMATION 테이블 값 변경(임저장함에서 수정저장)
 		/// </summary>
-		public int UpdateXfInformation(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant, string publishDate, string expiredDate, string infoGetDate, string infoGetRout, string infoSource
-					, string hasAttachFile, string isPublic, string linkedMsg, string topLine, string replyMail, string docNumber, string docLevel, string keepYear, string reserved1, string reserved2)
+		/// <param name="messageID"></param>
+		/// <param name="msgType"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="coRegistrant"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="infoGetDate"></param>
+		/// <param name="infoGetRout"></param>
+		/// <param name="infoSource"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="isPublic"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="docNumber"></param>
+		/// <param name="docLevel"></param>
+		/// <param name="keepYear"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		public void UpdateXFInformation(int messageID, string msgType, string priority, string subject, string bodyText, string coRegistrant
+								, string publishDate, string expiredDate, string infoGetDate, string infoGetRout, string infoSource
+								, string hasAttachFile, string isPublic, string linkedMsg, string topLine, string replyMail, string docNumber
+								, string docLevel, string keepYear, string reserved1, string reserved2)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, messageID),
@@ -2055,17 +2005,39 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XF_QNA 테이블 값 저장
 		/// </summary>
-		public int InsertXfQnA(string msgType, string inherited, string priority, string subject, string bodyText, string creator, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID
-					, string creatorDeptCode, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string reserved1, string reserved2, out int oid)
+		/// <param name="msgType"></param>
+		/// <param name="inherited"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="creatorCN"></param>
+		/// <param name="creatorGrade"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="creatorDeptID"></param>
+		/// <param name="creatorDeptCode"></param>
+		/// <param name="createDate"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <returns>oid</returns>
+		public int InsertXFQnA(string msgType, string inherited, string priority, string subject, string bodyText, string creator
+						, int creatorID, string creatorCN, string creatorGrade, string creatorDept, int creatorDeptID, string creatorDeptCode
+						, string createDate, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine
+						, string replyMail, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -2099,8 +2071,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -2109,10 +2081,22 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 수정 PH_XF_QNA 테이블 값 변경
 		/// </summary>
-		public int UpdateXfQnA(int messageID, string msgType, string priority, string subject, string bodyText, string publishDate, string expiredDate, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string reserved1, string reserved2)
+		/// <param name="messageID"></param>
+		/// <param name="msgType"></param>
+		/// <param name="priority"></param>
+		/// <param name="subject"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="hasAttachFile"></param>
+		/// <param name="linkedMsg"></param>
+		/// <param name="topLine"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		public void UpdateXFQnA(int messageID, string msgType, string priority, string subject, string bodyText, string publishDate, string expiredDate
+							, string hasAttachFile, string linkedMsg, string topLine, string replyMail, string reserved1, string reserved2)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, messageID),
@@ -2134,16 +2118,20 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XFORM_CONTEXT 테이블 값 저장
 		/// </summary>
-		public int InsertXFormContext(string xfAlias, int messageID, string body, string drm, string reserved1, out int oid)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="body"></param>
+		/// <param name="drm"></param>
+		/// <param name="reserved1"></param>
+		/// <returns></returns>
+		public int InsertXFormContext(string xfAlias, int messageID, string body, string drm, string reserved1)
 		{
 			int iReturn = 0;
 
@@ -2161,8 +2149,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -2171,10 +2159,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 수정 PH_XFORM_CONTEXT 테이블 값 변경
 		/// </summary>
-		public int UpdateXFormContext(string xfAlias, int messageID, string body, string drm, string reserved1)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="body"></param>
+		/// <param name="drm"></param>
+		/// <param name="reserved1"></param>
+		public void UpdateXFormContext(string xfAlias, int messageID, string body, string drm, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2188,16 +2179,26 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_FILE_ATTACH 테이블 값 저장
 		/// </summary>
-		public int InsertFileAttach(string xfAlias, int messageID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string locationFolder, string drm, out int oid)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="isFile"></param>
+		/// <param name="fileName"></param>
+		/// <param name="savedName"></param>
+		/// <param name="fileSize"></param>
+		/// <param name="fileType"></param>
+		/// <param name="prefix"></param>
+		/// <param name="locationFolder"></param>
+		/// <param name="drm"></param>
+		/// <returns>oid</returns>
+		public int InsertFileAttach(string xfAlias, int messageID, string isFile, string fileName, string savedName
+								, string fileSize, string fileType, string prefix, string locationFolder, string drm)
 		{
 			int iReturn = 0;
 
@@ -2220,8 +2221,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -2230,10 +2231,12 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 수정 PH_FILE_ATTACH 테이블 값 변경(DRM 정보만 변경)
 		/// </summary>
-		public int UpdateFileAttach(int attachId, string xfAlias, int messageID, string drm)
+		/// <param name="attachId"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="drm"></param>
+		public void UpdateFileAttach(int attachId, string xfAlias, int messageID, string drm)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@attachid", SqlDbType.Int, 4, attachId),
@@ -2246,19 +2249,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_FILE_ATTACH 테이블 값 배치로 저장
 		/// </summary>
-		public int InsertFileAttach(string xfAlias, int messageID, string fileInfo)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="fileInfo"></param>
+		public void InsertFileAttach(string xfAlias, int messageID, string fileInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2270,19 +2272,23 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XFORM_FD 테이블 값 저장
 		/// </summary>
-		public int InsertXFormFD(int fdID, string xfAlias, string messageID, int parentMsgID, string attType, Int16 state, string taskActivity, string reserved1)
+		/// <param name="fdID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="parentMsgID"></param>
+		/// <param name="attType"></param>
+		/// <param name="state"></param>
+		/// <param name="taskActivity"></param>
+		/// <param name="reserved1"></param>
+		public void InsertXFormFD(int fdID, string xfAlias, string messageID, int parentMsgID, string attType, Int16 state, string taskActivity, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fdid", SqlDbType.Int, 4, fdID),
@@ -2299,19 +2305,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 수정 PH_XFORM_FD 테이블 값 변경(분류 변경시)
 		/// </summary>
-		public int UpdateXFormFD(int fdID, string xfAlias, string messageID, string attType, string taskActivity, string reserved1)
+		/// <param name="fdID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="attType"></param>
+		/// <param name="taskActivity"></param>
+		/// <param name="reserved1"></param>
+		public void UpdateXFormFD(int fdID, string xfAlias, string messageID, string attType, string taskActivity, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fdid", SqlDbType.Int, 4, fdID),
@@ -2326,19 +2334,25 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XFORM_TEMPORARY 테이블 값 저장
 		/// </summary>
-		public int InsertXFormTemporary(int ctID, string actor, int actorID, string actorCN, string xfAlias, string messageID, string subject, string reason, string reserved1)
+		/// <param name="ctID"></param>
+		/// <param name="actor"></param>
+		/// <param name="actorID"></param>
+		/// <param name="actorCN"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="subject"></param>
+		/// <param name="reason"></param>
+		/// <param name="reserved1"></param>
+		public void InsertXFormTemporary(int ctID, string actor, int actorID, string actorCN, string xfAlias
+								, string messageID, string subject, string reason, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, ctID),
@@ -2356,19 +2370,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 수정 PH_XFORM_TEMPORARY 테이블 값 변경(임시 저장함)
 		/// </summary>
-		public int UpdateXFormTemporary(int ctID, string xfAlias, string messageID, string subject, string reason, string reserved1)
+		/// <param name="ctID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="subject"></param>
+		/// <param name="reason"></param>
+		/// <param name="reserved1"></param>
+		public void UpdateXFormTemporary(int ctID, string xfAlias, string messageID, string subject, string reason, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, ctID),
@@ -2383,19 +2399,27 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XFORM_REGISTRANT 테이블 값 저장
 		/// </summary>
-		public int InsertXFormRegistrant(string xfAlias, int messageID, int actorID, string actType, string actor, string actorCN, string actorGrade, string actorDept, string actorDeptID, string actorDeptCode, string reserved1)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="actorID"></param>
+		/// <param name="actType"></param>
+		/// <param name="actor"></param>
+		/// <param name="actorCN"></param>
+		/// <param name="actorGrade"></param>
+		/// <param name="actorDept"></param>
+		/// <param name="actorDeptID"></param>
+		/// <param name="actorDeptCode"></param>
+		/// <param name="reserved1"></param>
+		public void InsertXFormRegistrant(string xfAlias, int messageID, int actorID, string actType, string actor, string actorCN
+								, string actorGrade, string actorDept, string actorDeptID, string actorDeptCode, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2415,19 +2439,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_XFORM_REGISTRANT 테이블 값 배치로 저장
 		/// </summary>
-		public int InsertXFormRegistrant(string xfAlias, string messageID, string xmlInfo)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xmlInfo"></param>
+		public void InsertXFormRegistrant(string xfAlias, string messageID, string xmlInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2439,19 +2462,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 admin.PH_XFORM_DL 테이블 값 저장
 		/// </summary>
-		public int InsertXFormDL(string xfAlias, string messageID, string step, string dl, string description, string reserved1)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="step"></param>
+		/// <param name="dl"></param>
+		/// <param name="description"></param>
+		/// <param name="reserved1"></param>
+		public void InsertXFormDL(string xfAlias, string messageID, string step, string dl, string description, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2466,19 +2491,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 수정 admin.PH_XFORM_DL 테이블 값 변경
 		/// </summary>
-		public int UpdateXFormDL(string xfAlias, string messageID, string step, string dl, string description, string reserved1)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="step"></param>
+		/// <param name="dl"></param>
+		/// <param name="description"></param>
+		/// <param name="reserved1"></param>
+		public void UpdateXFormDL(string xfAlias, string messageID, string step, string dl, string description, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2493,19 +2520,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 삭제 admin.PH_XFORM_DL 테이블 값 변경
 		/// </summary>
-		public int DeleteXFormDL(string xfAlias, string messageID, string step)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="step"></param>
+		public void DeleteXFormDL(string xfAlias, string messageID, string step)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2517,19 +2543,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 수정 PH_XFORM_REGISTRANT 테이블 값 배치로 변경
 		/// </summary>
-		public int UpdateXFormRegistrant(string xfAlias, string messageID, string xmlInfo)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xmlInfo"></param>
+		public void UpdateXFormRegistrant(string xfAlias, string messageID, string xmlInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2541,19 +2566,23 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_LINKED_DOC 테이블 값 저장
 		/// </summary>
-		public int InsertLinkedDoc(string xfAlias, string messageID, string linkedXFAlias, string linkedMessageID, string linkedSubject, string linkedReserved1, string linkedReserved2)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="linkedXFAlias"></param>
+		/// <param name="linkedMessageID"></param>
+		/// <param name="linkedSubject"></param>
+		/// <param name="linkedReserved1"></param>
+		/// <param name="linkedReserved2"></param>
+		public void InsertLinkedDoc(string xfAlias, string messageID, string linkedXFAlias, string linkedMessageID
+								, string linkedSubject, string linkedReserved1, string linkedReserved2)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2569,19 +2598,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_LINKED_DOC 테이블 값 배치로 저장
 		/// </summary>
-		public int InsertLinkedDoc(string xfAlias, string messageID, string xmlInfo)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xmlInfo"></param>
+		public void InsertLinkedDoc(string xfAlias, string messageID, string xmlInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2593,19 +2621,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 수정 PH_LINKED_DOC 테이블 값 배치로 변경
 		/// </summary>
-		public int UpdateLinkedDoc(string xfAlias, string messageID, string xmlInfo)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xmlInfo"></param>
+		public void UpdateLinkedDoc(string xfAlias, string messageID, string xmlInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2617,19 +2644,20 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_EVENT_REGISTRATION 테이블 값 저장
 		/// </summary>
-		public int InsertEventRegistration(string xfAlias, int messageID, int actorID, string actType, string actDate)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="actorID"></param>
+		/// <param name="actType"></param>
+		/// <param name="actDate"></param>
+		public void InsertEventRegistration(string xfAlias, int messageID, int actorID, string actType, string actDate)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2643,19 +2671,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 PH_EVENT_EDIT 테이블 값 저장
 		/// </summary>
-		public int InsertEventEdit(string xfAlias, int messageID, int actorID)
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="actorID"></param>
+		public void InsertEventEdit(string xfAlias, int messageID, int actorID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2667,10 +2694,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -2780,6 +2805,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 첨부파일 쿼리
 		/// </summary>
+		/// <param name="domainID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <returns></returns>
@@ -2861,6 +2887,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
+		/// <param name="step"></param>
+		/// <param name="dl"></param>
+		/// <param name="description"></param>
+		/// <param name="reserved1"></param>
 		/// <returns></returns>
 		public DataSet SelectXFormDL(string xfAlias, string messageID, string step, string dl, string description, string reserved1)
 		{
@@ -2919,10 +2949,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 질문/답변 (답변채택으로 질문 완료처리)
 		/// </summary>
-		public int SetQnaSelectAnswer(int messageID, string xfAlias, int parentID)
+		/// <param name="messageID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="parentID"></param>
+		public void SetQnaSelectAnswer(int messageID, string xfAlias, int parentID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
@@ -2934,10 +2965,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -2946,11 +2975,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="messageID"></param>
 		/// <param name="isPublic"></param>
-		/// <returns></returns>
-		public int ChangeXFormIsPublic(string xfAlias, string messageID, string isPublic)
+		public void ChangeXFormIsPublic(string xfAlias, string messageID, string isPublic)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
@@ -2962,16 +2988,14 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		#region 지식관리 메인 관련
-		
+
 		/// <summary>
-		/// 
+		/// QnaList
 		/// </summary>
 		/// <param name="strNum"></param>
 		/// <param name="xfAlias"></param>
@@ -3203,7 +3227,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -3279,7 +3303,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 
 				userTotalPoint = double.Parse(pData.GetParamValue("@usertotalpoint").ToString());
 				userSearchPoint = double.Parse(pData.GetParamValue("@usersearchpoint").ToString());
