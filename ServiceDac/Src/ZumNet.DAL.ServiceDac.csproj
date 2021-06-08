@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AspServiceDac.cs" />
     <Compile Include="BaseDac.cs" />
     <Compile Include="CodeDac.cs" />
     <Compile Include="CompetencyDac.cs" />

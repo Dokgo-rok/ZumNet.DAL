@@ -37,11 +37,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="actionKind">Authority Type</param>
 		/// <param name="authorityInfo">Authority Info</param>
-		/// <returns></returns>
-		public int ChangeBaseAuthority(string actionKind, string authorityInfo)
+		public void ChangeBaseAuthority(string actionKind, string authorityInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 1, actionKind),
@@ -52,10 +49,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -64,11 +59,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="objectID">Object ID</param>
 		/// <param name="objectType">Object Type</param>
 		/// <param name="aclInfo">ACL Information</param>
-		/// <returns></returns>
-		public int ChangeBaseACL(int objectID, string objectType, string aclInfo)
+		public void ChangeBaseACL(int objectID, string objectType, string aclInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectID", SqlDbType.Int, 4, objectID),
@@ -80,10 +72,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -96,11 +86,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="scope">Scope</param>
 		/// <param name="aclKind">ACL Kind Information</param>
 		/// <param name="description">Description</param>
-		/// <returns></returns>
-		public int ChangeSpecialACL(int objectID, string objectType, int targetID, string targetType, string scope, string aclKind, string description)
+		public void ChangeSpecialACL(int objectID, string objectType, int targetID, string targetType, string scope, string aclKind, string description)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -116,10 +103,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -127,11 +112,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>	
 		/// <param name="domainID">Domain ID</param>
 		/// <param name="path">Excel File Location</param>
-		/// <param name="retResult">Process Result(OK, MISSING, NOTUNIQUE, EXIST)</param>
-		/// <returns></returns>
-		public int CreateBaseGradeCodeFromExcel(int domainID, string path, out string retResult)
+		/// <returns>Process Result(OK, MISSING, NOTUNIQUE, EXIST)</returns>
+		public string CreateBaseGradeCodeFromExcel(int domainID, string path)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -144,11 +128,10 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				retResult = pData.GetParamValue("@result").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
@@ -398,8 +381,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				strReturn = pData.GetParamValue("@permission").ToString();
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
 			return strReturn;
@@ -417,12 +399,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="codeName">Grade Code Name</param>
 		/// <param name="inUse">Using[Y/N]</param>
 		/// <param name="removeInfo">Remove Info</param>
-		/// <returns></returns>
-		public int HandleBaseGradeCode(string actionKind, int domainID, string type, string code, string newType, string newCode
-		, string codeName, string inUse, string removeInfo)
+		public void HandleBaseGradeCode(string actionKind, int domainID, string type, string code
+					, string newType, string newCode , string codeName, string inUse, string removeInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 10, actionKind),
@@ -440,10 +419,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -453,11 +430,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="objectType">Object Type</param>
 		/// <param name="targetID">Target ID</param>
 		/// <param name="targetType">Target Type</param>
-		/// <returns></returns>
-		public int RemoveObjectACL(int objectID, string objectType, int targetID, string targetType)
+		public void RemoveObjectACL(int objectID, string objectType, int targetID, string targetType)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -470,34 +444,33 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// DomainCT 생성, 변경, 삭제
 		/// </summary>
-		/// <param name="actionKind">Category Type</param>
-		/// <param name="domainID">Domain ID</param>
-		/// <param name="categoryID">Category ID</param>
-		/// <param name="prevPosition">Old Position</param>
-		/// <param name="position">New Position</param>
-		/// <param name="memberOf">Member Of</param>
-		/// <param name="displayName">Display Name</param>
-		/// <param name="regionName">Region Name</param>
-		/// <param name="inUse">Using</param>
-		/// <param name="inherited">Inherited</param>
-		/// <param name="sortKey">SortKey</param>
-		/// <param name="reserved1">Reserved Field</param>
-		/// <param name="reserved2">Reserved Field</param>
-		/// <returns></returns>
-		public int CreateDomainCategory(string actionKind, int domainID, int categoryID, string prevPosition, string position, int memberOf
-		, string displayName, string jadisplayName, string endisplayName, string chdisplayName, string regionName, string inUse, string inherited, int sortKey, string reserved1, string reserved2)
+		/// <param name="actionKind"></param>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="prevPosition"></param>
+		/// <param name="position"></param>
+		/// <param name="memberOf"></param>
+		/// <param name="displayName"></param>
+		/// <param name="jadisplayName"></param>
+		/// <param name="endisplayName"></param>
+		/// <param name="chdisplayName"></param>
+		/// <param name="regionName"></param>
+		/// <param name="inUse"></param>
+		/// <param name="inherited"></param>
+		/// <param name="sortKey"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		public void CreateDomainCategory(string actionKind, int domainID, int categoryID, string prevPosition, string position, int memberOf
+									, string displayName, string jadisplayName, string endisplayName, string chdisplayName, string regionName
+									, string inUse, string inherited, int sortKey, string reserved1, string reserved2)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 10, actionKind),
@@ -522,21 +495,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// ACL 설정 - batch로
 		/// </summary>	
 		/// <param name="xmlData">Acl Info By XML</param>
-		/// <returns></returns>
-		public int CreateObjectACLByXML(string xmlData)
+		public void CreateObjectACLByXML(string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xmldata", SqlDbType.NText, xmlData)
@@ -546,10 +514,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -562,9 +528,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="sortKey">SortKey</param>
 		/// <param name="command">Command</param>
 		/// <param name="description">Description</param>
-		/// <param name="outContainerID">ContainerID</param>
-		/// <returns></returns>
-		public int CreateBaseContainer(string actionKind, int containerID, int memberOf, string displayName, int sortKey, string command, string description, out int outContainerID)
+		/// <returns>ContainerID</returns>
+		public int CreateBaseContainer(string actionKind, int containerID, int memberOf, string displayName, int sortKey, string command, string description)
 		{
 			int iReturn = 0;
 
@@ -584,8 +549,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				outContainerID = int.Parse(pData.GetParamValue("@new_id").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 			}
 
 			return iReturn;
@@ -599,11 +563,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="description">매뉴 설명</param>
 		/// <param name="url">경로</param>
 		/// <param name="reserved1">업무대상</param>
-		/// <returns></returns>
-		public int SetObjectCT(int ctID, string ctAlias, string description, string url, string reserved1)
+		public void SetObjectCT(int ctID, string ctAlias, string description, string url, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, ctID),
@@ -617,22 +578,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
-
 
 		/// <summary>
 		/// Object CT 삭제
 		/// </summary>
 		/// <param name="ctID">메뉴 아이디</param>
-		/// <returns></returns>
-		public int RemoveObjectCT(int ctID)
+		public void RemoveObjectCT(int ctID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, ctID)
@@ -642,10 +597,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -655,11 +608,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="categoryInfo"></param>
 		/// <param name="aclInfo"></param>
 		/// <param name="adminInfo"></param>
-		/// <returns></returns>
-		public int HandleBaseDomainCategory(string actionKind, string categoryInfo, string aclInfo, string adminInfo)
+		public void HandleBaseDomainCategory(string actionKind, string categoryInfo, string aclInfo, string adminInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 10, actionKind),
@@ -672,24 +622,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// CT 생성, 변경, 삭제
-		/// </summary>	
-		/// <param name="actionKind">Category Type</param>
-		/// <param name="categoryID">Category ID</param>
-		/// <param name="categoryAlias">Category Alias</param>
-		/// <param name="url">URL</param>
-		/// <param name="description">Description</param>
-		/// <param name="reserved1">Reserved Field</param>
-		/// <param name="outCategoryID">Category ID</param>
-		/// <returns></returns>
-		public int CreateBaseCategory(string actionKind, int categoryID, string categoryAlias, string url, string description, string reserved1, out int outCategoryID)
+		/// </summary>
+		/// <param name="actionKind"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="categoryAlias"></param>
+		/// <param name="url"></param>
+		/// <param name="description"></param>
+		/// <param name="reserved1"></param>
+		/// <returns>CategoryId</returns>
+		public int CreateBaseCategory(string actionKind, int categoryID, string categoryAlias, string url, string description, string reserved1)
 		{
 			int iReturn = 0;
 
@@ -708,8 +655,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				outCategoryID = int.Parse(pData.GetParamValue("@new_id").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 			}
 
 			return iReturn;
@@ -759,7 +705,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate">SearchEndDate</param>
 		/// <param name="totalMsg">TotalMessage</param>
 		/// <returns></returns>
-		public DataSet GetBaseEventLogList(string eventViewName, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMsg)
+		public DataSet GetBaseEventLogList(string eventViewName, int pageIndex, int pageCount, string sortColumn, string sortType
+							, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMsg)
 		{
 			DataSet dsReturn = null;
 
@@ -782,7 +729,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMsg = int.Parse(pData.GetParamValue("@totalMessages").ToString());
+				totalMsg = Convert.ToInt32(pData.GetParamValue("@totalMessages").ToString());
 			}
 
 			return dsReturn;
@@ -796,11 +743,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="objectType">Object Type</param>
 		/// <param name="scope">Scope</param>
 		/// <param name="xmlData">Acl Info</param>
-		/// <returns></returns>
-		public int CreateObjectSingleACL(string mode, int objectID, string objectType, string scope, string xmlData)
+		public void CreateObjectSingleACL(string mode, int objectID, string objectType, string scope, string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
@@ -814,23 +758,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
-		/// 권한 추가, 삭제, 수정을 수행한다.
+		/// 권한 추가, 삭제, 수정을 수행
 		/// </summary>
 		/// <param name="objectID"></param>
 		/// <param name="objectType"></param>
 		/// <param name="aclInfo"></param>
-		/// <returns></returns>
-		public int ChangeObjectACL(int objectID, string objectType, string aclInfo)
+		public void ChangeObjectACL(int objectID, string objectType, string aclInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectID", SqlDbType.Int, 4, objectID),
@@ -842,10 +781,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -857,11 +794,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="changeAclXML">Change Acl Info By XML</param>
 		/// <param name="hasDeleteAcl">Has Delete Acl</param>
 		/// <param name="DeleteAclXML">Delete Acl Info By XML</param>
-		/// <returns></returns>
-		public int ChangeObjectACLByXML(string hasNewAcl, string newAclXML, string hasChangeAcl, string changeAclXML, string hasDeleteAcl, string DeleteAclXML)
+		public void ChangeObjectACLByXML(string hasNewAcl, string newAclXML, string hasChangeAcl, string changeAclXML, string hasDeleteAcl, string DeleteAclXML)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@HasNewAcl", SqlDbType.Char, 1, hasNewAcl),
@@ -876,10 +810,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -915,7 +847,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -930,11 +862,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="targetType"></param>
 		/// <param name="auAlias"></param>
 		/// <param name="description"></param>
-		/// <returns></returns>
-		public int ChangeObjectAuthority(int objectID, string objectType, int targetID, string targetType, string auAlias, string description)
+		public void ChangeObjectAuthority(int objectID, string objectType, int targetID, string targetType, string auAlias, string description)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -949,10 +878,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -962,11 +889,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="objectType"></param>
 		/// <param name="targetID"></param>
 		/// <param name="targetType"></param>
-		/// <returns></returns>
-		public int DeleteObjectAuthority(int objectID, string objectType, int targetID, string targetType)
+		public void DeleteObjectAuthority(int objectID, string objectType, int targetID, string targetType)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -979,10 +903,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -994,11 +916,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="targetType"></param>
 		/// <param name="auAlias"></param>
 		/// <param name="description"></param>
-		/// <returns></returns>
-		public int CreateObjectAuthority(int objectID, string objectType, int targetID, string targetType, string auAlias, string description)
+		public void CreateObjectAuthority(int objectID, string objectType, int targetID, string targetType, string auAlias, string description)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -1013,201 +932,9 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 관리툴에서 고객사 리스트 쿼리
-		/// </summary>
-		/// <param name="pageIndex"></param>
-		/// <param name="pageCount"></param>
-		/// <param name="sortColumn"></param>
-		/// <param name="sortType"></param>
-		/// <param name="searchColumn"></param>
-		/// <param name="searchText"></param>
-		/// <param name="searchStartDate"></param>
-		/// <param name="searchEndDate"></param>
-		/// <param name="totalMessage"></param>
-		/// <returns></returns>
-		public DataSet GetASPCompanyList(int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@pageIdx", SqlDbType.Int, 4, pageIndex),
-				ParamSet.Add4Sql("@pageCnt", SqlDbType.Int, 4, pageCount),
-				ParamSet.Add4Sql("@sortCol", SqlDbType.VarChar, 20, sortColumn),
-				ParamSet.Add4Sql("@sortType", SqlDbType.VarChar, 20, sortType),
-				ParamSet.Add4Sql("@searchCol", SqlDbType.VarChar, 20, searchColumn),
-				ParamSet.Add4Sql("@searchText", SqlDbType.NVarChar, 200, searchText),
-				ParamSet.Add4Sql("@searchSDate", SqlDbType.VarChar, 10, searchStartDate),
-				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
-				ParamSet.Add4Sql("@totalMsg", SqlDbType.Int, 4, ParameterDirection.Output)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_GetServiceCompanyList", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// XML 형식으로 ASP 고객사 등록, 변경
-		/// </summary>
-		/// <param name="cmd"></param>
-		/// <param name="ComInfoXMLText"></param>
-		/// <returns></returns>
-		public int SetCompanyInfo(string cmd, string ComInfoXMLText)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@cmd", SqlDbType.VarChar, 30, cmd),
-				ParamSet.Add4Sql("@com_info", SqlDbType.NText, ComInfoXMLText)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_HDCompany", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="companycode"></param>
-		/// <returns></returns>
-		public DataSet GetASPRegistCount(string companycode)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companycode)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_GetPerLogonCount", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="companycode"></param>
-		/// <returns></returns>
-		public DataSet GetASPCompanyAtt(string companycode)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companycode)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_GetServiceCompanyAtt", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-		
-		/// <summary>
-		/// ASP Server DB Query
-		/// </summary>	
-		/// <param name="domainID">Domain ID</param>
-		/// <returns></returns>
-		public DataSet GetServiceServerName(int domainID)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@domain", SqlDbType.Int, 4, domainID)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_GetServiceServerName", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 고객사 코드 중복체크
-		/// </summary>	
-		/// <param name="domainID">CompanyCode</param>
-		/// <param name="retResult">Process Result(OK, EXIST)</param>
-		/// <returns></returns>
-		public int DuplicationChk(string companycode, out string retResult)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companycode),
-				ParamSet.Add4Sql("@result", SqlDbType.VarChar, 10, ParameterDirection.Output)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_DupCompanyCode", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				retResult = pData.GetParamValue("@result").ToString();
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// ASP Server DB Query
-		/// </summary>	
-		/// <param name="domainID">Domain ID</param>
-		/// <returns></returns>
-		public DataSet GetReSessionInfo(string companycode)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companycode)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_ReSession", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
+		}		
 
 		/// <summary>
 		/// 
@@ -1238,17 +965,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 암호정책 가져오기
 		/// </summary>
 		/// <returns></returns>
 		public DataSet GetPasswordPolicy()
 		{
 			DataSet dsReturn = null;
 
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				
-			};
+			SqlParameter[] parameters = null;
 
 			ParamData pData = new ParamData("admin.ph_up_DomainGetPasswordPolicy", parameters);
 
@@ -1261,15 +985,12 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 암호정책 설정
 		/// </summary>
 		/// <param name="changeitem"></param>
 		/// <param name="changevalue"></param>
-		/// <returns></returns>
-		public int SetPasswordPolicy(string changeitem, string changevalue)
+		public void SetPasswordPolicy(string changeitem, string changevalue)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@changeitem", SqlDbType.VarChar, 30, changeitem),
@@ -1280,10 +1001,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>

@@ -35,10 +35,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// FD DisplayName 변경
 		/// </summary>
-		public int ChangeBaseFolderName(int folderID, string newName)
+		/// <param name="folderID"></param>
+		/// <param name="newName"></param>
+		public void ChangeBaseFolderName(int folderID, string newName)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
@@ -49,19 +49,19 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 부서폴더 생성
 		/// </summary>
-		public int CreateBaseDepartFolder(int domainID, int categoryID, int parentFolderID, string createInfo)
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="parentFolderID"></param>
+		/// <param name="createInfo"></param>
+		public void CreateBaseDepartFolder(int domainID, int categoryID, int parentFolderID, string createInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
@@ -74,18 +74,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// FD Batch 생성
-		/// </summary>	
-		public int CreateBaseFolderFromExcel(int domainID, int categoryID, int parentID, string uploadPath, out string result)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="parentID"></param>
+		/// <param name="uploadPath"></param>
+		/// <returns>실행결과</returns>
+		public string CreateBaseFolderFromExcel(int domainID, int categoryID, int parentID, string uploadPath)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -100,19 +103,25 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				result = pData.GetParamValue("@result").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//result = pData.GetParamValue("@result").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
 		/// 폴더 DeleteDate Update
-		/// </summary>		
-		public int DeleteBaseFolder(int folderID, int parentFolderID, string objectType, int objectID, string attType, out string result)
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <param name="parentFolderID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="attType"></param>
+		/// <returns>실행결과</returns>
+		public string DeleteBaseFolder(int folderID, int parentFolderID, string objectType, int objectID, string attType)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -128,16 +137,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				result = pData.GetParamValue("@return").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//result = pData.GetParamValue("@return").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
 		/// 부서폴더 리스트 쿼리
-		/// </summary>	
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="memberOf"></param>
+		/// <param name="viewDate"></param>
+		/// <returns></returns>
 		public DataSet GetBaseDepartFolderList(int domainID, int categoryID, int memberOf, string viewDate)
 		{
 			DataSet dsReturn = null;
@@ -162,7 +176,11 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 파일유형 DB Query
-		/// </summary>		
+		/// </summary>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="folderID"></param>
+		/// <returns></returns>
 		public DataSet GetFolderAttribute(int objectType, int objectID, int folderID)
 		{
 			DataSet dsReturn = null;
@@ -185,8 +203,13 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// Folder 에 할당된 Ownership 쿼리 
-		/// </summary>		
+		/// Folder 에 할당된 Ownership 쿼리
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="folderID"></param>
+		/// <returns></returns>
 		public DataSet GetBaseFolderOwnerShip(int domainID, string objectType, int objectID, int folderID)
 		{
 			DataSet dsReturn = null;
@@ -210,8 +233,11 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// Folder 에 할당된 Process 쿼리 
-		/// </summary>		
+		/// Folder 에 할당된 Process 쿼리
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="folderID"></param>
+		/// <returns></returns>
 		public DataSet GetBaseFolderProcess(int domainID, int folderID)
 		{
 			DataSet dsReturn = null;
@@ -234,7 +260,10 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 파일유형 DB Query
-		/// </summary>		
+		/// </summary>
+		/// <param name="categoryID"></param>
+		/// <param name="isAdmin"></param>
+		/// <returns></returns>
 		public DataSet GetFolderType(int categoryID, string isAdmin)
 		{
 			DataSet dsReturn = null;
@@ -257,7 +286,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 상위 폴더 정보 얻어오기
-		/// </summary>		
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="attType"></param>
+		/// <param name="level"></param>
+		/// <returns></returns>
 		public DataSet GetParentFolderAttribute(int folderID, string objectType, int objectID, string attType, int level)
 		{
 			DataSet dsReturn = null;
@@ -296,7 +331,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchCol">user, group</param>
 		/// <param name="searchText"></param>
 		/// <returns></returns>
-		public DataSet GetTreeObject_Shared(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID, string openFolderInfo, string isAdmin, string permission, string searchCol, string searchText)
+		public DataSet GetTreeObject_Shared(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel
+						, int userID, string openFolderInfo, string isAdmin, string permission, string searchCol, string searchText)
 		{
 			DataSet dsReturn = null;
 
@@ -327,11 +363,15 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// FD 생성 및 수정, 삭제
-		/// </summary>		
-		public int HandleBaseFolder(string actionKind, string folderInfo, string aclInfo, string ownershipInfo, string processInfo, string pointInfo)
+		/// </summary>
+		/// <param name="actionKind"></param>
+		/// <param name="folderInfo"></param>
+		/// <param name="aclInfo"></param>
+		/// <param name="ownershipInfo"></param>
+		/// <param name="processInfo"></param>
+		/// <param name="pointInfo"></param>
+		public void HandleBaseFolder(string actionKind, string folderInfo, string aclInfo, string ownershipInfo, string processInfo, string pointInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 10, actionKind),
@@ -346,19 +386,20 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// FD 이동 
-		/// </summary>		
-		public int MoveBaseFolder(int folderID, string objectType, int objectID, string attType, int targetParentFolderID)
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="attType"></param>
+		/// <param name="targetParentFolderID"></param>
+		public void MoveBaseFolder(int folderID, string objectType, int objectID, string attType, int targetParentFolderID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
@@ -372,18 +413,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더 DB 삭제
-		/// </summary>		
-		public int RemoveBaseFolder(int folderID, out string result)
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <returns>실행결과</returns>
+		public string RemoveBaseFolder(int folderID)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -395,16 +436,21 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				result = pData.GetParamValue("@return").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//result = pData.GetParamValue("@return").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
 		/// Folder 검색
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="searchText"></param>
+		/// <param name="isAll"></param>
+		/// <returns></returns>
 		public DataSet GetBaseSearchFolder(int domainID, int categoryID, string searchText, string isAll)
 		{
 			DataSet dsReturn = null;
@@ -429,7 +475,10 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// Folder Alias에 해당하는 폴더 찾기
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="folderAlias"></param>
+		/// <returns></returns>
 		public DataSet SearchFolderByAlias(int domainID, string folderAlias)
 		{
 			DataSet dsReturn = null;
@@ -452,7 +501,9 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 하위 Folder List
-		/// </summary>	
+		/// </summary>
+		/// <param name="categoryID"></param>
+		/// <returns></returns>
 		public DataSet GetObjectXFormByCategory(int categoryID)
 		{
 			DataSet dsReturn = null;
@@ -474,7 +525,10 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 하위 Folder List
-		/// </summary>	
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="folderID"></param>
+		/// <returns></returns>
 		public DataSet GetObjectXFormInFolder(int domainID, int folderID)
 		{
 			DataSet dsReturn = null;
@@ -497,11 +551,18 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 폴더 정보 변경
-		/// </summary>	
-		public int ChangeObjectFolder(int folderID, string folderType, string folderAlias, string xfAlias, string description, string inherited, string displayName, string expiredDate)
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <param name="folderType"></param>
+		/// <param name="folderAlias"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="description"></param>
+		/// <param name="inherited"></param>
+		/// <param name="displayName"></param>
+		/// <param name="expiredDate"></param>
+		public void ChangeObjectFolder(int folderID, string folderType, string folderAlias, string xfAlias
+							, string description, string inherited, string displayName, string expiredDate)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
@@ -518,19 +579,24 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더 인스턴스 정보 변경
-		/// </summary>	
-		public int ChangeObjectFolderInstance(int domainID, int folderID, int groupID, int userID, int parentFolderID, int sortKey, string attType, string comment)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="folderID"></param>
+		/// <param name="groupID"></param>
+		/// <param name="userID"></param>
+		/// <param name="parentFolderID"></param>
+		/// <param name="sortKey"></param>
+		/// <param name="attType"></param>
+		/// <param name="comment"></param>
+		public void ChangeObjectFolderInstance(int domainID, int folderID, int groupID, int userID
+								, int parentFolderID, int sortKey, string attType, string comment)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
@@ -547,19 +613,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더 삭제
-		/// </summary>	
-		public int DeleteObjectFolder(int folderID)
+		/// </summary>
+		/// <param name="folderID"></param>
+		public void DeleteObjectFolder(int folderID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID)
@@ -569,16 +632,30 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더 생성
-		/// </summary>	
-		public int CreateObjectFolder(int domainID, int categoryID, string folderType, string folderAlias, string xfAlias, string displayName, string description, string inherited, string inUse, string password, int creatorID, string expiredDate, string reserved1, out int folderID)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="folderType"></param>
+		/// <param name="folderAlias"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="displayName"></param>
+		/// <param name="description"></param>
+		/// <param name="inherited"></param>
+		/// <param name="inUse"></param>
+		/// <param name="password"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="reserved1"></param>
+		/// <returns>FolerID</returns>
+		public int CreateObjectFolder(int domainID, int categoryID, string folderType, string folderAlias
+							, string xfAlias, string displayName, string description, string inherited, string inUse
+							, string password, int creatorID, string expiredDate, string reserved1)
 		{
 			int iReturn = 0;
 
@@ -604,8 +681,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				folderID = int.Parse(pData.GetParamValue("@folderid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//folderID = int.Parse(pData.GetParamValue("@folderid").ToString());
 			}
 
 			return iReturn;
@@ -613,11 +690,18 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 폴더 인스턴스 입력
-		/// </summary>	
-		public int CreateObjectFolderInstance(int objectID, string objectType, int folderID, int parentFolderID, string hasSubFolder, string attType, string comment, string reserved1)
+		/// </summary>
+		/// <param name="objectID"></param>
+		/// <param name="objectType"></param>
+		/// <param name="folderID"></param>
+		/// <param name="parentFolderID"></param>
+		/// <param name="hasSubFolder"></param>
+		/// <param name="attType"></param>
+		/// <param name="comment"></param>
+		/// <param name="reserved1"></param>
+		public void CreateObjectFolderInstance(int objectID, string objectType, int folderID, int parentFolderID
+									, string hasSubFolder, string attType, string comment, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objectID),
@@ -634,19 +718,20 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더 소유 정보 변경(폴더 AttType 변경)	
 		/// </summary>
-		public int ChangeBaseFolderAttribute(string targetType, string objectType, int objectID, int folderID, string ownerShipInfo)
+		/// <param name="targetType"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="folderID"></param>
+		/// <param name="ownerShipInfo"></param>
+		public void ChangeBaseFolderAttribute(string targetType, string objectType, int objectID, int folderID, string ownerShipInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@targetType", SqlDbType.Char, 2, targetType),
@@ -660,23 +745,17 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 폴더에 할당된 프로세스를 추가, 수정, 삭제 한다.
 		/// </summary>
-		/// <param name="connect"></param>
 		/// <param name="folderID"></param>
 		/// <param name="processInfo"></param>
-		/// <returns></returns>
-		public int HandleBaseFolderProcess(int folderID, string processInfo)
+		public void HandleBaseFolderProcess(int folderID, string processInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
@@ -687,17 +766,42 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// PH_OBJECT_FD 테이블, PH_FOLDER_INSTANCE 테이블 입력(CreateBaseFolderInstance에서 처리하는 부분을 현재 메소드에서 처리)
 		/// </summary>
-		/// <returns></returns>
-		public int CreateBaseFolder(int domainID, int categoryID, string folderType, string folderAlias, string xfAlias, string displayName, string description, string inHerited, string shared, string inUse, string count, string password, string usePoint, string useProcess, int creatorID, string createDate, string expiredDate, string objectType, int objectID, int parentFolderID, int sortKey, string comment, string reserved1, string reserved2, out int folderID)
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="folderType"></param>
+		/// <param name="folderAlias"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="displayName"></param>
+		/// <param name="description"></param>
+		/// <param name="inHerited"></param>
+		/// <param name="shared"></param>
+		/// <param name="inUse"></param>
+		/// <param name="count"></param>
+		/// <param name="password"></param>
+		/// <param name="usePoint"></param>
+		/// <param name="useProcess"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="createDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="parentFolderID"></param>
+		/// <param name="sortKey"></param>
+		/// <param name="comment"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <returns>FolderID</returns>
+		public int CreateBaseFolder(int domainID, int categoryID, string folderType, string folderAlias, string xfAlias
+							, string displayName, string description, string inHerited, string shared, string inUse, string count
+							, string password, string usePoint, string useProcess, int creatorID, string createDate, string expiredDate
+							, string objectType, int objectID, int parentFolderID, int sortKey, string comment, string reserved1, string reserved2)
 		{
 			int iReturn = 0;
 
@@ -734,8 +838,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				folderID = int.Parse(pData.GetParamValue("@folderid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//folderID = int.Parse(pData.GetParamValue("@folderid").ToString());
 			}
 
 			return iReturn;
@@ -746,10 +850,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 폴더 환경설정 정보 쿼리(PH_FOLDER_SCHEMA 테이블)
 		/// </summary>
-		///<creator>김형복(k96mi005@covision.co.kr)</creator> 
 		/// <param name="folderID"> 폴더 아이디 </param>
 		/// <param name="inheritedOptioFolderID"> 옵션을 상속한 폴더 아이뒤 </param>
-		/// <param name="inheritedDesingFolderID"> 디자인을 상속한 폴더 아이뒤 </param>
+		/// <param name="inheritedDesignFolderID"> 디자인을 상속한 폴더 아이뒤 </param>
 		/// <returns> 속성(Field)과, 속성값(FieldValue) </returns>
 		public DataSet GetFolderEnvironmentInfo(int folderID, int inheritedOptioFolderID, int inheritedDesignFolderID)
 		{
@@ -775,16 +878,14 @@ namespace ZumNet.DAL.ServiceDac
 		#endregion
 
 		#region Option | Desing을 상속해주는 폴더 ID 가져오기
-		
+
 		/// <summary>
 		///Option | Desing을 상속해주는 폴더 ID 가져오기(PH_FOLDER_SCHEMA 테이블,PH_FOLDER_INSTANCE 테이블)
 		/// </summary>
-		///<creator>김형복(k96mi005@covision.co.kr)</creator> 
 		/// <param name="folderID"> 폴더 아이디 </param>
 		/// <param name="inheritedType"> 상속 종류("Option" | "Design") </param>
-		/// <param name="ParentID">OutParam 상속 폴더 아이디</param>
-		/// <returns> 결과 </returns>
-		public int GetInheritedEnvironmentFolderID(int folderID, string inheritedType, out int parentID)
+		/// <returns>상속 폴더 아이디</returns>
+		public int GetInheritedEnvironmentFolderID(int folderID, string inheritedType)
 		{
 			int iReturn = 0;
 
@@ -799,8 +900,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				parentID = int.Parse(pData.GetParamValue("@ParentID").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//parentID = int.Parse(pData.GetParamValue("@ParentID").ToString());
 			}
 
 			return iReturn;
@@ -813,7 +914,6 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 폴더의 특정 환경설정 속성 가져오기
 		/// </summary>
-		///<creator>김형복(k96mi005@covision.co.kr)</creator> 
 		/// <param name="folderID"> 폴더 아이디 </param>
 		/// <param name="fieldName"> 속성 필드 네임(DB-Field) </param>
 		/// <returns> 속성값(FieldValue) </returns>
@@ -832,9 +932,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-
-				strReturn = pData.GetParamValue("@outParam").ToString();
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//strReturn = pData.GetParamValue("@outParam").ToString();
 			}
 
 			return strReturn;
@@ -847,15 +946,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 폴더 환경설정 정보 생성 및 변경
 		/// </summary>
-		///<creator>김형복(k96mi005@covision.co.kr)</creator> 
 		/// <param name="folderID"> 폴더 아이디 </param>
 		/// <param name="fieldName"> 속성 필드 네임(DB-Field) </param>
 		/// <param name="fieldValue"> 속성 필드 값(DB-FieldValue) </param>
-		/// <returns> 생성 및 변경 완료여부 </returns>
-		public int SetFolderEnvironmentProperty(int folderID, string fieldName, string fieldValue)
+		public void SetFolderEnvironmentProperty(int folderID, string fieldName, string fieldValue)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@folderID", SqlDbType.Int, 4, folderID),
@@ -867,10 +962,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		#endregion
@@ -885,11 +978,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="parentID"></param>
 		/// <param name="folderName"></param>
 		/// <param name="sortKey"></param>
-		/// <returns></returns>
-		public int HandleFavoriteFolder(string type, int userID, int categoryID, int folderID, int parentID, string folderName, int sortKey)
+		public void HandleFavoriteFolder(string type, int userID, int categoryID, int folderID, int parentID, string folderName, int sortKey)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@type", SqlDbType.Char, 1, type),
@@ -905,15 +995,17 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 위치(Navigation)가져오기
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="selectedID"></param>
+		/// <returns></returns>
 		public DataSet GetFolderNavigationUrl(int domainID, int categoryID, string selectedID)
 		{
 			DataSet dsReturn = null;
@@ -937,8 +1029,22 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 트리 구조 가져오기
-		/// </summary>		
-		public DataSet GetTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID, string openFolderInfo, string isAdmin, string permission, int objectType, int objectID, string extraInfo)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="selectedID"></param>
+		/// <param name="selectedType"></param>
+		/// <param name="expandedLevel"></param>
+		/// <param name="userID"></param>
+		/// <param name="openFolderInfo"></param>
+		/// <param name="isAdmin"></param>
+		/// <param name="permission"></param>
+		/// <param name="objectType"></param>
+		/// <param name="objectID"></param>
+		/// <param name="extraInfo"></param>
+		/// <returns></returns>
+		public DataSet GetTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID
+								, string openFolderInfo, string isAdmin, string permission, int objectType, int objectID, string extraInfo)
 		{
 			DataSet dsReturn = null;
 
@@ -971,7 +1077,6 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 즐겨찾기 폴더
 		/// </summary>
-		/// <param name="connect"></param>
 		/// <param name="domainID"></param>
 		/// <param name="categoryID"></param>
 		/// <param name="selectedID"></param>
@@ -981,12 +1086,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="openFolderInfo"></param>
 		/// <param name="isAdmin"></param>
 		/// <param name="permission"></param>
-		/// <param name="objectType"></param>
-		/// <param name="objectID"></param>
 		/// <param name="extraInfo"></param>
 		/// <returns></returns>
-		public DataSet GetFavoriteTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel, int userID
-		, string openFolderInfo, string isAdmin, string permission, string extraInfo)
+		public DataSet GetFavoriteTreeObject(int domainID, int categoryID, string selectedID, string selectedType, int expandedLevel
+										, int userID, string openFolderInfo, string isAdmin, string permission, string extraInfo)
 		{
 			DataSet dsReturn = null;
 

@@ -43,20 +43,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZumNet.Framework.Common">
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Data">
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Exception">
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Exception.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Logger">
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Logger.dll</HintPath>
-    </Reference>
-    <Reference Include="ZumNet.Framework.Security">
-      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.Security.dll</HintPath>
+    <Reference Include="ZumNet.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Framework\bin\Debug\ZumNet.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

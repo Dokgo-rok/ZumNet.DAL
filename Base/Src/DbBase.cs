@@ -13,14 +13,14 @@ namespace ZumNet.DAL.Base
     public class DbBase : System.IDisposable
     {
         #region [생성자]
-        private ZumNet.Framework.Logger.TimeStamp _timeStamp = null;
+        private ZumNet.Framework.Log.TimeStamp _timeStamp = null;
 
         /// <summary>
         /// 
         /// </summary>
         public DbBase()
         {
-            _timeStamp = new ZumNet.Framework.Logger.TimeStamp();
+            _timeStamp = new ZumNet.Framework.Log.TimeStamp();
         }
 
         /// <summary>

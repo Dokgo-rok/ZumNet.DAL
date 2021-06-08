@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ZumNet.Framework.Common;
+using ZumNet.Framework.Core;
 
 namespace ZumNet.DAL.Base
 {
