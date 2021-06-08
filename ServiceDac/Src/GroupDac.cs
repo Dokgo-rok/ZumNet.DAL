@@ -34,11 +34,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 구성원,소속 및 하위그룹 관리
-		/// </summary>		
-		public int ChangeBaseGroupNestedInfo(int domainID, int groupID, string groupType, string changedInfo)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="groupID"></param>
+		/// <param name="groupType"></param>
+		/// <param name="changedInfo"></param>
+		public void ChangeBaseGroupNestedInfo(int domainID, int groupID, string groupType, string changedInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dn_id", SqlDbType.TinyInt, 1, domainID),
@@ -51,16 +53,23 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 최초 그룹 정보 생성 : 기본 그룹 생성 및 포함 관계 정보 생성
-		/// </summary>		
-		public int CreateBaseGroup(int domainID, string groupType, string groupAlias, string parentAlias, string groupName, string groupShortName, int sortKey, string pdmgrcode, out int groupID)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="groupType"></param>
+		/// <param name="groupAlias"></param>
+		/// <param name="parentAlias"></param>
+		/// <param name="groupName"></param>
+		/// <param name="groupShortName"></param>
+		/// <param name="sortKey"></param>
+		/// <param name="pdmgrcode"></param>
+		/// <returns>GroupID</returns>
+		public int CreateBaseGroup(int domainID, string groupType, string groupAlias, string parentAlias, string groupName, string groupShortName, int sortKey, string pdmgrcode)
 		{
 			int iReturn = 0;
 
@@ -81,8 +90,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				groupID = int.Parse(pData.GetParamValue("@gr_id").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//groupID = int.Parse(pData.GetParamValue("@gr_id").ToString());
 			}
 
 			return iReturn;
@@ -90,7 +99,10 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 동일그룹유형에 이미 속해진 사용자 반환
-		/// </summary>		
+		/// </summary>
+		/// <param name="memeberInfo"></param>
+		/// <param name="groupType"></param>
+		/// <returns></returns>
 		public DataSet GetBaseExcludedGroupMembers(string memeberInfo, string groupType)
 		{
 			DataSet dsReturn = null;
@@ -113,7 +125,10 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹 정보 DB Query (관리)
-		/// </summary>		
+		/// </summary>
+		/// <param name="groupID"></param>
+		/// <param name="viewDate"></param>
+		/// <returns></returns>
 		public DataSet GetBaseGroupInfo(int groupID, string viewDate)
 		{
 			DataSet dsReturn = null;
@@ -136,7 +151,14 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹 소속원 가져오기
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="groupID"></param>
+		/// <param name="viewDate"></param>
+		/// <param name="sort"></param>
+		/// <param name="order"></param>
+		/// <param name="admin"></param>
+		/// <returns></returns>
 		public DataSet GetGroupMembers(string domainID, string groupID, string viewDate, string sort, string order, string admin)
 		{
 			DataSet dsReturn = null;
@@ -163,15 +185,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹유형 DB Query
-		/// </summary>		
+		/// </summary>
+		/// <returns></returns>
 		public DataSet GetBaseGroupType()
 		{
 			DataSet dsReturn = null;
 
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				
-			};
+			SqlParameter[] parameters = null;
 
 			ParamData pData = new ParamData("admin.ph_up_BaseGetGRType", parameters);
 
@@ -185,7 +205,9 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 삭제시 구성원과 하위 그룹의 가지고 있는 DB Query (관리)
-		/// </summary>		
+		/// </summary>
+		/// <param name="groupInfo"></param>
+		/// <returns></returns>
 		public DataSet GetBaseIrremovableGroups(string groupInfo)
 		{
 			DataSet dsReturn = null;
@@ -207,7 +229,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹 트리 구조 만들기
-		/// </summary>	
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="memberOf"></param>
+		/// <param name="groupType"></param>
+		/// <param name="groupID"></param>
+		/// <param name="viewDate"></param>
+		/// <returns></returns>
 		public DataSet GetOrgGroupTree(int domainID, int memberOf, string groupType, int groupID, string viewDate)
 		{
 			DataSet dsReturn = null;
@@ -234,7 +262,11 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 동일 그룹 유형의 상위 그룹 Alias 쿼리
-		/// </summary>		
+		/// </summary>
+		/// <param name="actionKind"></param>
+		/// <param name="groupID"></param>
+		/// <param name="groupType"></param>
+		/// <returns></returns>
 		public DataSet GetBaseParentGroupAlias(string actionKind, int groupID, string groupType)
 		{
 			DataSet dsReturn = null;
@@ -258,11 +290,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹 생성 및 수정(관리)
-		/// </summary>		
-		public int HandleBaseGroup(string actionKind, string groupInfo, string changeInfo, string ownershipInfo)
+		/// </summary>
+		/// <param name="actionKind"></param>
+		/// <param name="groupInfo"></param>
+		/// <param name="changeInfo"></param>
+		/// <param name="ownershipInfo"></param>
+		public void HandleBaseGroup(string actionKind, string groupInfo, string changeInfo, string ownershipInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@action_kind", SqlDbType.Char, 10, actionKind),
@@ -275,16 +309,27 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 삭제 부서 List Query
-		/// </summary>		
-		public DataSet GetBaseDeletedGroups(string domainID, string groupType, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="groupType"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageCount"></param>
+		/// <param name="sortColumn"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchColumn"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchStartDate"></param>
+		/// <param name="searchEndDate"></param>
+		/// <param name="totalCount"></param>
+		/// <returns></returns>
+		public DataSet GetBaseDeletedGroups(string domainID, string groupType, int pageIndex, int pageCount, string sortColumn, string sortType
+								, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -308,7 +353,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMessages").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMessages").ToString());
 			}
 
 			return dsReturn;
@@ -316,7 +361,15 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 도메인 그룹 찾아오기
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="memberOf"></param>
+		/// <param name="groupType"></param>
+		/// <param name="sortColumn"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchText"></param>
+		/// <param name="admin"></param>
+		/// <returns></returns>
 		public DataSet SearchDomainGroups(string domainID, string memberOf, string groupType, string sortColumn, string sortType, string searchText, string admin)
 		{
 			DataSet dsReturn = null;
@@ -354,11 +407,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="inUse"></param>
 		/// <param name="displayName"></param>
 		/// <param name="desciption"></param>
-		/// <returns></returns>
-		public int ChangeObjectGroup(int domainID, int folderID, int groupID, int memberOf, string groupType, string policy, string inUse, string displayName, string desciption)
+		public void ChangeObjectGroup(int domainID, int folderID, int groupID, int memberOf, string groupType, string policy, string inUse, string displayName, string desciption)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
@@ -376,10 +426,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -389,10 +437,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="groupID"></param>
 		/// <param name="memberOf"></param>
 		/// <returns></returns>
-		public int DeleteObjectGR(int domainID, int groupID, int memberOf)
+		public void DeleteObjectGR(int domainID, int groupID, int memberOf)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@DN_ID", SqlDbType.Int, 4, domainID),
@@ -404,18 +450,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 해당 Alias에 대한 중복 여부
 		/// </summary>
 		/// <param name="xfAlias"></param>
-		/// <returns></returns>
-		public int GetObjectIntegrityGroup(string xfAlias, out int number)
+		/// <returns>number</returns>
+		public int GetObjectIntegrityGroup(string xfAlias)
 		{
 			int iReturn = 0;
 
@@ -429,8 +473,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				number = int.Parse(pData.GetParamValue("@num").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//number = int.Parse(pData.GetParamValue("@num").ToString());
 			}
 
 			return iReturn;
@@ -480,7 +524,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="condition"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetObjectGroupMemberList(int domainID, int folderID, int groupID, string parentACL, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, string condition, out int totalMessage)
+		public DataSet GetObjectGroupMemberList(int domainID, int folderID, int groupID, string parentACL, int pageIndex, int pageCount
+									, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate
+									, string searchEndDate, string condition, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -507,7 +553,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -542,7 +588,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 그룹방문회수, 당일 방문자수
 		/// </summary>
 		/// <param name="groupID"></param>
 		/// <returns></returns>
@@ -600,9 +646,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="displayName"></param>
 		/// <param name="description"></param>
 		/// <param name="reserved1"></param>
-		/// <param name="groupID"></param>
-		/// <returns></returns>
-		public int CreateObjectGroup(int domainID, string groupType, int memberOf, string groupAlias, string policy, string displayName, string description, string reserved1, out int groupID)
+		/// <returns>GroupID</returns>
+		public int CreateObjectGroup(int domainID, string groupType, int memberOf, string groupAlias, string policy, string displayName, string description, string reserved1)
 		{
 			int iReturn = 0;
 
@@ -623,8 +668,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				groupID = int.Parse(pData.GetParamValue("@gr_id").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//groupID = int.Parse(pData.GetParamValue("@gr_id").ToString());
 			}
 
 			return iReturn;
@@ -640,11 +685,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="description"></param>
 		/// <param name="joinMessage"></param>
 		/// <param name="leaveMessage"></param>
-		/// <returns></returns>
-		public int ChangeObjectGroupPolicy(int groupID, string join, string leave, string isPublic, string description, string joinMessage, string leaveMessage)
+		public void ChangeObjectGroupPolicy(int groupID, string join, string leave, string isPublic, string description, string joinMessage, string leaveMessage)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@gr_id", SqlDbType.Int, 4, groupID),
@@ -660,10 +702,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -677,11 +717,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="joinMessage"></param>
 		/// <param name="leaveMessage"></param>
 		/// <param name="reserved1"></param>
-		/// <returns></returns>
-		public int CreateObjectGroupPolicy(int groupID, string join, string leave, string isPublic, string description, string joinMessage, string leaveMessage, string reserved1)
+		public void CreateObjectGroupPolicy(int groupID, string join, string leave, string isPublic, string description, string joinMessage, string leaveMessage, string reserved1)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@gr_id", SqlDbType.Int, 4, groupID),
@@ -698,10 +735,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -711,11 +746,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="groupType"></param>
 		/// <param name="displayName"></param>
 		/// <param name="shortName"></param>
-		/// <returns></returns>
-		public int ChangeBaseGroupDisplayName(int groupID, string groupType, string displayName, string shortName)
+		public void ChangeBaseGroupDisplayName(int groupID, string groupType, string displayName, string shortName)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@gr_id", SqlDbType.Int, 4, groupID),
@@ -728,21 +760,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 그룹 삭제
 		/// </summary>
 		/// <param name="groupInfo"></param>
-		/// <returns></returns>
-		public int DeleteBaseGroups(string groupInfo)
+		public void DeleteBaseGroups(string groupInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@group_Info", SqlDbType.NText, groupInfo)
@@ -752,10 +779,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -786,7 +811,13 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹의 상위그룹라인 쿼리
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="groupType"></param>
+		/// <param name="groupID"></param>
+		/// <param name="parentID"></param>
+		/// <param name="viewDate"></param>
+		/// <returns></returns>
 		public DataSet GetBaseGroupParentLine(int domainID, string groupType, int groupID, int parentID, string viewDate)
 		{
 			DataSet dsReturn = null;
@@ -812,7 +843,14 @@ namespace ZumNet.DAL.ServiceDac
 
 		/// <summary>
 		/// 그룹 트리 구조 만들기
-		/// </summary>		
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="memberOf"></param>
+		/// <param name="groupType"></param>
+		/// <param name="groupID"></param>
+		/// <param name="viewDate"></param>
+		/// <param name="admin"></param>
+		/// <returns></returns>
 		public DataSet GetOrgGroupTree(int domainID, int memberOf, string groupType, int groupID, string viewDate, string admin)
 		{
 			DataSet dsReturn = null;
