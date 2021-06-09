@@ -1006,9 +1006,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="categoryID"></param>
 		/// <param name="selectedID"></param>
 		/// <returns></returns>
-		public DataSet GetFolderNavigationUrl(int domainID, int categoryID, string selectedID)
+		public string GetFolderNavigationUrl(int domainID, int categoryID, string selectedID)
 		{
-			DataSet dsReturn = null;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -1021,10 +1021,10 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return dsReturn;
+			return strReturn;
 		}
 
 		/// <summary>
