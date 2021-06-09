@@ -48,11 +48,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="senderPhone"></param>
 		/// <param name="message"></param>
 		/// <param name="state"></param>
-		/// <returns></returns>
-		public int SetSmsMessage(int userID, string userName, string logonID, string deptAlias, string deptName, DateTime sendDate, DateTime reservedDate, string reciverPhone, string callbackPhone, string senderPhone, string message, string state, string cmpID)
+		/// <param name="cmpID"></param>
+		public void SetSmsMessage(int userID, string userName, string logonID, string deptAlias, string deptName, DateTime sendDate, DateTime reservedDate
+							, string reciverPhone, string callbackPhone, string senderPhone, string message, string state, string cmpID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
@@ -74,10 +73,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -96,12 +93,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="message"></param>
 		/// <param name="state"></param>
 		/// <param name="cmpID"></param>
-		/// <param name="messageID"></param>
-		/// <returns></returns>
-		public int SetSmsMessage(int userID, string userName, string logonID, string deptAlias, string deptName, DateTime sendDate, DateTime reservedDate, string reciverPhone, string callbackPhone, string senderPhone, string message, string state, string cmpID, out int returnMessageID)
+		/// <param name="returnMessageID"></param>
+		public void SetSmsMessage(int userID, string userName, string logonID, string deptAlias, string deptName, DateTime sendDate, DateTime reservedDate
+					, string reciverPhone, string callbackPhone, string senderPhone, string message, string state, string cmpID, out int returnMessageID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
@@ -124,11 +119,9 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				returnMessageID = int.Parse(pData.GetParamValue("@messageid").ToString());
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -136,11 +129,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="messageID"></param>
 		/// <param name="state"></param>
-		/// <returns></returns>
-		public int ChangeSmsMessageState(int messageID, string state)
+		public void ChangeSmsMessageState(int messageID, string state)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
@@ -151,10 +141,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -170,10 +158,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="inUse"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetSmsMessageList(int userID, string mode, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetSmsMessageList(int userID, string mode, int pageIndex, int pageCount, string sortColumn, string sortType
+						, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -197,7 +185,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -239,11 +227,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="userID"></param>
 		/// <param name="size"></param>
 		/// <param name="setMode"></param>
-		/// <returns></returns>
-		public int SetSmsCapacity(int userID, string size, string setMode)
+		public void SetSmsCapacity(int userID, string size, string setMode)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
@@ -255,10 +240,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -299,11 +282,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="port"></param>
 		/// <param name="priority"></param>
 		/// <param name="inUse"></param>
-		/// <returns></returns>
-		public int SetSmsServer(int serverID, string serverIP, int port, int priority, string inUse)
+		public void SetSmsServer(int serverID, string serverIP, int port, int priority, string inUse)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@serverid", SqlDbType.Int, 4, serverID),
@@ -317,21 +297,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// SMS 서비스 등록 서버 제거
 		/// </summary>
 		/// <param name="serverID"></param>
-		/// <returns></returns>
-		public int DeleteSmsServerIP(int serverID)
+		public void DeleteSmsServerIP(int serverID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@serverid", SqlDbType.Int, 4, serverID)
@@ -341,10 +316,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -377,10 +350,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// 사용자 핸드폰 번호 가져오기
 		/// </summary>
 		/// <param name="logonID"></param>
-		/// <returns></returns>
-		public int GetUserMobile(string logonID, out string mobileNumber)
+		/// <returns>mobileNumber</returns>
+		public string GetUserMobile(string logonID)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -392,11 +365,11 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				mobileNumber = pData.GetParamValue("@mobile").ToString();
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//mobileNumber = pData.GetParamValue("@mobile").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 	}
 }

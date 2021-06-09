@@ -11,6 +11,9 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.ServiceDac
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public class WorkItemDac : DacBase
 	{
 		/// <summary>
@@ -32,20 +35,21 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 초기 프로세스를 구성한다. 시스템 처리중인 상태로 목록에 표시되지 않느다.
 		/// </summary>
-		/// <param name="dnID">도메인 식별자</param>
-		/// <param name="sessionCode">회기코드</param>
-		/// <param name="xfAlias">양식 정보</param>
-		/// <param name="messageID">게시물 식별자</param>
-		/// <param name="processID">프로세스 정의 식별자</param>
-		/// <param name="name">프로세스 인스턴스 명</param>
-		/// <param name="priority">우선순위</param>
-		/// <param name="permission">결재처리 결과 오픈 권한</param>
-		/// <param name="creatorID">프로세스 생성자</param>
-		/// <param name="expectedEnd">처리 마감 예정일</param>
-		/// <param name="reserved1">예약 필드</param>
-		/// <param name="oid">반환되는 프로세스 인스턴스 식별자</param>
-		/// <returns></returns>
-		public int CreateProcessInstance(int dnID, string sessionCode, string xfAlias, int messageID, int processID, string name, int state, int priority, string permission, int creatorID, string expectedEnd, string reserved1, out int oid)
+		/// <param name="dnID"></param>
+		/// <param name="sessionCode"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="processID"></param>
+		/// <param name="name"></param>
+		/// <param name="state"></param>
+		/// <param name="priority"></param>
+		/// <param name="permission"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="expectedEnd"></param>
+		/// <param name="reserved1"></param>
+		/// <returns>oid</returns>
+		public int CreateProcessInstance(int dnID, string sessionCode, string xfAlias, int messageID, int processID, string name, int state
+										, int priority, string permission, int creatorID, string expectedEnd, string reserved1)
 		{
 			int iReturn = 0;
 
@@ -70,8 +74,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oid = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oid = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -80,28 +84,32 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 프로세스 참여자 정보를 구성한다. 여러명일 경우는 이 메소드를 반복 호출한다.
 		/// </summary>
-		/// <param name="oid">프로세스 인스턴스 식별자</param>
-		/// <param name="step">진행 단계</param>
-		/// <param name="subStep">병렬 내에서의 단계</param>
-		/// <param name="seq">각 단계에서의 순서</param>
-		/// <param name="state">결재 처리 상태</param>
-		/// <param name="signStatus">결재 처리 종류</param>
-		/// <param name="viewState">뷰 상태</param>
-		/// <param name="signKind">결재 처리 역할</param>
-		/// <param name="partRole">참여 역할</param>
-		/// <param name="partGR">참여 그룹 코드</param>
-		/// <param name="partID">참여자 코드</param>
-		/// <param name="partType">참여 구분</param>
-		/// <param name="partName">참여명</param>
-		/// <param name="competencyCode">평가표 코드</param>
-		/// <param name="comment">첨언</param>
-		/// <param name="partCN">참여자 AD 코드</param>
-		/// <param name="partDeptCode">참여자 부서 코드</param>
-		/// <param name="wid">반환되는 참여자 식별자</param>
-		/// <returns></returns>
-		public int CreateWorkItem(int oid, int activityID, int step, int subStep, int seq, int state, int signStatus, int viewState, int signKind, string partRole, string partGR, string partID, string partType, string partName, int competencyCode, string comment, string partCN, string partDeptCode, out int wid, out string return_notice)
+		/// <param name="oid"></param>
+		/// <param name="activityID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="seq"></param>
+		/// <param name="state"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="viewState"></param>
+		/// <param name="signKind"></param>
+		/// <param name="partRole"></param>
+		/// <param name="partGR"></param>
+		/// <param name="partID"></param>
+		/// <param name="partType"></param>
+		/// <param name="partName"></param>
+		/// <param name="competencyCode"></param>
+		/// <param name="comment"></param>
+		/// <param name="partCN"></param>
+		/// <param name="partDeptCode"></param>
+		/// <param name="wid"></param>
+		/// <returns>return_notice</returns>
+		public string CreateWorkItem(int oid, int activityID, int step, int subStep, int seq, int state, int signStatus, int viewState
+							, int signKind, string partRole, string partGR, string partID, string partType, string partName
+							, int competencyCode, string comment, string partCN, string partDeptCode, out int wid)
 		{
-			int iReturn = 0;
+			string strReturn = "";
+			char cDiv = (char)1;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -131,24 +139,22 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				wid = int.Parse(pData.GetParamValue("@wid").ToString());
-				return_notice = pData.GetParamValue("@return_notice").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//wid = Convert.ToInt32(pData.GetParamValue("@wid").ToString());
+				//return_notice = pData.GetParamValue("@return_notice").ToString();
+				wid = Convert.ToInt32(strReturn.Split(cDiv)[0]);
+				strReturn = strReturn.Split(cDiv)[1];
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
 		/// 기존 결재선 삭제 - 결재선은 완전 삭제로 한다.(결재선 추가 변경시만 사용)
 		/// </summary>
-		/// <param name="connect">DB 연결 정보</param>
 		/// <param name="wid">결재자 식별자</param>
-		/// <returns></returns>
-		public int DeleteSignLine(object connect, int wid)
+		public void DeleteSignLine(int wid)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@wid", SqlDbType.Int, 4, wid)
@@ -158,10 +164,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -172,11 +176,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="subStep">결재 하위 단계</param>
 		/// <param name="seq">결재 단계 내에서의 순서</param>
 		/// <param name="signKind">결재 역할</param>
-		/// <returns></returns>
-		public int UpdateSignLine(int wid, int step, int subStep, int seq, int signKind)
+		public void UpdateSignLine(int wid, int step, int subStep, int seq, int signKind)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
@@ -193,21 +194,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 리스트뷰 상의 선택된 결재문서 삭제
 		/// </summary>
 		/// <param name="wid">선택된 WorkItemID</param>
-		/// <returns></returns>
-		public int DeleteWorkListItem(int wid)
+		public void DeleteWorkListItem(int wid)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@wid", SqlDbType.Int, 4, wid)
@@ -220,21 +216,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 리스트뷰 상의 선택된 결재문서들 삭제
 		/// </summary>
 		/// <param name="wids">선택된 WorkItemID들</param>
-		/// <returns></returns>
-		public int DeleteWorkListItems(string wids)
+		public void DeleteWorkListItems(string wids)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@wids", SqlDbType.VarChar, 3000, wids)
@@ -244,21 +235,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 리스트뷰 상의 선택된 보고서 양식(저장된)들 삭제
 		/// </summary>
-		/// <param name="wids">선택된 ReportID들</param>
-		/// <returns></returns>
-		public int RemoveSavedListItems(string reportIDs)
+		/// <param name="reportIDs">선택된 ReportID들</param>
+		public void RemoveSavedListItems(string reportIDs)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@reportds", SqlDbType.VarChar, 3000, reportIDs)
@@ -268,21 +254,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// Process, WorkItem, Report Master State 처리 상태 변경
 		/// </summary>
-		/// <param name="entityKind">Process(P)인지 WorkItem(W), Report(R)인지 구별</param>
-		/// <param name="stateValue">변경 시킬 상태 값</param>
-		/// <returns></returns>
-		public int ChangeState(string entityKind, int targetID, int stateValue)
+		/// <param name="entityKind"></param>
+		/// <param name="targetID"></param>
+		/// <param name="stateValue"></param>
+		public void ChangeState(string entityKind, int targetID, int stateValue)
 		{
-			int iReturn = 0;
 			string strQuery = null;
 			
 			if (entityKind == "P")
@@ -322,10 +305,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -452,10 +433,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 특정 Activity에 미리 지정된 참여자 정보 가져오기
 		/// </summary>
-		/// <param name="activityID">Activity 식별자</param>
-		/// <param name="isGroup">참여자의 그룹 여부</param>
-		/// <param name="partType">참여 종류</param>
-		/// <param name="optionValue">타 시스템 쿼리를 위한 값</param>
+		/// <param name="companycode"></param>
+		/// <param name="activityID"></param>
+		/// <param name="isGroup"></param>
+		/// <param name="partType"></param>
+		/// <param name="optionValue"></param>
 		/// <returns></returns>
 		public DataSet GetActivityParticipants(string companycode, int activityID, string isGroup, string partType, string optionValue)
 		{
@@ -483,9 +465,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 다음 Activity에 미리 지정된 참여자 정보를 반환한다.
 		/// </summary>
-		/// <param name="oid">프로세스 인스턴스 식별자</param>
-		/// <param name="activityID">Activity 식별자</param>
-		/// <param name="optionValue">타 시스템 쿼리를 위한 값</param>
+		/// <param name="companycode"></param>
+		/// <param name="oid"></param>
+		/// <param name="activityID"></param>
+		/// <param name="optionValue"></param>
 		/// <returns></returns>
 		public DataSet GetNextActivityParticipants(string companycode, int oid, int activityID, string optionValue)
 		{
@@ -629,7 +612,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				returnNotice = pData.GetParamValue("@return_notice").ToString();
 			}
 
@@ -639,8 +622,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 평가, 제안 시스템에서의 WorkItem 승인, 평가 처리를 한다.(대결 처리가 없다)
 		/// </summary>
-		/// <param name="oid">프로세스 인스턴스 식별자</param>
-		/// <param name="wid">WorkItem 식별자</param>
+		/// <param name="oid"></param>
+		/// <param name="wid"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="comment"></param>
+		/// <param name="parellelGoing"></param>
 		/// <returns></returns>
 		public DataSet SetCurrentWorkItemForKM(int oid, int wid, int signStatus, string comment, out string parellelGoing)
 		{
@@ -659,7 +645,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				parellelGoing = pData.GetParamValue("@return_notice").ToString();
 			}
 
@@ -690,7 +676,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
 			return dsReturn;
@@ -709,7 +695,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="targetDeptCode">전달 받는 사용자 부서 코드</param>
 		/// <param name="returnNotice">성공이면 OK</param>
 		/// <returns></returns>
-		public DataSet SetCurrentWorkItemTransfer(int oid, int wid, int signStatus, string comment, string targetID, string isGroup, string targetSignKind, string targetDeptCode, out string returnNotice)
+		public DataSet SetCurrentWorkItemTransfer(int oid, int wid, int signStatus, string comment, string targetID
+							, string isGroup, string targetSignKind, string targetDeptCode, out string returnNotice)
 		{
 			DataSet dsReturn = null;
 
@@ -730,7 +717,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				returnNotice = pData.GetParamValue("@return_notice").ToString();
 			}
 
@@ -740,16 +727,16 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 평가 제안 시스템 전달 처리
 		/// </summary>
-		/// <param name="oid">프로세스 인스턴스 식별자</param>
-		/// <param name="wid">결재자 식별자</param>
-		/// <param name="signStatus">결재 처리 역할</param>
-		/// <param name="comment">첨언</param>
-		/// <param name="targetID">전달 받는 사용자 또는 그룹</param>
-		/// <param name="targetSignKind">전달 받는 참여자 결지 종류</param>
-		/// <param name="targetDeptCode">전달 받는 사용자 부서 코드</param>
-		/// <param name="returnNotice">성공이면 OK</param>
+		/// <param name="oid"></param>
+		/// <param name="wid"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="comment"></param>
+		/// <param name="targetID"></param>
+		/// <param name="targetSignKind"></param>
+		/// <param name="targetDeptCode"></param>
 		/// <returns></returns>
-		public DataSet SetCurrentWorkItemTransferForKM(int oid, int wid, int signStatus, string comment, string targetID, string targetSignKind, string targetDeptCode)
+		public DataSet SetCurrentWorkItemTransferForKM(int oid, int wid, int signStatus, string comment
+								, string targetID, string targetSignKind, string targetDeptCode)
 		{
 			DataSet dsReturn = null;
 
@@ -768,7 +755,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
 			return dsReturn;
@@ -781,11 +768,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="targetWID">지정 반송 대상자</param>
 		/// <param name="currentWID">현 결재자</param>
 		/// <param name="comment">첨언</param>
-		/// <returns></returns>
-		public int SetWorkItemBackForKM(int oid, int targetWID, int currentWID, string comment)
+		public void SetWorkItemBackForKM(int oid, int targetWID, int currentWID, string comment)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oid),
@@ -798,10 +782,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -809,11 +791,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="oid">프로세스 인스턴스 식별자</param>
 		/// <param name="wid">마지막 결재자 식별자</param>
-		/// <returns></returns>
-		public int SetLastWorkItem(int oid, int wid)
+		public void SetLastWorkItem(int oid, int wid)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oid),
@@ -824,10 +803,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -857,24 +834,29 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 문서함에 따른 작업 목록 가져오기
 		/// </summary>
-		/// <param name="dnID">도메인 식별자</param>
-		/// <param name="xfAlias">문서 종류</param>
-		/// <param name="session">회기(기본 '')</param>
-		/// <param name="partGR">조회하려는 부서</param>
-		/// <param name="partID">조회하려는 사용자</param>
-		/// <param name="piState">프로세스 인스턴스 상태</param>
-		/// <param name="state">작업 처리 상태</param>
-		/// <param name="viewState">작업 조회 상태</param>
-		/// <param name="page">조회하고자 하는 페이지</param>
-		/// <param name="count">페이지당 리스트 수</param>
-		/// <param name="sortCol">정렬 테이블 필드명</param>
-		/// <param name="sortType">정렬 종류</param>
-		/// <param name="searchCol">검색 테이블 필드명</param>
-		/// <param name="searchText">검색 텍스트</param>
-		/// <param name="searchDate">날짜 검색 조건</param>
-		/// <param name="totalCnt">총 수를 넘겨주기 위해 선언</param>
+		/// <param name="companycode"></param>
+		/// <param name="dnID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="session"></param>
+		/// <param name="location"></param>
+		/// <param name="partGR"></param>
+		/// <param name="partID"></param>
+		/// <param name="piState"></param>
+		/// <param name="state"></param>
+		/// <param name="viewState"></param>
+		/// <param name="page"></param>
+		/// <param name="count"></param>
+		/// <param name="baseSortCol"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchDate"></param>
+		/// <param name="totalCnt"></param>
 		/// <returns></returns>
-		public DataSet GetProcessWorkList(string companycode, int dnID, string xfAlias, string session, string location, string partGR, string partID, int piState, int state, int viewState, int page, int count, string baseSortCol, string sortCol, string sortType, string searchCol, string searchText, string searchDate, out int totalCnt)
+		public DataSet GetProcessWorkList(string companycode, int dnID, string xfAlias, string session, string location, string partGR
+								, string partID, int piState, int state, int viewState, int page, int count, string baseSortCol
+								, string sortCol, string sortType, string searchCol, string searchText, string searchDate, out int totalCnt)
 		{
 			DataSet dsReturn = null;
 
@@ -906,7 +888,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCnt = int.Parse(pData.GetParamValue("@total_cnt").ToString());
+				totalCnt = Convert.ToInt32(pData.GetParamValue("@total_cnt").ToString());
 			}
 
 			return dsReturn;
@@ -915,21 +897,24 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 양식담당자가 수신담당함을 열때 해당 문서 가져오기
 		/// </summary>
-		/// <param name="dnID">도메인 식별자</param>
-		/// <param name="partGR">조회하려는 부서</param>
-		/// <param name="chargeLogonID">담당사용자 로그온아이디</param>
-		/// <param name="chargeDeptCode">담당사용자 부서코드</param>
-		/// <param name="page">조회하고자 하는 페이지</param>
-		/// <param name="count">페이지당 리스트 수</param>
-		/// <param name="sortCol">정렬 테이블 필드명</param>
-		/// <param name="sortType">정렬 종류</param>
-		/// <param name="searchCol">검색 테이블 필드명</param>
-		/// <param name="searchText">검색 텍스트</param>
-		/// <param name="searchDate">날짜 검색 조건</param>
-		/// <param name="totalCnt">총 수를 넘겨주기 위해 선언</param>
+		/// <param name="companycode"></param>
+		/// <param name="dnID"></param>
+		/// <param name="partGR"></param>
+		/// <param name="chargeLogonID"></param>
+		/// <param name="chargeDeptCode"></param>
+		/// <param name="page"></param>
+		/// <param name="count"></param>
+		/// <param name="baseSortCol"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchDate"></param>
+		/// <param name="totalCnt"></param>
 		/// <returns></returns>
-		public DataSet GetProcessWorkListForMgrBox(string companycode, int dnID, string partGR, string chargeLogonID, string chargeDeptCode
-									, int page, int count, string baseSortCol, string sortCol, string sortType, string searchCol, string searchText, string searchDate, out int totalCnt)
+		public DataSet GetProcessWorkListForMgrBox(string companycode, int dnID, string partGR, string chargeLogonID
+								, string chargeDeptCode, int page, int count, string baseSortCol, string sortCol, string sortType
+								, string searchCol, string searchText, string searchDate, out int totalCnt)
 		{
 			DataSet dsReturn = null;
 
@@ -956,7 +941,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCnt = int.Parse(pData.GetParamValue("@total_cnt").ToString());
+				totalCnt = Convert.ToInt32(pData.GetParamValue("@total_cnt").ToString());
 			}
 
 			return dsReturn;
@@ -991,11 +976,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="userid">EKP ID</param>
 		/// <param name="newpw">새암호</param>
-		/// <returns></returns>
-		public int UpdateApprovalPassword(int userid, string newpw)
+		public void UpdateApprovalPassword(int userid, string newpw)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userid),
@@ -1006,10 +988,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -1018,11 +998,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="dnID">도메인 식별자</param>
 		/// <param name="prefix">문서번호 첫부분 값(부서코드)</param>
 		/// <param name="xfAlias">문서 구분</param>
-		/// <param name="docNo">발급된 문서번호</param>
-		/// <returns></returns>
-		public int GetDocumentNumber(int dnID, string prefix, string xfAlias, out string docNumber)
+		/// <returns>docNumber</returns>
+		public string GetDocumentNumber(int dnID, string prefix, string xfAlias)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -1036,17 +1015,18 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				docNumber = pData.GetParamValue("@docnumber").ToString();
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//docNumber = pData.GetParamValue("@docnumber").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
 		/// 보고서 시스템 양식 프로세스 정보 가져오기
 		/// </summary>
-		/// <param name="reportID">프로세스 인스턴스 식별자</param>
+		/// <param name="companycode"></param>
+		/// <param name="oid"></param>
 		/// <returns></returns>
 		public DataSet GetReportProcessInfo(string companycode, int oid)
 		{
@@ -1069,15 +1049,16 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		///  각 결재함별 리스트 갯수를 가져온다.
+		/// 각 결재함별 리스트 갯수를 가져온다.
 		/// </summary>
-		/// <param name="dnID">도메인 식별자</param>
-		/// <param name="xfAlias">게시물 종류</param>
+		/// <param name="companycode"></param>
+		/// <param name="dnID"></param>
+		/// <param name="xfAlias"></param>
 		/// <param name="session"></param>
-		/// <param name="location">결재함 종류</param>
-		/// <param name="partGR">부서 GR_ID</param>
-		/// <param name="partID">사용자 UserID</param>
-		/// <param name="partCN">사용자 LogonID</param>
+		/// <param name="location"></param>
+		/// <param name="partGR"></param>
+		/// <param name="partID"></param>
+		/// <param name="partCN"></param>
 		/// <returns></returns>
 		public DataSet GetWorkItemCount(string companycode, int dnID, string xfAlias, string session, string location, string partGR, string partID, string partCN)
 		{
@@ -1111,11 +1092,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="formID">요청 양식종류</param>
 		/// <param name="reportID">요청 양식 인스턴스</param>
 		/// <param name="processState">프로세스 처리 상태</param>
-		/// <returns></returns>
-		public int ChangeReportFormOtherState(string formID, int reportID, string processState)
+		public void ChangeReportFormOtherState(string formID, int reportID, string processState)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 63, formID),
@@ -1127,10 +1105,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 	}
 }

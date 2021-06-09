@@ -146,11 +146,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="coUserID"></param>
 		/// <param name="coExpectedDate"></param>
 		/// <param name="coReason"></param>
-		/// <returns></returns>
-		public int CreateDocCheckOutInfo(int messageID, int attachID, int coUserID, string coExpectedDate, string coReason)
+		public void CreateDocCheckOutInfo(int messageID, int attachID, int coUserID, string coExpectedDate, string coReason)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@messageID", SqlDbType.Int, 4, messageID),
@@ -164,16 +161,15 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 체크인 정보 기록
 		/// </summary>
 		/// <param name="domainID"></param>
+		/// <param name="attachID"></param>
 		/// <param name="parentAttachID"></param>
 		/// <param name="groupID"></param>
 		/// <param name="regUserID"></param>
@@ -189,11 +185,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="autoDeleted"></param>
 		/// <param name="docLevel"></param>
 		/// <param name="keepYear"></param>
-		/// <returns></returns>
-		public int CreateDocCheckInInfo(int domainID, int attachID, int parentAttachID, int groupID, int regUserID, string isChange, string xfAlias, int messageID, string fileName, string savedName, string fileSize, string fileType, string prefix, string location, string autoDeleted, int docLevel, int keepYear)
+		public void CreateDocCheckInInfo(int domainID, int attachID, int parentAttachID, int groupID, int regUserID, string isChange, string xfAlias, int messageID
+					, string fileName, string savedName, string fileSize, string fileType, string prefix, string location, string autoDeleted, int docLevel, int keepYear)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@domainID", SqlDbType.Int, 4, domainID),
@@ -219,10 +213,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -230,11 +222,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="oldAttachID"></param>
 		/// <param name="newAttachID"></param>
-		/// <returns></returns>
-		public int ChangeVersionInfo(int oldAttachID, int newAttachID)
+		public void ChangeVersionInfo(int oldAttachID, int newAttachID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oldattachID", SqlDbType.Int, 4, oldAttachID),
@@ -245,10 +234,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -304,11 +291,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="grID"></param>
 		/// <param name="userID"></param>
-		/// <returns></returns>
-		public int CreateGroupVisitCount(int grID, int userID)
+		public void CreateGroupVisitCount(int grID, int userID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, grID),
@@ -319,21 +303,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 관리툴에서의 문서 반입 상태 변경
 		/// </summary>
 		/// <param name="strCheckInInfo"></param>
-		/// <returns></returns>
-		public int ChangeAdminCheckInDoc(string strCheckInInfo)
+		public void ChangeAdminCheckInDoc(string strCheckInInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@checkin_info", SqlDbType.NText, strCheckInInfo)
@@ -343,10 +322,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 	}
 }

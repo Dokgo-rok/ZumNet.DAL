@@ -64,7 +64,6 @@
     <Compile Include="ToDoDac.cs" />
     <Compile Include="UserDac.cs" />
     <Compile Include="WorkItemDac.cs" />
-    <Compile Include="XFormDac.cs" />
     <Compile Include="ProcessDac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorkTimeDac.cs" />

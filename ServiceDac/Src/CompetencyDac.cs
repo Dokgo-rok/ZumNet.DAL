@@ -35,12 +35,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <summary>
 		/// 포인트 정보 입력
 		/// </summary>
+		/// <param name="mode"></param>
 		/// <param name="pointInfo"></param>
-		/// <returns></returns>
-		public int CreateEvaluationPoint(string mode, string pointInfo)
+		public void CreateEvaluationPoint(string mode, string pointInfo)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
@@ -51,10 +49,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -70,7 +66,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetCompetencyList(int domainID, string isAdmin, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, out int totalMessage)
+		public DataSet GetCompetencyList(int domainID, string isAdmin, int pageIndex, int pageCount, string sortColumn
+								, string sortType, string searchColumn, string searchText, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -92,7 +89,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@TotalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@TotalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -169,11 +166,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isUsed"></param>
 		/// <param name="parentCode"></param>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int SetCompetencyInstance(int competencyCode, int domainID, string usage, string subject, string useFrom, string useTo, string selectKind, string restriction1, string restriction2, string restriction3, string description, string isUsed, string parentCode, string xmlData)
+		public void SetCompetencyInstance(int competencyCode, int domainID, string usage, string subject, string useFrom, string useTo
+										, string selectKind, string restriction1, string restriction2, string restriction3
+										, string description, string isUsed, string parentCode, string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@competencycode", SqlDbType.Int, 4, competencyCode),
@@ -196,10 +192,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -215,11 +209,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="comment1"></param>
 		/// <param name="comment2"></param>
 		/// <param name="alias"></param>
-		/// <returns></returns>
-		public int SetCompetencyClass(int classCode, int domainID, string subject, string startPoint, string endPoint, string unitPoint, string rating, string comment1, string comment2, string alias)
+		public void SetCompetencyClass(int classCode, int domainID, string subject, string startPoint, string endPoint
+								, string unitPoint, string rating, string comment1, string comment2, string alias)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@classcode", SqlDbType.Int, 4, classCode),
@@ -238,10 +230,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -257,11 +247,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="comment1"></param>
 		/// <param name="comment2"></param>
 		/// <param name="alias"></param>
-		/// <returns></returns>
-		public int SetCompetencyRequest(int reqCode, int domainID, string subject, string startPoint, string endPoint, string unitPoint, string rating, string comment1, string comment2, string alias)
+		public void SetCompetencyRequest(int reqCode, int domainID, string subject, string startPoint, string endPoint
+									, string unitPoint, string rating, string comment1, string comment2, string alias)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@reqcode", SqlDbType.Int, 4, reqCode),
@@ -280,10 +268,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -291,11 +277,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="competencyCode"></param>
 		/// <param name="domainID"></param>
-		/// <returns></returns>
-		public int DeleteCompetency(int competencyCode, int domainID)
+		public void DeleteCompetency(int competencyCode, int domainID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@competencycode", SqlDbType.Int, 4, competencyCode),
@@ -306,22 +289,17 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		///  평가표 중항목을 삭제한다.
 		/// </summary>
-		/// <param name="competencyCode"></param>
+		/// <param name="classCode"></param>
 		/// <param name="domainID"></param>
-		/// <returns></returns>
-		public int DeleteCompetencyClass(int classCode, int domainID)
+		public void DeleteCompetencyClass(int classCode, int domainID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@classcode", SqlDbType.Int, 4, classCode),
@@ -332,10 +310,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -343,11 +319,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="reqCode"></param>
 		/// <param name="domainID"></param>
-		/// <returns></returns>
-		public int DeleteCompetencyRequest(int reqCode, int domainID)
+		public void DeleteCompetencyRequest(int reqCode, int domainID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@reqcode", SqlDbType.Int, 4, reqCode),
@@ -358,18 +331,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 평가자 리스트 및 평가 정보 가져오기
 		/// </summary>
-		/// <param name="competencyID"></param>
-		/// <param name="classID"></param>
-		/// <param name="reqID"></param>
+		/// <param name="domainID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="OID"></param>
 		/// <returns></returns>
 		public DataSet GetEvalList(int domainID, string xfAlias, int OID)
 		{

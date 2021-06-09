@@ -48,9 +48,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="partType"></param>
 		/// <param name="receivedDate"></param>
 		/// <param name="competency"></param>
-		/// <param name="workID"></param>
-		/// <returns></returns>
-		public int CreateProcessWorkItem(int oID, string isGroup, int priority, int step, int seq, int state, int signStatus, string role, string participantID, string participantName, string partType, DateTime receivedDate, int competency, out int workID)
+		/// <returns>workID</returns>
+		public int CreateProcessWorkItem(int oID, string isGroup, int priority, int step, int seq, int state, int signStatus, string role
+						, string participantID, string participantName, string partType, DateTime receivedDate, int competency)
 		{
 			int iReturn = 0;
 
@@ -76,8 +76,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				workID = int.Parse(pData.GetParamValue("@wid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//workID = Convert.ToInt32(pData.GetParamValue("@wid").ToString());
 			}
 
 			return iReturn;
@@ -88,11 +88,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="oID"></param>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int CreateProcessSignInfo(int oID, string xmlData)
-		{
-			int iReturn = 0;
-			
+		public void CreateProcessSignInfo(int oID, string xmlData)
+		{	
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
@@ -103,20 +100,17 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 프로세스 인스턴스 생성
 		/// </summary>
-		/// <param name="connect"></param>
+		/// <param name="messageID"></param>
 		/// <param name="xmlData"></param>
-		/// <param name="oID"></param>
-		/// <returns></returns>
-		public int CreateProcessInstance(int messageID, string xmlData, out int oID)
+		/// <returns>oID</returns>
+		public int CreateProcessInstance(int messageID, string xmlData)
 		{
 			int iReturn = 0;
 
@@ -131,8 +125,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				oID = int.Parse(pData.GetParamValue("@oid").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//oID = Convert.ToInt32(pData.GetParamValue("@oid").ToString());
 			}
 
 			return iReturn;
@@ -147,11 +141,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="point"></param>
 		/// <param name="completedDate"></param>
 		/// <param name="comment"></param>
-		/// <returns></returns>
-		public int ModifyWorkItemState(int workitemID, int state, int signStatus, decimal point, DateTime completedDate, string comment)
+		public void ModifyWorkItemState(int workitemID, int state, int signStatus, decimal point, DateTime completedDate, string comment)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@workitemid", SqlDbType.Int, 4, workitemID),
@@ -166,10 +157,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -177,11 +166,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="processID"></param>
 		/// <param name="state"></param>
-		/// <returns></returns>
-		public int ModifyProcessInstanceState(int processID, int state)
+		public void ModifyProcessInstanceState(int processID, int state)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
@@ -192,20 +178,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// 프로세스 중단[거절]
 		/// </summary>
 		/// <param name="processID"></param>
-		public int RejectProcessWorkItem(int processID)
+		public void RejectProcessWorkItem(int processID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
@@ -215,10 +197,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -231,9 +211,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="role"></param>
 		/// <param name="signStatus"></param>
 		/// <param name="point"></param>
-		/// <param name="state"></param>
-		/// <returns></returns>
-		public int ModifyProcessState(int processID, int workitemID, int messageID, string xfAlias, string role, int signStatus, decimal point, out int state)
+		/// <returns>state</returns>
+		public int ModifyProcessState(int processID, int workitemID, int messageID, string xfAlias, string role, int signStatus, decimal point)
 		{
 			int iReturn = 0;
 
@@ -254,8 +233,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				state = int.Parse(pData.GetParamValue("@state").ToString());
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				//state = Convert.ToInt32(pData.GetParamValue("@state").ToString());
 			}
 
 			return iReturn;
@@ -265,11 +244,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// WorkItem 에러
 		/// </summary>
 		/// <param name="workitemID"></param>
-		/// <returns></returns>
-		public int ModifyStateRaisedErrorWorkItem(string workitemID)
+		public void ModifyStateRaisedErrorWorkItem(string workitemID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@workitemid", SqlDbType.Int, 4, workitemID)
@@ -279,21 +255,16 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
 		/// WorkItem 삭제
 		/// </summary>
 		/// <param name="workitemID"></param>
-		/// <returns></returns>
-		public int RemoveWorkItemInfo(int workitemID)
+		public void RemoveWorkItemInfo(int workitemID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@workitemid", SqlDbType.Int, 4, workitemID)
@@ -303,10 +274,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -318,11 +287,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="xfAlias"></param>
 		/// <param name="state"></param>
 		/// <param name="isLast"></param>
-		/// <returns></returns>
-		public int CreateProcessVersion(int processID, int messageID, string role, string xfAlias, int state, string isLast)
+		public void CreateProcessVersion(int processID, int messageID, string role, string xfAlias, int state, string isLast)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@pid", SqlDbType.Int, 4, processID),
@@ -337,10 +303,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -350,7 +314,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <returns></returns>
 		public string GetProcessSignInfo(int oID)
 		{
-			DataSet dsReturn = null;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -361,10 +325,10 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return dsReturn?.Tables?[0]?.Rows?[0][0].ToString() ?? "";
+			return strReturn;
 		}
 
 		/// <summary>
@@ -422,7 +386,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="domainID"></param>
 		/// <param name="xfAlias"></param>
-		/// <param name="creatorID"></param>
+		/// <param name="participantID"></param>
 		/// <param name="piState"></param>
 		/// <param name="state"></param>
 		/// <param name="pageIndex"></param>
@@ -435,7 +399,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessGetEvalList(int domainID, string xfAlias, int participantID, int piState, int state, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessGetEvalList(int domainID, string xfAlias, int participantID, int piState, int state
+							, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
+							, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -462,7 +428,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -481,8 +447,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessList(int domainID, int pageIndex, int pageCount, string admin, string sortColumn, string sortType
-		, string searchColumn, string searchText, out int totalMessage)
+		public DataSet GetProcessList(int domainID, int pageIndex, int pageCount, string admin, string sortColumn
+								, string sortType, string searchColumn, string searchText, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -504,7 +470,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;

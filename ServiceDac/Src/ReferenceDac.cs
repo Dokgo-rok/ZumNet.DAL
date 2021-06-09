@@ -48,7 +48,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetAdminMessageList(int domainID, int categoryID, int folderID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetAdminMessageList(int domainID, int categoryID, int folderID, int pageIndex, int pageCount, string sortColumn, string sortType
+								, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -73,7 +74,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -118,6 +119,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="folderID"></param>
 		/// <param name="userID"></param>
 		/// <param name="isAdmin"></param>
+		/// <param name="isMain"></param>
 		/// <param name="isScope"></param>
 		/// <param name="parentACL"></param>
 		/// <param name="pageIndex"></param>
@@ -147,7 +149,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -214,7 +216,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="pageCount"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetAlbumMessageList(int domainID, int folderID, int userID, string isAdmin, string isScope, string parentACL, int pageIndex, int pageCount, out int totalMessage)
+		public DataSet GetAlbumMessageList(int domainID, int folderID, int userID, string isAdmin, string isScope
+								, string parentACL, int pageIndex, int pageCount, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -236,7 +239,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -291,7 +294,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetAnonymousMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetAnonymousMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+						, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -319,7 +323,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -372,7 +376,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetBoardMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetBoardMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -400,7 +405,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -425,7 +430,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetBoardMessageListAddTopLine(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetBoardMessageListAddTopLine(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission
+										, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
+										, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -453,7 +460,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -507,7 +514,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetDiscussList(int domainID, int categoryID, int parentFolderID, int groupID, int userID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetDiscussList(int domainID, int categoryID, int parentFolderID, int groupID, int userID, int pageIndex, int pageCount, string sortColumn
+							, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -534,7 +542,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -545,7 +553,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="domainID"></param>
 		/// <param name="categoryID"></param>
-		/// <param name="parentFolderID"></param>
+		/// <param name="folderID"></param>
 		/// <param name="groupID"></param>
 		/// <param name="userID"></param>
 		/// <param name="pageIndex"></param>
@@ -558,7 +566,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetDiscussMessageList(int domainID, int categoryID, int folderID, int groupID, int userID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetDiscussMessageList(int domainID, int categoryID, int folderID, int groupID, int userID, int pageIndex, int pageCount, string sortColumn
+								, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -585,7 +594,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -661,13 +670,18 @@ namespace ZumNet.DAL.ServiceDac
 		/// 최근 게시물 정보
 		/// </summary>
 		/// <param name="domainID"></param>
+		/// <param name="folderID"></param>
+		/// <param name="expectText"></param>
+		/// <param name="xfAlias"></param>
 		/// <param name="categoryID"></param>
 		/// <param name="userID"></param>
+		/// <param name="items"></param>
 		/// <param name="isNotice"></param>
 		/// <param name="isAdmin"></param>
 		/// <param name="parentACL"></param>
 		/// <returns></returns>
-		public DataSet GetRecentlyMessageList(int domainID, int folderID, string expectText, string xfAlias, int categoryID, int userID, int items, string isNotice, string isAdmin, string parentACL)
+		public DataSet GetRecentlyMessageList(int domainID, int folderID, string expectText, string xfAlias, int categoryID
+								, int userID, int items, string isNotice, string isAdmin, string parentACL)
 		{
 			DataSet dsReturn = null;
 
@@ -711,7 +725,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="inUse"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetClubList(int domainID, int parentID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, string inUse, out int totalMessage)
+		public DataSet GetClubList(int domainID, int parentID, int pageIndex, int pageCount, string sortColumn, string sortType
+				, string searchColumn, string searchText, string searchStartDate, string searchEndDate, string inUse, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -736,7 +751,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -760,7 +775,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetDocMessageList(int domainID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetDocMessageList(int domainID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn
+								, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -787,7 +803,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -798,6 +814,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// </summary>
 		/// <param name="domainID"></param>
 		/// <param name="folderID"></param>
+		/// <param name="xfAlias"></param>
 		/// <param name="userID"></param>
 		/// <param name="isAdmin"></param>
 		/// <param name="permission"></param>
@@ -811,7 +828,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessMessageList(int domainID, int folderID, string xfAlias, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessMessageList(int domainID, int folderID, string xfAlias, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -839,7 +857,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -864,7 +882,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessParentMessageList(int domainID, string folderID, string xfAlias, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessParentMessageList(int domainID, string folderID, string xfAlias, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+						, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -892,7 +911,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -904,6 +923,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="domainID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="userID"></param>
+		/// <param name="state"></param>
 		/// <param name="isAdmin"></param>
 		/// <param name="permission"></param>
 		/// <param name="pageIndex"></param>
@@ -916,7 +936,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessMyMessageList(int domainID, string xfAlias, int userID, int state, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessMyMessageList(int domainID, string xfAlias, int userID, int state, string isAdmin, string permission, int pageIndex, int pageCount
+					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -944,7 +965,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -969,7 +990,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessAnswerMessageList(int domainID, string xfAlias, int userID, int state, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessAnswerMessageList(int domainID, string xfAlias, int userID, int state, string isAdmin, string permission, int pageIndex, int pageCount
+					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -997,7 +1019,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -1010,6 +1032,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="folderID"></param>
 		/// <param name="xfAlias"></param>
 		/// <param name="state"></param>
+		/// <param name="taskActivity"></param>
 		/// <param name="userID"></param>
 		/// <param name="isAdmin"></param>
 		/// <param name="permission"></param>
@@ -1023,7 +1046,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetProcessAdminMessageList(int domainID, string folderID, string xfAlias, int state, string taskActivity, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetProcessAdminMessageList(int domainID, string folderID, string xfAlias, int state, string taskActivity, int userID, string isAdmin
+											, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
+											, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -1053,13 +1078,13 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalmessage").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
 		}
 
-		// <summary>
+		/// <summary>
 		/// 문서 등록정보
 		/// </summary>
 		/// <param name="domainID"></param>
@@ -1211,12 +1236,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// 일정 목록 가져오기2 - 검색 조건으로
 		/// </summary>
 		/// <param name="actionKind"></param>
-		/// <param name="domainID"></param>
-		/// <param name="groupID"></param>
-		/// <param name="userID"></param>
 		/// <param name="objectType"></param>
-		/// <param name="partID"></param>
-		/// <param name="taskID"></param>
+		/// <param name="objectID"></param>
 		/// <param name="state"></param>
 		/// <param name="scheduleType"></param>
 		/// <param name="mode"></param>
@@ -1224,7 +1245,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="startDate"></param>
 		/// <param name="endDate"></param>
 		/// <returns></returns>
-		public DataSet GetScheduleSearchList(string actionKind, string objectType, int objectID, int state, string scheduleType, string mode, string inputDate, string startDate, string endDate)
+		public DataSet GetScheduleSearchList(string actionKind, string objectType, int objectID, int state
+							, string scheduleType, string mode, string inputDate, string startDate, string endDate)
 		{
 			DataSet dsReturn = null;
 
@@ -1255,8 +1277,6 @@ namespace ZumNet.DAL.ServiceDac
 		/// 일정 보기
 		/// </summary>
 		/// <param name="domainID"></param>
-		/// <param name="groupID"></param>
-		/// <param name="userID"></param>
 		/// <param name="messageID"></param>
 		/// <returns></returns>
 		public DataSet GetScheduleView(int domainID, int messageID)
@@ -1297,9 +1317,12 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
 		/// <param name="parentACL"></param>
+		/// <param name="targetType"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetPollMessageList(int domainID, string pollType, int categoryID, int folderID, int groupID, int userID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, string parentACL, string targetType, out int totalMessage)
+		public DataSet GetPollMessageList(int domainID, string pollType, int categoryID, int folderID, int groupID, int userID
+						, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText
+						, string searchStartDate, string searchEndDate, string parentACL, string targetType, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -1329,7 +1352,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -1343,6 +1366,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="messageID"></param>
 		/// <param name="groupID"></param>
 		/// <param name="userID"></param>
+		/// <param name="state"></param>
 		/// <returns></returns>
 		public DataSet GetPollMessage(int domainID, int folderID, string messageID, int groupID, int userID, int state)
 		{
@@ -1395,7 +1419,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 설문 문항
 		/// </summary>
 		/// <param name="messageID"></param>
 		/// <param name="SeqID"></param>
@@ -1421,7 +1445,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 라이브 폴 결과
 		/// </summary>
 		/// <param name="msgType"></param>
 		/// <param name="fdID"></param>
@@ -1447,12 +1471,13 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		///  설문 그룹화 가져오기
+		/// 설문 그룹화 가져오기
 		/// </summary>
 		/// <param name="msgID"></param>
-		/// <param name="parentClass"></param>
-		/// <param name="ClassCode"></param>
 		/// <param name="mode"></param>
+		/// <param name="type"></param>
+		/// <param name="topClassCode"></param>
+		/// <param name="middleClassCode"></param>
 		/// <returns></returns>
 		public DataSet GetPollClassList(string msgID, string mode, int type, int topClassCode, int middleClassCode)
 		{
@@ -1483,6 +1508,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="msgID"></param>
 		/// <param name="itemType"></param>
 		/// <param name="exampleType"></param>
+		/// <param name="seqID"></param>
 		/// <returns></returns>
 		public DataSet GetPollExampleItemList(int msgID, int itemType, int exampleType, int seqID)
 		{
@@ -1555,17 +1581,21 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 그룹에 속한 모든(bbs, file, notice, album, linksite) 게시물을 가져온다.
+		/// 그룹에 속한 모든(bbs, file, notice, album, linksite) 게시물을 가져오기
 		/// </summary>
 		/// <param name="grID"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageCount"></param>
 		/// <param name="sortColum"></param>
 		/// <param name="sortType"></param>
 		/// <param name="searchColum"></param>
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
+		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetClubAllMessageList(int grID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
+		public DataSet GetClubAllMessageList(int grID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum
+									, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -1588,7 +1618,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -1608,7 +1638,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetMyDocAllMessageList(int userID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
+		public DataSet GetMyDocAllMessageList(int userID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum
+									, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -1631,7 +1662,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -1667,8 +1698,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// 자신이 등록한 웹파트의 높이를 가져온다. 
 		/// </summary>
 		/// <param name="userID"></param>
-		/// <param name="folderID"></param>
-		/// <param name="url"></param>
+		/// <param name="opID"></param>
+		/// <param name="seqID"></param>
 		/// <returns></returns>
 		public DataSet GetWebPartSize(int userID, int opID, int seqID)
 		{
@@ -1692,7 +1723,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 명함 리스트를 가져온다.
+		/// 명함 리스트 조회
 		/// </summary>
 		/// <param name="actionKind"></param>
 		/// <param name="domainID"></param>
@@ -1700,6 +1731,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="cardClass"></param>
 		/// <param name="userID"></param>
 		/// <param name="departmentID"></param>
+		/// <param name="targetType"></param>
+		/// <param name="targetID"></param>
 		/// <param name="pageIndex"></param>
 		/// <param name="pageCount"></param>
 		/// <param name="sortColumn"></param>
@@ -1709,7 +1742,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="seekText"></param>
 		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetAddressCardList(string actionKind, int domainID, string scope, string cardClass, int userID, int departmentID, string targetType, int targetID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string seekText, out int totalCount)
+		public DataSet GetAddressCardList(string actionKind, int domainID, string scope, string cardClass, int userID
+							, int departmentID, string targetType, int targetID, int pageIndex, int pageCount, string sortColumn
+							, string sortType, string searchColumn, string searchText, string seekText, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -1740,19 +1775,17 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMessages").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMessages").ToString());
 			}
 
 			return dsReturn;
 		}
 
 		/// <summary>
-		/// 명함 정보를 가져온다.
+		/// 명함 정보
 		/// </summary>
 		/// <param name="domainID"></param>
-		/// <param name="categoryID"></param>
-		/// <param name="userID"></param>
-		/// <param name="folderID"></param>
+		/// <param name="cardID"></param>
 		/// <returns></returns>
 		public DataSet GetAddressCardInfo(int domainID, int cardID)
 		{
@@ -1792,7 +1825,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="seekText"></param>
 		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetAddressClientList(string actionKind, int domainID, string scope, string cardClass, int userID, int departmentID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, string seekText, out int totalCount)
+		public DataSet GetAddressClientList(string actionKind, int domainID, string scope, string cardClass, int userID
+									, int departmentID, int pageIndex, int pageCount, string sortColumn, string sortType
+									, string searchColumn, string searchText, string seekText, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -1821,7 +1856,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMessages").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMessages").ToString());
 			}
 
 			return dsReturn;
@@ -1884,21 +1919,14 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 국가코드를 가져온다.
+		/// 국가코드 조회
 		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="scope"></param>
-		/// <param name="userID"></param>
-		/// <param name="groupID"></param>
 		/// <returns></returns>
 		public DataSet GetAddressLocale()
 		{
 			DataSet dsReturn = null;
 
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				
-			};
+			SqlParameter[] parameters = null;
 
 			ParamData pData = new ParamData("admin.ph_up_AddressGetLocale", parameters);
 
@@ -1971,7 +1999,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 도서 목록 조회
 		/// </summary>
 		/// <param name="domainID"></param>
 		/// <param name="categoryID"></param>
@@ -1991,7 +2019,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isTotal"></param>
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetBookList(int domainID, int categoryID, int folderID, int userID, string xfAlias, string isAdmin, string parentACL, int pageIndex, int PageCount, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, string isTotal, out int totalMessage)
+		public DataSet GetBookList(int domainID, int categoryID, int folderID, int userID, string xfAlias, string isAdmin, string parentACL
+							, int pageIndex, int PageCount, string sortColumn, string sortType, string searchColumn, string searchText
+							, string searchStartDate, string searchEndDate, string isTotal, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -2021,14 +2051,14 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// 도서 정보 조회
 		/// </summary>
 		/// <param name="messageID"></param>
 		/// <returns></returns>
@@ -2229,7 +2259,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="totalMessage"></param>
 		/// <returns></returns>
 		public DataSet GetAdminCheckInOutList(int domainID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
-		, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+									, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -2252,7 +2282,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -2272,7 +2302,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchEndDate"></param>
 		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
+		public DataSet GetRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum
+											, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
 		{
 			DataSet dsReturn = null;
 
@@ -2295,7 +2326,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = int.Parse(pData.GetParamValue("@totalMsg").ToString());
+				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;

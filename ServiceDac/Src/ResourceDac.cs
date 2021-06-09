@@ -60,6 +60,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// 선택한 자원 사용 가능 여부 판단
 		/// </summary>
 		/// <param name="domainID"></param>
+		/// <param name="messageID"></param>
 		/// <param name="resource"></param>
 		/// <param name="resType"></param>
 		/// <param name="resApp"></param>
@@ -67,11 +68,11 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="rangeEDate"></param>
 		/// <param name="rangeSTime"></param>
 		/// <param name="rangeETime"></param>
-		/// <param name="bUsable"></param>
-		/// <returns></returns>
-		public int CheckScheduleUsingResource(int domainID, int messageID, int resource, string resType, string resApp, string rangeSDate, string rangeEDate, string rangeSTime, string rangeETime, out string bUsable)
+		/// <returns>bUsable</returns>
+		public string CheckScheduleUsingResource(int domainID, int messageID, int resource, string resType, string resApp
+									, string rangeSDate, string rangeEDate, string rangeSTime, string rangeETime)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -91,11 +92,11 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-				bUsable = pData.GetParamValue("@bUsable").ToString();
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//bUsable = pData.GetParamValue("@bUsable").ToString();
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
@@ -133,11 +134,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="partID"></param>
 		/// <param name="objectType"></param>
 		/// <param name="state"></param>
-		/// <returns></returns>
-		public int ConfirmScheduleByParticipant(int messageID, int partID, string objectType, int state)
+		public void ConfirmScheduleByParticipant(int messageID, int partID, string objectType, int state)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
@@ -150,10 +148,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -162,11 +158,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="domainID"></param>
 		/// <param name="messageID"></param>
 		/// <param name="actor"></param>
-		/// <returns></returns>
-		public int CreateScheduleWorkArea(int domainID, int messageID, int actor)
+		public void CreateScheduleWorkArea(int domainID, int messageID, int actor)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
@@ -178,10 +171,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -194,11 +185,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="partType"></param>
 		/// <param name="sendMail"></param>
 		/// <param name="note"></param>
-		/// <returns></returns>
-		public int HandleParticipant(string mode, int messageID, string objectType, int partID, string partType, string sendMail, string note)
+		public void HandleParticipant(string mode, int messageID, string objectType, int partID, string partType, string sendMail, string note)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
@@ -214,10 +202,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
@@ -226,11 +212,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="mode"></param>
 		/// <param name="messageID"></param>
 		/// <param name="xmlData"></param>
-		/// <returns></returns>
-		public int CreateParticipants(string mode, int messageID, string xmlData)
+		public void CreateParticipants(string mode, int messageID, string xmlData)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
@@ -242,10 +225,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = int.Parse(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 	}
 }
