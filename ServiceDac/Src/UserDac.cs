@@ -648,9 +648,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="sortType"></param>
 		/// <param name="searchColumn"></param>
 		/// <param name="searchText"></param>
-		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetGroupSearchMembers(string domainID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText, out int totalMessage)
+		public DataSet GetGroupSearchMembers(string domainID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText)
 		{
 			DataSet dsReturn = null;
 
@@ -671,7 +670,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
+				//totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
