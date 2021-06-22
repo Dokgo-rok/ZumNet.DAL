@@ -374,10 +374,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="totalMessage"></param>
 		/// <returns></returns>
 		public DataSet GetBoardMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
-					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;
 
@@ -405,7 +404,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
+				//totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
@@ -428,11 +427,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="totalMessage"></param>
 		/// <returns></returns>
 		public DataSet GetBoardMessageListAddTopLine(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission
 										, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
-										, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+										, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;
 
@@ -460,7 +458,6 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
