@@ -1056,7 +1056,7 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
 				ParamSet.Add4Sql("@admin", SqlDbType.Char, 1, isAdmin),
 				ParamSet.Add4Sql("@pos", SqlDbType.Char, 1, position),
-				ParamSet.Add4Sql("@language", SqlDbType.VarChar, 2, language)
+				ParamSet.Add4Sql("@language", SqlDbType.VarChar, 5, language)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_MenuGetList", parameters);
