@@ -136,64 +136,6 @@ namespace ZumNet.DAL.ServiceDac
 
         #region [근무 상태 이벤트 관련]
         /// <summary>
-        /// 현 근무 상태 파악
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <param name="userId"></param>
-        /// <param name="workDate"></param>
-        /// <param name="ip"></param>
-        /// <param name="browser"></param>
-        /// <returns></returns>
-        public string CheckWorkTimeStatus(string mode, int userId, string workDate, string ip, string browser)
-        {
-            string strReturn = "";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
-                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
-                ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate),
-                ParamSet.Add4Sql("@ip", SqlDbType.VarChar, 20, ip),
-                ParamSet.Add4Sql("@browser", SqlDbType.VarChar, 30, browser)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_CheckWorkTimeStatus", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return strReturn;
-        }
-
-        /// <summary>
-        /// 현 근무 상태 파악
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="workDate"></param>
-        /// <returns></returns>
-        public DataSet GetWorkTimeStatus(int userId, string workDate)
-        {
-            DataSet ds = null;
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, "Y"),
-                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
-                ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_CheckWorkTimeStatus", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return ds;
-        }
-
-        /// <summary>
         /// 현 근무시간 가져오기
         /// </summary>
         /// <param name="mode"></param>
@@ -223,13 +165,70 @@ namespace ZumNet.DAL.ServiceDac
         }
 
         /// <summary>
+        /// 현 근무 상태 파악
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="userId"></param>
+        /// <param name="workDate"></param>
+        /// <param name="ip"></param>
+        /// <param name="browser"></param>
+        /// <returns></returns>
+        public DataSet CheckWorkTimeStatus(string mode, int userId, string workDate, string ip, string browser)
+        {
+            DataSet ds = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
+                ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate),
+                ParamSet.Add4Sql("@ip", SqlDbType.VarChar, 20, ip),
+                ParamSet.Add4Sql("@browser", SqlDbType.VarChar, 30, browser)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_CheckWorkTimeStatus", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return ds;
+        }
+
+        /// <summary>
+        /// 현 근무 상태 파악
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="workDate"></param>
+        /// <returns></returns>
+        public DataSet CheckWorkTimeStatus(int userId, string workDate)
+        {
+            DataSet ds = null;
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, "Y"),
+                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
+                ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_CheckWorkTimeStatus", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+            return ds;
+        }        
+
+        /// <summary>
         /// 근무조정 요청 사항 조회
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="workDate"></param>
         /// <param name="reqId"></param>
         /// <returns></returns>
-        public DataSet GetWorkTimeStatus(int userId, string workDate, int reqId)
+        public DataSet CheckWorkTimeStatus(int userId, string workDate, int reqId)
         {
             DataSet ds = null;
             SqlParameter[] parameters = new SqlParameter[]
@@ -249,6 +248,48 @@ namespace ZumNet.DAL.ServiceDac
 
             return ds;
         }
+
+        ///// <summary>
+        ///// 현 근무 상태 파악(IP정보)
+        ///// </summary>
+        ///// <param name="userId"></param>
+        ///// <param name="workDate"></param>
+        ///// <param name="ip"></param>
+        ///// <param name="browser"></param>
+        ///// <returns></returns>
+        //public Dictionary<string, string> CheckWorkTimeStatus(int userId, string workDate, string ip, string browser)
+        //{
+        //    Dictionary<string, string> dicReturn = new Dictionary<string, string>();
+        //    DataSet ds = null;
+
+        //    SqlParameter[] parameters = new SqlParameter[]
+        //    {
+        //        ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, ""),
+        //        ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
+        //        ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate),
+        //        ParamSet.Add4Sql("@ip", SqlDbType.VarChar, 20, ip),
+        //        ParamSet.Add4Sql("@browser", SqlDbType.VarChar, 30, browser)
+        //    };
+
+        //    ParamData pData = new ParamData("admin.ph_up_CheckWorkTimeStatus", parameters);
+
+        //    using (DbBase db = new DbBase())
+        //    {
+        //        ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+        //    }
+
+        //    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        DataRow dr = ds.Tables[0].Rows[0];
+
+        //        foreach (DataColumn col in ds.Tables[0].Columns)
+        //        {
+        //            dicReturn.Add(col.ColumnName, dr[col.ColumnName].ToString());
+        //        }
+        //    }
+
+        //    return dicReturn;
+        //}
         #endregion
     }
 }
