@@ -290,6 +290,33 @@ namespace ZumNet.DAL.ServiceDac
 
         //    return dicReturn;
         //}
+
+        /// <summary>
+        /// 근무형태에 따른 시간 기록
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="workDate"></param>
+        /// <param name="status"></param>
+        /// <param name="ip"></param>
+        /// <param name="browser"></param>
+        public void InsertWorkTimeStatus(int userId, string workDate, string status, string ip, string browser)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
+                ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate),
+                ParamSet.Add4Sql("@status", SqlDbType.Char, 1, status),
+                ParamSet.Add4Sql("@ip", SqlDbType.VarChar, 20, ip),
+                ParamSet.Add4Sql("@browser", SqlDbType.VarChar, 30, browser)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_InsertWorkTimeStatus", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
         #endregion
     }
 }
