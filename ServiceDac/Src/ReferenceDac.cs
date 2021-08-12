@@ -770,10 +770,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="totalMessage"></param>
 		/// <returns></returns>
-		public DataSet GetDocMessageList(int domainID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount, string sortColumn
-								, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+		public DataSet GetDocMessageList(int domainID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+								, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;
 
@@ -800,7 +799,7 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
+				//totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
 			}
 
 			return dsReturn;
@@ -1682,6 +1681,32 @@ namespace ZumNet.DAL.ServiceDac
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_DocGetRecentList", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 웹파트용 최근 문서 조회
+		/// </summary>
+		/// <param name="num"></param>
+		/// <param name="xfAlias"></param>
+		/// <returns></returns>
+		public DataSet GetDocPortalRecentList(string num, string xfAlias)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@num", SqlDbType.VarChar, 12, num),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 20, xfAlias)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_DocGetPortalRecentList", parameters);
 
 			using (DbBase db = new DbBase())
 			{
