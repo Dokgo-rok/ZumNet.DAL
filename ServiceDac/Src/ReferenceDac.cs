@@ -2384,7 +2384,6 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@searchText", SqlDbType.NVarChar, 200, searchText),
 				ParamSet.Add4Sql("@searchSDate", SqlDbType.VarChar, 10, searchStartDate),
 				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
-				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfalias),
 				ParamSet.Add4Sql("@userID", SqlDbType.Int, 4, userId),
 				ParamSet.Add4Sql("@totalMsg", SqlDbType.Int, 4, ParameterDirection.Output)
