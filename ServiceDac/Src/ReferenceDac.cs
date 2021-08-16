@@ -2311,7 +2311,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 
+		/// 포탈의 최근 게시물 리스트를 가져온다.
 		/// </summary>
 		/// <param name="ctID"></param>
 		/// <param name="pageIndex"></param>
@@ -2322,10 +2322,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="totalCount"></param>
 		/// <returns></returns>
-		public DataSet GetRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum
-											, string searchText, string searchStartDate, string searchEndDate, out int totalCount)
+		public DataSet GetRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType
+											, string searchColum, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;
 
@@ -2348,7 +2347,55 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
+				//totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 포탈의 최근 게시물 리스트를 가져온다. 앨범, 기타 제거
+		/// </summary>
+		/// <param name="ctID"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageCount"></param>
+		/// <param name="sortColum"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchColum"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchStartDate"></param>
+		/// <param name="searchEndDate"></param>
+		/// <param name="xfalias"></param>
+		/// <param name="userId"></param>
+		/// <returns></returns>
+		public DataSet GetPortalRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType, string searchColum
+												, string searchText, string searchStartDate, string searchEndDate, string xfalias, int userId)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, ctID),
+				ParamSet.Add4Sql("@pageIdx", SqlDbType.Int, 4, pageIndex),
+				ParamSet.Add4Sql("@pageCnt", SqlDbType.Int, 4, pageCount),
+				ParamSet.Add4Sql("@sortCol", SqlDbType.VarChar, 20, sortColum),
+				ParamSet.Add4Sql("@sortType", SqlDbType.VarChar, 20, sortType),
+				ParamSet.Add4Sql("@searchCol", SqlDbType.VarChar, 20, searchColum),
+				ParamSet.Add4Sql("@searchText", SqlDbType.NVarChar, 200, searchText),
+				ParamSet.Add4Sql("@searchSDate", SqlDbType.VarChar, 10, searchStartDate),
+				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
+				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfalias),
+				ParamSet.Add4Sql("@userID", SqlDbType.Int, 4, userId),
+				ParamSet.Add4Sql("@totalMsg", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_MsgGetPortalRecentlyMessageListOfCT", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//totalCount = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
