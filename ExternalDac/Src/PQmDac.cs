@@ -49,7 +49,7 @@ namespace ZumNet.DAL.ExternalDac
 				ParamSet.Add4Sql("@week", SqlDbType.Int, 4, week)
 			};
 
-			ParamData pData = new ParamData(sDBName + ".dbo.up_GET_INV_NEW_KPI", parameters);
+			ParamData pData = new ParamData(sDBName + ".dbo.up_GET_INV_NEW_KPI", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -80,7 +80,7 @@ namespace ZumNet.DAL.ExternalDac
 				ParamSet.Add4Sql("@week", SqlDbType.Int, 4, week)
 			};
 
-			ParamData pData = new ParamData(sDBName + ".dbo.up_GET_INV_NEW_KPI_S", parameters);
+			ParamData pData = new ParamData(sDBName + ".dbo.up_GET_INV_NEW_KPI_S", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
