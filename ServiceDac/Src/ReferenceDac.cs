@@ -2399,5 +2399,63 @@ namespace ZumNet.DAL.ServiceDac
 
 			return dsReturn;
 		}
+
+		/// <summary>
+		/// 지식관리 메시지 목록
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="categoryID"></param>
+		/// <param name="folderID"></param>
+		/// <param name="userID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="isAdmin"></param>
+		/// <param name="permission"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageCount"></param>
+		/// <param name="sortColumn"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchColumn"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchStartDate"></param>
+		/// <param name="searchEndDate"></param>
+		/// <param name="szCmd"></param>
+		/// <returns></returns>
+		public DataSet GetKmsList(int domainID, int categoryID, int folderID, int userID, string xfAlias, string isAdmin
+							, string permission, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn
+							, string searchText, string searchStartDate, string searchEndDate, string szCmd)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@ct_id", SqlDbType.Int, 4, categoryID),
+				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
+				ParamSet.Add4Sql("@ur_id", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@isAdmin", SqlDbType.Char, 1, isAdmin),
+				ParamSet.Add4Sql("@parentACL", SqlDbType.VarChar, 20, permission),
+				ParamSet.Add4Sql("@pageIdx", SqlDbType.Int, 4, pageIndex),
+				ParamSet.Add4Sql("@pageCnt", SqlDbType.Int, 4, pageCount),
+				ParamSet.Add4Sql("@sortCol", SqlDbType.VarChar, 20, sortColumn),
+				ParamSet.Add4Sql("@sortType", SqlDbType.VarChar, 20, sortType),
+				ParamSet.Add4Sql("@searchCol", SqlDbType.NVarChar, 20, searchColumn),
+				ParamSet.Add4Sql("@searchText", SqlDbType.NVarChar, 200, searchText),
+				ParamSet.Add4Sql("@searchSDate", SqlDbType.VarChar, 10, searchStartDate),
+				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
+				ParamSet.Add4Sql("@szCmd", SqlDbType.VarChar, 10, szCmd),
+				ParamSet.Add4Sql("@totalMsg", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_KmsGetList", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				//totalMessage = Convert.ToInt32(pData.GetParamValue("@totalmessage").ToString());
+			}
+
+			return dsReturn;
+		}
 	}
 }
