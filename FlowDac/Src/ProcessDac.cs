@@ -12,7 +12,10 @@ using ZumNet.Framework.Data;
 
 namespace ZumNet.DAL.FlowDac
 {
-    public class ProcessDac : DacBase
+    /// <summary>
+	/// 
+	/// </summary>
+	public class ProcessDac : DacBase
     {
 		/// <summary>
 		/// 
@@ -30,28 +33,29 @@ namespace ZumNet.DAL.FlowDac
 
 		}
 
-		/// <summary>
-		/// 문서함에 따른 작업 목록 가져오기
-		/// </summary>
-		/// <param name="dnID">도메인 식별자</param>
-		/// <param name="xfAlias">문서 종류</param>
-		/// <param name="session">회기(기본 '')</param>
-		/// <param name="location">조회하려는 부서</param>
-		/// <param name="actRole">ActRole</param>
-		/// <param name="partID">조회하려는 사용자</param>
-		/// <param name="piState">프로세스 인스턴스 상태</param>
-		/// <param name="state">작업 처리 상태</param>
-		/// <param name="viewState">작업 조회 상태</param>
-		/// <param name="page">조회하고자 하는 페이지</param>
-		/// <param name="count">페이지당 리스트 수</param>
-		/// <param name="baseSortCol">기본 정렬 필드명</param>
-		/// <param name="sortCol">정렬 테이블 필드명</param>
-		/// <param name="sortType">정렬 종류</param>
-		/// <param name="searchCol">검색 테이블 필드명</param>
-		/// <param name="searchText">검색 텍스트</param>
-		/// <param name="searchDate">날짜 검색 조건</param>
-		/// <returns></returns>
-		public DataSet GetProcessWorkList(int dnID, string xfAlias, string session, string location, string actRole, string partID
+        #region [작업목록]
+        /// <summary>
+        /// 문서함에 따른 작업 목록 가져오기
+        /// </summary>
+        /// <param name="dnID">도메인 식별자</param>
+        /// <param name="xfAlias">문서 종류</param>
+        /// <param name="session">회기(기본 '')</param>
+        /// <param name="location">조회하려는 부서</param>
+        /// <param name="actRole">ActRole</param>
+        /// <param name="partID">조회하려는 사용자</param>
+        /// <param name="piState">프로세스 인스턴스 상태</param>
+        /// <param name="state">작업 처리 상태</param>
+        /// <param name="viewState">작업 조회 상태</param>
+        /// <param name="page">조회하고자 하는 페이지</param>
+        /// <param name="count">페이지당 리스트 수</param>
+        /// <param name="baseSortCol">기본 정렬 필드명</param>
+        /// <param name="sortCol">정렬 테이블 필드명</param>
+        /// <param name="sortType">정렬 종류</param>
+        /// <param name="searchCol">검색 테이블 필드명</param>
+        /// <param name="searchText">검색 텍스트</param>
+        /// <param name="searchDate">날짜 검색 조건</param>
+        /// <returns></returns>
+        public DataSet GetProcessWorkList(int dnID, string xfAlias, string session, string location, string actRole, string partID
 									, int piState, int state, int viewState, int page, int count, string baseSortCol
 									, string sortCol, string sortType, string searchCol, string searchText, string searchDate)
 		{
@@ -198,7 +202,7 @@ namespace ZumNet.DAL.FlowDac
 
 			return dsReturn;
 		}
+        #endregion
 
-
-	}
+    }
 }
