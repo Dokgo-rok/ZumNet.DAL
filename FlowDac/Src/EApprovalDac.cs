@@ -55,16 +55,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_BFGetEAFormSelect", "", "FormList", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch(Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetEAFormSelect");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -241,16 +234,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectXFMainData", "", "XFMainData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectXFMainData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -371,16 +357,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "FormData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectFormData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -404,16 +383,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAFormField");
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return strReturn;
@@ -444,16 +416,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetMainFormSpecificData");
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return strReturn;
@@ -479,16 +444,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectRecordData", "", "RecordData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    rowList = db.ExecuteListNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectRecordData");
+                rowList = db.ExecuteListNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return rowList;
@@ -502,10 +460,9 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="formTable"></param>
         /// <param name="externalKey1"></param>
         /// <returns></returns>
-        public DataTable SelectExternalKeyMsg(string dbName, string ekpDB, string formTable, string externalKey1)
+        public DataSet SelectExternalKeyMsg(string dbName, string ekpDB, string formTable, string externalKey1)
         {
-            DataSet ds = null;
-            DataTable dtReturn = null;
+            DataSet dsReturn = null;
 
             if (dbName != "") dbName += ".";
             string strSP = dbName + "admin.ph_up_SelectExternalKeyMsg";
@@ -519,27 +476,12 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "ExternalKeyMsg", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-                if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectExternalKeyMsg");
-            }
-            finally
-            {
-                if (ds != null)
-                {
-                    ds.Dispose();
-                }
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
-            return dtReturn;
+            return dsReturn;
         }
 
         /// <summary>
@@ -573,16 +515,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "ExternalData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectExternalData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -611,16 +546,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "HistoryData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectHistoryData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -764,16 +692,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFEA", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFEA");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -836,16 +757,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateXFEA", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateXFEA");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -881,16 +795,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertFormData");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -926,16 +833,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateFormMainData");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -962,16 +862,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "DeleteFormData");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1007,16 +900,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectFormDataForDraft", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectFormDataForDraft");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1051,16 +937,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFormFD", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFormFD");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1087,16 +966,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateXFormFD", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateXFormFD");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1126,16 +998,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertLinkedDoc", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertLinkedDoc");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1156,16 +1021,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertLinkedDocBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertLinkedDoc");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1186,16 +1044,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateLinkedDocBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateLinkedDocBatch");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1217,16 +1068,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectLinkedDoc", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectHistoryData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1258,16 +1102,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFormTransfer", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFormTransfer");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1288,16 +1125,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFormTransferBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFormTransfer");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1319,16 +1149,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectXFormTransfer", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectXFormTransfer");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1370,16 +1193,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFormRegistrant", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFormRegistrant");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1400,16 +1216,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertXFormRegistrantBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertXFormRegistrantBatch");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1430,16 +1239,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateXFormRegistrantBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateXFormRegistrantBatch");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1461,16 +1263,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectXFormRegistrant", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectXFormRegistrant");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1499,16 +1294,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEventRegistration", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEventRegistration");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1529,16 +1317,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEventEdit", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEventEdit");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1563,16 +1344,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_MsgSetViewEvent", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEventView");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1595,16 +1369,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SetEventView", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SetEventView");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -1631,16 +1398,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_MsgGetLocID", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetMessageLocID");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -1664,16 +1424,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_MsgGetAttachPath", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetAttachPath");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1729,16 +1482,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertFileAttach", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertFileAttach");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -1761,16 +1507,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertFileAttachBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertFileAttach");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1794,16 +1533,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectFileAttach", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectAttachFile");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1827,16 +1559,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectFileAttachWithSavedName", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetAttachedFileInfo");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -1857,16 +1582,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_DelAttachFile", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "DeleteAttachFile");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1885,16 +1603,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateXFFileInfo", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateXFFileInfo");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1915,16 +1626,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateFileSize");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1960,16 +1664,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEventFileView", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEventFileView");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -1993,16 +1690,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectEventFileView", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEventFileView");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2044,16 +1734,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "ExtraData", 30, parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetExtraDataForInterface");
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return strReturn;
@@ -2089,16 +1772,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateFormMainFieldForInterface");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -2138,16 +1814,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetExtraDataForMail");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2173,16 +1842,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectEAPersonLine", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAPersonLine");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2206,16 +1868,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectEAPersonLineDetail", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAPersonLineDetail");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2252,16 +1907,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEAPersonLine", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEAPersonLine");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -2306,16 +1954,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEAPersonLineDetail", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEAPersonLineDetail");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -2337,16 +1978,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_InsertEAPersonLineDetailBatch", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertEAPersonLineDetail");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -2379,16 +2013,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateEAPersonLine", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateEAPersonLine");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -2426,16 +2053,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_UpdateEAPersonLineDetail", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateEAPersonLineDetail");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -2456,16 +2076,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_DeleteEAPersonLine", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "DeleteEAPersonLine");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -2484,16 +2097,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_DeleteEAPersonLineDetail", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "DeleteEAPersonLineDetail");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -2526,16 +2132,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectFormDataNotEA");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2571,16 +2170,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "InsertFormDataNotEA");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -2641,16 +2233,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "UpdateFormDataNotEA");
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -2680,16 +2265,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "DeleteFormDataNotEA");
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -2700,7 +2278,7 @@ namespace ZumNet.DAL.FlowDac
         /// </summary>
         /// <param name="urId"></param>
         /// <returns></returns>
-        public bool SelectEAFormField(int urId)
+        public bool UseEApprovalPassword(int urId)
         {
             bool bReturn = true;
             string strRt = "";
@@ -2714,16 +2292,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    strRt = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAFormField");
+                strRt = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             if (strRt == "N") bReturn = false;
@@ -2747,16 +2318,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAFormField");
+                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -2840,16 +2404,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveDocData");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2886,16 +2443,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveRelatedTaskInfo");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -2922,16 +2472,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iCount = Convert.ToInt32(db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "ExistChargedForm");
+                iCount = Convert.ToInt32(db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             if (iCount > 0) bReturn = true;
@@ -2961,16 +2504,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    iCount = Convert.ToInt32(db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "IsRcvManager");
+                iCount = Convert.ToInt32(db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             if (iCount > 0) bReturn = true;
@@ -2993,16 +2529,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData("admin.ph_up_SelectEAFolderView", "", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectEAFolderView");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -3025,16 +2554,9 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveDeptInfo");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -3060,16 +2582,9 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveCorpInfo");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
             return dsReturn;
@@ -3082,30 +2597,20 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        public DataTable RetrieveDocList(string searchText)
+        public DataSet RetrieveDocList(string searchText)
         {
-            DataSet ds = null;
-            DataTable dtReturn = null;
-
+            DataSet dsReturn = null;
             string strQuery = @"SELECT FormID, DocName AS Name, COUNT(FormID) AS DocCount FROM admin.PH_VIEW_BF_WORKLIST (NOLOCK) " + searchText + " GROUP BY FormID, DocName ORDER BY DocCount DESC, Name"; ;
 
             SqlParameter[] parameters = null;
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-                if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveDocList");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
-            return dtReturn;
+            return dsReturn;
         }
 
         /// <summary>
@@ -3113,30 +2618,20 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        public DataTable RetrieveUserList(string searchText)
+        public DataSet RetrieveUserList(string searchText)
         {
-            DataSet ds = null;
-            DataTable dtReturn = null;
-
+            DataSet dsReturn = null;
             string strQuery = @"SELECT UserID, LogonID, DisplayName AS Name FROM admin.ph_VIEW_OBJECT_UR_LIST (NOLOCK) WHERE GRAlias <> 'A4210' AND (Role = 'chief' OR Role = 'regular') AND DisplayName LIKE '" + searchText + "%' ORDER BY DisplayName";
 
             SqlParameter[] parameters = null;
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            try
+            using (DbBase db = new DbBase())
             {
-                using (DbBase db = new DbBase())
-                {
-                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-                }
-                if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
-            }
-            catch (Exception ex)
-            {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "RetrieveUserList");
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
-            return dtReturn;
+            return dsReturn;
         }
         #endregion
     }

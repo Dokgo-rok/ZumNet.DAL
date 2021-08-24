@@ -209,28 +209,32 @@ namespace ZumNet.DAL.FlowDac
 		/// <summary>
 		/// 프로세스 참여자 정보를 구성한다. 여러명일 경우는 이 메소드를 반복 호출한다.
 		/// </summary>
-		/// <param name="partType">참여 구분</param>
-		/// <param name="partID">참여자 식별자</param>
-		/// <param name="wID">작업 식별자</param>
-		/// <param name="oid">프로세스 인스턴스 식별자</param>
-		/// <param name="parentWID">상위 작업 식별자</param>
-		/// <param name="priority">우선순위</param>
-		/// <param name="step">진행 단계</param>
-		/// <param name="subStep">병렬 내에서의 단계</param>
-		/// <param name="seq">각 단계에서의 순서</param>
-		/// <param name="state">결재 처리 상태</param>
-		/// <param name="signStatus">결재 처리 종류</param>
-		/// <param name="signKind">결재 처리 역할</param>
-		/// <param name="viewState">뷰 상태</param>
-		/// <param name="activityID">단계식별자</param>
-		/// <param name="bizRole">업무 구분명</param>
-		/// <param name="actRole">단계 구분명</param>
-		/// <param name="limited">작업 수행 제약 조건</param>
-		/// <param name="receivedDate">받은 일자</param>
-		/// <param name="completedDate">완료 일자</param>
-		/// <param name="competencyCode">평가표 코드</param>
-		/// <param name="partName">참여명</param>
-		/// <param name="partDeptCode">참여자 부서코드</param>
+		/// <param name="partType"></param>
+		/// <param name="partID"></param>
+		/// <param name="wID"></param>
+		/// <param name="oid"></param>
+		/// <param name="parentWID"></param>
+		/// <param name="priority"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="seq"></param>
+		/// <param name="state"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="signKind"></param>
+		/// <param name="viewState"></param>
+		/// <param name="flag"></param>
+		/// <param name="designator"></param>
+		/// <param name="activityID"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="limited"></param>
+		/// <param name="receivedDate"></param>
+		/// <param name="completedDate"></param>
+		/// <param name="competencyCode"></param>
+		/// <param name="signature"></param>
+		/// <param name="comment"></param>
+		/// <param name="partName"></param>
+		/// <param name="partDeptCode"></param>
 		/// <param name="reserved1"></param>
 		/// <param name="reserved2"></param>
 		/// <returns></returns>
@@ -513,10 +517,11 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="userDeptCD">사용자 부서코드</param>
 		/// <param name="adminYN">관리자여부</param>
 		/// <returns></returns>
-		public DataSet GetWorkItemCount(int dnID, string xfAlias, string session, string location, string actRole
+		public string GetWorkItemCount(int dnID, string xfAlias, string session, string location, string actRole
 							, string userID, string userCN, string userDeptID, string userDeptCD, string adminYN)
 		{
-			DataSet dsReturn = null;
+			SqlDataReader dr = null;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -534,12 +539,43 @@ namespace ZumNet.DAL.FlowDac
 
 			ParamData pData = new ParamData("admin.ph_up_BFGetWorkItemCount", "", "WorkItemCount", 30, parameters);
 
-			using (DbBase db = new DbBase())
+			try
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					string strCountInfo = "";
+					char cFirstDel = (char)12;
+					char cSecondDel = (char)11;
+
+					do
+					{
+						while (dr.Read())
+						{
+							if (strCountInfo == "") strCountInfo = dr["Location"].ToString() + cFirstDel + dr["Count"].ToString();
+							else strCountInfo += cSecondDel + dr["Location"].ToString() + cFirstDel + dr["Count"].ToString();
+						}
+					}
+					while (dr.NextResult());
+
+					strReturn = strCountInfo;
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetWorkItemCount");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
 			}
 
-			return dsReturn;
+			return strReturn;
 		}
 
 		/// <summary>
@@ -559,10 +595,11 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="reserved2">예비필드2</param>
 		/// <param name="reserved3">예비필드3</param>
 		/// <returns></returns>
-		public DataSet GetWorkItemCount(int dnID, string xfAlias, string session, string location, string actRole, string userID, string userCN
+		public string GetWorkItemCount(int dnID, string xfAlias, string session, string location, string actRole, string userID, string userCN
 								, string userDeptID, string userDeptCD, string adminYN, string reserved1, string reserved2, string reserved3)
 		{
-			DataSet dsReturn = null;
+			SqlDataReader dr = null;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -583,12 +620,43 @@ namespace ZumNet.DAL.FlowDac
 
 			ParamData pData = new ParamData("admin.ph_up_BFGetWorkItemCount", "", "WorkItemCount", 30, parameters);
 
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					string strCountInfo = "";
+					char cFirstDel = (char)12;
+					char cSecondDel = (char)11;
+
+					do
+					{
+						while (dr.Read())
+						{
+							if (strCountInfo == "") strCountInfo = dr["Location"].ToString() + cFirstDel + dr["Count"].ToString();
+							else strCountInfo += cSecondDel + dr["Location"].ToString() + cFirstDel + dr["Count"].ToString();
+						}
+					}
+					while (dr.NextResult());
+
+					strReturn = strCountInfo;
+				}
+				dr.Close();
+			}
+			catch(Exception ex)
+            {
+				ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetWorkItemCount");
+			}
+            finally
+            {
+				if (dr != null) dr.Dispose();
 			}
 
-			return dsReturn;
+			return strReturn;
 		}
 		#endregion
 
