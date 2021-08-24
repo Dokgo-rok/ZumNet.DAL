@@ -1,12 +1,983 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using ZumNet.Framework.Base;
+using ZumNet.Framework.Data;
+
 namespace ZumNet.DAL.InterfaceDac
 {
-    public class InterfaceDac
+    /// <summary>
+	/// 
+	/// </summary>
+	public class InterfaceDac : DacBase
     {
-    }
+		/// <summary>
+		/// 
+		/// </summary>
+		public InterfaceDac(string connectionString = "") : base(connectionString)
+		{
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public InterfaceDac(SqlConnection connection) : base(connection)
+		{
+		}
+
+		#region [연동 대상 데이타 저장, 조회 및 모니터링]
+		/// <summary>
+		/// 외부시스템과 연동하기 위한 데이타 쿼리
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="requestState"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="stampID"></param>
+		/// <returns></returns>
+		public DataSet GetIFSendSync(string dbName, int requestState, string companyCode, string stampID)
+		{
+			DataSet dsReturn = null;
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_GetIFSendSync";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@requeststate", SqlDbType.Int, 4, requestState),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@stampid", SqlDbType.VarChar, 33, stampID)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "IFSendSync", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 외부시스템과 연동하기 위한 데이타 쿼리
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="interfaceID"></param>
+		/// <returns></returns>
+		public DataSet GetIFSendSync(string dbName, long interfaceID)
+		{
+			DataSet dsReturn = null;
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_GetIFSendSync";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, 8, interfaceID)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "IFSendSync", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 외부시스템과 연동하기 위한 데이타 저장
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="stampID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="requestDesc"></param>
+		/// <param name="requestDate"></param>
+		/// <param name="procInstID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="formID"></param>
+		/// <param name="workitemID"></param>
+		/// <param name="workitemStatus"></param>
+		/// <param name="col1"></param>
+		/// <param name="col2"></param>
+		/// <param name="col3"></param>
+		/// <param name="col4"></param>
+		/// <param name="col5"></param>
+		/// <param name="col6"></param>
+		/// <param name="col7"></param>
+		/// <param name="col8"></param>
+		/// <param name="col9"></param>
+		/// <param name="col10"></param>
+		public void InsertIFSendSync(string dbName, string companyCode, string stampID, string moduleID, string requestDesc, string requestDate
+								, string procInstID, string xfAlias, string messageID, string formID, string workitemID, int workitemStatus
+								, string col1, string col2, string col3, string col4, string col5, string col6, string col7, string col8, string col9, string col10)
+		{
+
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_InsertIFSendSync";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@stampid", SqlDbType.VarChar, 33, stampID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@reqeustdesc", SqlDbType.NVarChar, 200, requestDesc),
+				ParamSet.Add4Sql("@requestdate", SqlDbType.VarChar, 20, requestDate),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 33, procInstID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, messageID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 33, workitemID),
+				ParamSet.Add4Sql("@workitemstatus", SqlDbType.Int, 4, workitemStatus),
+				ParamSet.Add4Sql("@col1", SqlDbType.NVarChar, 500, col1),
+				ParamSet.Add4Sql("@col2", SqlDbType.NVarChar, 500, col2),
+				ParamSet.Add4Sql("@col3", SqlDbType.NVarChar, 500, col3),
+				ParamSet.Add4Sql("@col4", SqlDbType.NVarChar, 500, col4),
+				ParamSet.Add4Sql("@col5", SqlDbType.NVarChar, 500, col5),
+				ParamSet.Add4Sql("@col6", SqlDbType.NVarChar, 500, col6),
+				ParamSet.Add4Sql("@col7", SqlDbType.NVarChar, 500, col7),
+				ParamSet.Add4Sql("@col8", SqlDbType.NVarChar, 500, col8),
+				ParamSet.Add4Sql("@col9", SqlDbType.NVarChar, 500, col9),
+				ParamSet.Add4Sql("@col10", SqlDbType.NVarChar, 500, col10)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 외부시스템과 연동하기 위한 데이타 처리 후 상태값 갱신
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="ifID"></param>
+		/// <param name="requestState"></param>
+		/// <returns></returns>
+		public void ChangeIFSendSyncState(string dbName, long ifID, int requestState)
+		{
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_ChangeIFSendSyncState";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, 8, ifID),
+				ParamSet.Add4Sql("@requeststate", SqlDbType.Int, 4, requestState)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 연동 결과 모니터링을 위한 데이타 가져오기
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="mode"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="module"></param>
+		/// <param name="fromMonth"></param>
+		/// <param name="toMonth"></param>
+		/// <param name="fromDay"></param>
+		/// <param name="toDay"></param>
+		/// <returns></returns>
+		public DataSet GetMonitorIFSendSync(string dbName, string mode, string ekpDB, string companyCode
+								, string module, string fromMonth, string toMonth, string fromDay, string toDay)
+		{
+			DataSet dsReturn = null;
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_GetMonitorIFSendSync";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@module", SqlDbType.VarChar, 50, module),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, fromMonth),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, toMonth),
+				ParamSet.Add4Sql("@fromday", SqlDbType.Char, 2, fromDay),
+				ParamSet.Add4Sql("@today", SqlDbType.Char, 2, toDay)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "IFSendSync", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+		#endregion
+
+		#region [집계 및 외부연동 데이터 가져오기]
+		/// <summary>
+		/// 집계
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="targetId"></param>
+		/// <param name="formTable"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="cond3"></param>
+		/// <param name="cond4"></param>
+		/// <param name="cond5"></param>
+		/// <returns></returns>
+		public DataSet GetReport(string mode, int targetId, string formTable, string from, string to
+							, string cond1, string cond2, string cond3, string cond4, string cond5)
+		{
+			DataSet dsReturn = null;
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetReport";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 2, mode),
+				ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetId),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 50, strEkpDB),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, from),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, to),
+				ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 50, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 50, cond2),
+				ParamSet.Add4Sql("@cond3", SqlDbType.NVarChar, 50, cond3),
+				ParamSet.Add4Sql("@cond4", SqlDbType.NVarChar, 50, cond4),
+				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, -1, cond5)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "ReportSheet", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 외부연동용 양식 정보 및 ERP 정보 가져오기
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="targetId"></param>
+		/// <param name="formTable"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="cond3"></param>
+		/// <param name="cond4"></param>
+		/// <param name="cond5"></param>
+		/// <param name="page"></param>
+		/// <param name="pageSize"></param>
+		/// <param name="baseSort"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="search"></param>
+		/// <returns></returns>
+		public DataSet GetReport(string mode, int targetId, string formTable, string from, string to
+							, string cond1, string cond2, string cond3, string cond4, string cond5
+							, int page, int pageSize, string baseSort, string sortCol, string sortType, string search)
+		{
+			DataSet dsReturn = null;
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetReport";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 2, mode),
+				ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetId),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 50, strEkpDB),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, from),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, to),
+				ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 50, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 50, cond2),
+				ParamSet.Add4Sql("@cond3", SqlDbType.NVarChar, 50, cond3),
+				ParamSet.Add4Sql("@cond4", SqlDbType.NVarChar, 50, cond4),
+				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, -1, cond5),
+				ParamSet.Add4Sql("@page", SqlDbType.Int, page),
+				ParamSet.Add4Sql("@count", SqlDbType.SmallInt, pageSize),
+				ParamSet.Add4Sql("@base_sort_col", SqlDbType.NVarChar, 100, baseSort),
+				ParamSet.Add4Sql("@sort_col", SqlDbType.NVarChar, 100, sortCol),
+				ParamSet.Add4Sql("@sort_type", SqlDbType.NVarChar, 5, sortType),
+				ParamSet.Add4Sql("@search_text", SqlDbType.NVarChar, 1000, search),
+
+				ParamSet.Add4Sql("@total_cnt", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "ReportSheet", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// ERP 정보 가져오기
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="targetId"></param>
+		/// <param name="formTable"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="cond3"></param>
+		/// <param name="cond4"></param>
+		/// <param name="cond5"></param>
+		/// <returns></returns>
+		public DataSet GetReportERP(string mode, int targetId, string formTable, string from, string to
+							, string cond1, string cond2, string cond3, string cond4, string cond5)
+		{
+			DataSet dsReturn = null;
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetReporteERP";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 2, mode),
+				ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetId),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 50, strEkpDB),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, from),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, to),
+				ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 50, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 50, cond2),
+				ParamSet.Add4Sql("@cond3", SqlDbType.NVarChar, 50, cond3),
+				ParamSet.Add4Sql("@cond4", SqlDbType.NVarChar, 50, cond4),
+				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, -1, cond5)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "ReportSheet", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 외부연동을 위한 사전 데이타 가져오기
+		/// </summary>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="curWIId"></param>
+		/// <param name="curPartId"></param>
+		/// <param name="status"></param>
+		/// <param name="col1"></param>
+		/// <param name="col2"></param>
+		/// <returns></returns>
+		public DataSet GetIFInfo(int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB, string formTable, int version
+								, string xfAlias, string formID, string msgID, string oID, string curWIId, string curPartId, int status, string col1, string col2)
+		{
+			DataSet dsReturn = null;
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_GetIFInfo";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, curWIId),
+				ParamSet.Add4Sql("@curpartid", SqlDbType.VarChar, 33, curPartId),
+				ParamSet.Add4Sql("@status", SqlDbType.Int, status),
+				ParamSet.Add4Sql("@col1", SqlDbType.NVarChar, 200, col1),
+				ParamSet.Add4Sql("@col2", SqlDbType.NVarChar, 200, col2)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "IFInfo", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+		#endregion
+
+		#region [비동기 ERP 연동 및 대장 등록]
+		/// <summary>
+		/// ERP 연동 호출
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		public void InvokeErpProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB, string ekpDB
+									, string formDB, string formTable, string xfAlias, string formID, string msgID, string oID)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFERP";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 대장 등록
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="nextStep"></param>
+		/// <param name="dateInfo"></param>
+		/// <param name="requesterInfo"></param>
+		/// <param name="colInfo1"></param>
+		/// <param name="colInfo2"></param>
+		/// <param name="colInfo3"></param>
+		/// <param name="colInfo4"></param>
+		/// <param name="colInfo5"></param>
+		/// <param name="colInfo6"></param>
+		/// <param name="colInfo7"></param>
+		public void InvokeRegisterProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB
+									, string ekpDB, string formDB, string formTable, int version, string xfAlias, string formID
+									, string msgID, string oID, string nextStep, string dateInfo, string requesterInfo
+									, string colInfo1, string colInfo2, string colInfo3, string colInfo4, string colInfo5, string colInfo6, string colInfo7)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFRegister";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@nextstep", SqlDbType.VarChar, 20, nextStep),
+				ParamSet.Add4Sql("@dateinfo", SqlDbType.VarChar, 100, dateInfo),
+				ParamSet.Add4Sql("@requesterinfo", SqlDbType.NVarChar, 500, requesterInfo),
+				ParamSet.Add4Sql("@colinfo1", SqlDbType.NVarChar, 500, colInfo1),
+				ParamSet.Add4Sql("@colinfo2", SqlDbType.NVarChar, 500, colInfo2),
+				ParamSet.Add4Sql("@colinfo3", SqlDbType.NVarChar, 500, colInfo3),
+				ParamSet.Add4Sql("@colinfo4", SqlDbType.NVarChar, 500, colInfo4),
+				ParamSet.Add4Sql("@colinfo5", SqlDbType.NVarChar, 500, colInfo5),
+				ParamSet.Add4Sql("@colinfo6", SqlDbType.NVarChar, 500, colInfo6),
+				ParamSet.Add4Sql("@colinfo7", SqlDbType.NVarChar, 500, colInfo7)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [동기식 ERP 연동 및 대장 등록 - 동일 트랜잭션]
+		/// <summary>
+		/// 동기식 ERP 연동 처리
+		/// </summary>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="curPartID"></param>
+		/// <param name="externalKey1"></param>
+		/// <param name="externalKey2"></param>
+		/// <param name="col1"></param>
+		/// <param name="col2"></param>
+		/// <param name="col3"></param>
+		/// <param name="col4"></param>
+		/// <param name="col5"></param>
+		public void SetIFServiceERP(int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB, string formTable
+								, int version, string xfAlias, string formID, string msgID, string oID, string curPartID, string externalKey1
+								, string externalKey2, string col1, string col2, string col3, string col4, string col5)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFServiceERP";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@curpartid", SqlDbType.VarChar, 33, curPartID),
+				ParamSet.Add4Sql("@externalkey1", SqlDbType.NVarChar, 50, externalKey1),
+				ParamSet.Add4Sql("@externalkey2", SqlDbType.NVarChar, 50, externalKey2),
+				ParamSet.Add4Sql("@col1", SqlDbType.NVarChar, 100, col1),
+				ParamSet.Add4Sql("@col2", SqlDbType.NVarChar, 100, col2),
+				ParamSet.Add4Sql("@col3", SqlDbType.NVarChar, 100, col3),
+				ParamSet.Add4Sql("@col4", SqlDbType.NVarChar, 100, col4),
+				ParamSet.Add4Sql("@col5", SqlDbType.NVarChar, -1, col5)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 동기식 대장 등록
+		/// </summary>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="state"></param>
+		/// <param name="nextStep"></param>
+		/// <param name="dateInfo"></param>
+		/// <param name="requesterInfo"></param>
+		/// <param name="colInfo1"></param>
+		/// <param name="colInfo2"></param>
+		/// <param name="colInfo3"></param>
+		/// <param name="colInfo4"></param>
+		/// <param name="colInfo5"></param>
+		/// <param name="colInfo6"></param>
+		/// <param name="colInfo7"></param>
+		public void SetIFServiceRegister(int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB, string formTable
+								, int version, string xfAlias, string formID, string msgID, string oID, int state, string nextStep, string dateInfo, string requesterInfo
+								, string colInfo1, string colInfo2, string colInfo3, string colInfo4, string colInfo5, string colInfo6, string colInfo7)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFServiceRegister";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, state),
+				ParamSet.Add4Sql("@nextstep", SqlDbType.VarChar, 20, nextStep),
+				ParamSet.Add4Sql("@dateinfo", SqlDbType.VarChar, 100, dateInfo),
+				ParamSet.Add4Sql("@requesterinfo", SqlDbType.NVarChar, 500, requesterInfo),
+				ParamSet.Add4Sql("@colinfo1", SqlDbType.NVarChar, 500, colInfo1),
+				ParamSet.Add4Sql("@colinfo2", SqlDbType.NVarChar, 500, colInfo2),
+				ParamSet.Add4Sql("@colinfo3", SqlDbType.NVarChar, 500, colInfo3),
+				ParamSet.Add4Sql("@colinfo4", SqlDbType.NVarChar, 500, colInfo4),
+				ParamSet.Add4Sql("@colinfo5", SqlDbType.NVarChar, 500, colInfo5),
+				ParamSet.Add4Sql("@colinfo6", SqlDbType.NVarChar, 500, colInfo6),
+				ParamSet.Add4Sql("@colinfo7", SqlDbType.NVarChar, 500, colInfo7)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [문서이관]
+		/// <summary>
+		/// 문서이관 작업을 수행
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="transferInfo"></param>
+		/// <param name="fileInfo"></param>
+		/// <param name="signLine"></param>
+		public void InvokeTransferProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB
+									, string ekpDB, string formDB, string formTable, string xfAlias, string formID
+									, string msgID, string oID, string transferInfo, string fileInfo, string signLine)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFTransfer";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@trasferinfo", SqlDbType.NVarChar, 2000, transferInfo),
+				ParamSet.Add4Sql("@fileinfo", SqlDbType.NVarChar, -1, fileInfo),
+				ParamSet.Add4Sql("@signinfo", SqlDbType.NVarChar, -1, signLine)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 문서이관:신규문서관리
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="transferInfo"></param>
+		/// <param name="fileInfo"></param>
+		/// <param name="signLine"></param>
+		/// <param name="bodyInfo"></param>
+		public void InvokeTransferProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB
+									, string ekpDB, string formDB, string formTable, string xfAlias, string formID
+									, string msgID, string oID, string transferInfo, string fileInfo, string signLine, string bodyInfo)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFTransferRule";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@trasferinfo", SqlDbType.NVarChar, 2000, transferInfo),
+				ParamSet.Add4Sql("@fileinfo", SqlDbType.NVarChar, -1, fileInfo),
+				ParamSet.Add4Sql("@signinfo", SqlDbType.NVarChar, -1, signLine),
+				ParamSet.Add4Sql("@bodyinfo", SqlDbType.NVarChar, -1, bodyInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [게시물 등록]
+		/// <summary>
+		/// 게시물 등록
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="folderId"></param>
+		/// <param name="tgtXFAlias"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorId"></param>
+		/// <param name="creatorDeptId"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="subject"></param>
+		/// <param name="body"></param>
+		/// <param name="fileInfo"></param>
+		public void InvokeTransferPubProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB
+									, string ekpDB, string formDB, string formTable, int version, string xfAlias, string formID
+									, string msgID, string oID, int folderId, string tgtXFAlias, string creator, int creatorId
+									, int creatorDeptId, string creatorDept, string publishDate, string subject, string body, string fileInfo)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFTransferPub";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@folderid", SqlDbType.Int, folderId),
+				ParamSet.Add4Sql("@tgtxfalias", SqlDbType.VarChar, 30, tgtXFAlias),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
+				ParamSet.Add4Sql("@creatorid", SqlDbType.Int, creatorId),
+				ParamSet.Add4Sql("@creatordeptid", SqlDbType.Int, creatorDeptId),
+				ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 200, creatorDept),
+				ParamSet.Add4Sql("@publishdate", SqlDbType.VarChar, 20, publishDate),
+				ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 100, subject),
+				ParamSet.Add4Sql("@body", SqlDbType.NVarChar, -1, body),
+				ParamSet.Add4Sql("@fileinfo", SqlDbType.NVarChar, -1, fileInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [문서배포, 메일 알림 및 메신저 알림 등록]
+		/// <summary>
+		/// 문서배포 및 메일알림
+		/// </summary>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="ifDB"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="requesterInfo"></param>
+		/// <param name="colInfo1"></param>
+		/// <param name="colInfo2"></param>
+		public void InvokeMailCabinet(string ifId, int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB
+						, string formTable, int version, string xfAlias, string formID, string msgID, string oID, string requesterInfo, string colInfo1, string colInfo2)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFMailCabinet";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@requesterinfo", SqlDbType.NVarChar, 500, requesterInfo),
+				ParamSet.Add4Sql("@colinfo1", SqlDbType.NVarChar, 500, colInfo1),
+				ParamSet.Add4Sql("@colinfo2", SqlDbType.NVarChar, 500, colInfo2)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 메신저 알림 등록
+		/// </summary>
+		/// <param name="ifDB"></param>
+		/// <param name="ifId"></param>
+		/// <param name="dnID"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="formTable"></param>
+		/// <param name="version"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <param name="sender"></param>
+		/// <param name="receiveIds"></param>
+		/// <param name="subject"></param>
+		/// <param name="content"></param>
+		/// <param name="url"></param>
+		public void InvokeMessengerAlarm(string ifDB, string ifId, int dnID, string moduleID, string companyCode
+									, string formTable, int version, string xfAlias, string formID, string msgID, string oID
+									, string sender, string receiveIds, string subject, string content, string url)
+		{
+
+			if (ifDB != "") ifDB += ".";
+			string strSP = ifDB + "admin.ph_up_SetIFMessengerAlarm";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ifid", SqlDbType.BigInt, Convert.ToInt64(ifId)),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, dnID),
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				//ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, ekpDB),
+				//ParamSet.Add4Sql("@formdb", SqlDbType.VarChar, 100, formDB),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, version),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.VarChar, 33, oID),
+				ParamSet.Add4Sql("@sender", SqlDbType.NVarChar, 200, sender),
+				ParamSet.Add4Sql("@recvid", SqlDbType.VarChar, 4000, receiveIds),
+				ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 200, subject),
+				ParamSet.Add4Sql("@content", SqlDbType.NVarChar, 4000, content),
+				ParamSet.Add4Sql("@url", SqlDbType.VarChar, 500, url)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+	}
 }
