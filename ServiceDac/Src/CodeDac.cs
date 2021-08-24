@@ -61,6 +61,34 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 관리되는 코드값을 가져온다.
+		/// </summary>
+		/// <param name="key1"></param>
+		/// <param name="key2"></param>
+		/// <param name="key3"></param>
+		/// <returns></returns>
+		public DataSet SelectCodeDescriptionToSet(string key1, string key2, string key3)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@key1", SqlDbType.VarChar, 63, key1),
+				ParamSet.Add4Sql("@key2", SqlDbType.VarChar, 63, key2),
+				ParamSet.Add4Sql("@key3", SqlDbType.VarChar, 63, key3)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_SelectCodeDescription", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
 		/// 관리되는 코드 저장
 		/// </summary>
 		/// <param name="key1"></param>
