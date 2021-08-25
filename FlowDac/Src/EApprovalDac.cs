@@ -2634,5 +2634,60 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             return dsReturn;
         }
         #endregion
+
+        #region [양식 분류 관리]
+
+        /// <summary>
+        /// 양식 분류 관리
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormClass(int dnID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFSelectEAFormClass", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 결재 양식 분류 관리
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="classid"></param>
+        /// <param name="domainid"></param>
+        /// <param name="formname"></param>
+        /// <param name="formseqno"></param>
+        public void HandleEAFormClass(string command, int classid, int domainid, string formname, int formseqno)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
+                ParamSet.Add4Sql("@classid", SqlDbType.Int, classid),
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, domainid),
+                ParamSet.Add4Sql("@formname", SqlDbType.NVarChar, 100, formname),
+                ParamSet.Add4Sql("@formseqno", SqlDbType.Int, formseqno)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormKind", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        #endregion
     }
 }
