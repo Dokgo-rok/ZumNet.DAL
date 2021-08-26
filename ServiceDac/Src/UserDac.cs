@@ -649,13 +649,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchColumn"></param>
 		/// <param name="searchText"></param>
 		/// <returns></returns>
-		public DataSet GetGroupSearchMembers(string domainID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText)
+		public DataSet GetGroupSearchMembers(int domainID, int pageIndex, int pageCount, string sortColumn, string sortType, string searchColumn, string searchText)
 		{
 			DataSet dsReturn = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@dn_id", SqlDbType.VarChar, 3, domainID),
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, domainID),
 				ParamSet.Add4Sql("@pageIdx", SqlDbType.Int, 4, pageIndex),
 				ParamSet.Add4Sql("@pageCnt", SqlDbType.Int, 4, pageCount),
 				ParamSet.Add4Sql("@sortCol", SqlDbType.VarChar, 20, sortColumn),

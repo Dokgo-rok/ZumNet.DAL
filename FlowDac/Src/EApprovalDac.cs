@@ -35,6 +35,7 @@ namespace ZumNet.DAL.FlowDac
 		}
 
         #region [양식 관리]
+
         /// <summary>
         /// 양식 분류 관리
         /// </summary>
@@ -213,6 +214,7 @@ namespace ZumNet.DAL.FlowDac
 
             return xfDef;
         }
+
         #endregion
 
         #region [문서 생성 및 변경, 조회]
@@ -2686,6 +2688,60 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             {
                 string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
+        }
+
+        /// <summary>
+        /// 양식 조회(등록되어 있는 모든 양식)
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormList(int dnID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormList", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        #endregion
+
+        #region [ 양식 문서 정보 ]
+
+        /// <summary>
+        /// 문서에 대한 전체 정보 조회
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <param name="messageID"></param>
+        /// <returns></returns>
+        public DataSet GetEADocumentTotalData(int dnID, int messageID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, dnID),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetProcessTotalDataForAdmin", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
         }
 
         #endregion
