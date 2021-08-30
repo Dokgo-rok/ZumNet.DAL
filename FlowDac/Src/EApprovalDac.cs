@@ -2745,5 +2745,30 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         }
 
         #endregion
+
+        #region [ 양식 담당 관리 변경 ]
+
+        /// <summary>
+        /// 양식 담당 관리 변경 - JSON 이용
+        /// </summary>
+        /// <param name="formid"></param>
+        /// <param name="chargejson"></param>
+        public void UpdateEAFormChargeJson(string formid, string chargejson)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formid),
+                ParamSet.Add4Sql("@chargejson", SqlDbType.NVarChar, chargejson)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_UpdateEAFormChargeJson", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        #endregion
     }
 }
