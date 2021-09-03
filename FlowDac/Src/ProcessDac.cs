@@ -755,7 +755,79 @@ namespace ZumNet.DAL.FlowDac
 
 			return iReturn;
 		}
+
 		#endregion
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="processID"></param>
+		/// <param name="isInUse"></param>
+		/// <returns></returns>
+		public DataSet GetProcessListByCondition(int domainID, int processID, string isInUse)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@domainid", SqlDbType.TinyInt, 1, domainID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@isinuse", SqlDbType.Char, 1, isInUse)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessListByCondition", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="domainID"></param>
+		/// <param name="formID"></param>
+		/// <param name="classID"></param>
+		/// <param name="processID"></param>
+		/// <param name="docName"></param>
+		/// <param name="description"></param>
+		/// <param name="xslName"></param>
+		/// <param name="cssName"></param>
+		/// <param name="jsName"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public int HandleEAFormBasicManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description, string xslName, string cssName, string jsName, string usage)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
+				ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@classid", SqlDbType.Int, 4, classID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
+				ParamSet.Add4Sql("@xslname", SqlDbType.VarChar, 100, xslName),
+				ParamSet.Add4Sql("@cssname", SqlDbType.VarChar, 100, cssName),
+				ParamSet.Add4Sql("@jsname", SqlDbType.VarChar, 100, jsName),
+				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormBasicManagement", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+			}
+
+			return iReturn;
+		}
 	}
 }

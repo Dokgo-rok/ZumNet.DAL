@@ -2746,22 +2746,124 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
         #endregion
 
-        #region [ 양식 담당 관리 변경 ]
+        #region [ 양식 담당 관리 ]
 
         /// <summary>
         /// 양식 담당 관리 변경 - JSON 이용
         /// </summary>
-        /// <param name="formid"></param>
+        /// <param name="formID"></param>
         /// <param name="chargejson"></param>
-        public void UpdateEAFormChargeJson(string formid, string chargejson)
+        public void UpdateEAFormChargeJson(string formID, string chargejson)
         {
             SqlParameter[] parameters = new SqlParameter[]
             {
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formid),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
                 ParamSet.Add4Sql("@chargejson", SqlDbType.NVarChar, chargejson)
             };
 
             ParamData pData = new ParamData("admin.ph_up_UpdateEAFormChargeJson", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        #endregion
+
+        #region [ 양식 부가 설정 ]
+
+        /// <summary>
+        /// 양식폼 필드 업데이트
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="targetField"></param>
+        /// <param name="targetValue"></param>
+        public void UpdateEAFormFieldValue(string formID, string targetField, string targetValue)
+        {
+            string query = $"UPDATE admin.PH_EA_FORMS WITH (ROWLOCK) SET {targetField} = @value WHERE FormID = @formid";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@value", SqlDbType.NVarChar, 500, targetValue)
+            };
+
+            ParamData pData = new ParamData(query, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        #endregion
+
+        #region [ 양식 알림 설정 ]
+
+        /// <summary>
+        /// 양식 알림 설정 정보 조회
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormNotice(string formID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formID", SqlDbType.VarChar, 33, formID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_SelectEAFormNotice", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 양식 알림 설정 업데이트
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="period"></param>
+        /// <param name="field"></param>
+        /// <param name="deferment"></param>
+        /// <param name="mailuse"></param>
+        public void UpdateEAFormNoticeFormSet(string formID, int period, string field, int deferment, string mailuse)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@period", SqlDbType.SmallInt, period),
+                ParamSet.Add4Sql("@field", SqlDbType.NVarChar, 30, field),
+                ParamSet.Add4Sql("@deferment", SqlDbType.SmallInt, deferment),
+                ParamSet.Add4Sql("@mailuse", SqlDbType.Char, 1, mailuse)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_UpdateEAFormNoticeFormSet", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 알림 설정 삭제
+        /// </summary>
+        /// <param name="formID"></param>
+        public void DeleteEAFormNoticeFormSet(string formID)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_DeleteEAFormNoticeFormSet", parameters);
 
             using (DbBase db = new DbBase())
             {
