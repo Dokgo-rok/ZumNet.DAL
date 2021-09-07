@@ -921,5 +921,110 @@ namespace ZumNet.DAL.FlowDac
 
 			return dsReturn;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessDefinition(int processID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinition", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="validFromDate"></param>
+		/// <param name="validToDate"></param>
+		/// <param name="processName"></param>
+		/// <param name="priority"></param>
+		/// <param name="description"></param>
+		/// <param name="inUse"></param>
+		/// <param name="creator"></param>
+		/// <param name="reserved1"></param>
+		/// <returns></returns>
+		public int UpdateBFProcessDefinition(int processID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
+				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
+				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
+				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
+				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessDefinition", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="validFromDate"></param>
+		/// <param name="validToDate"></param>
+		/// <param name="processName"></param>
+		/// <param name="priority"></param>
+		/// <param name="description"></param>
+		/// <param name="inUse"></param>
+		/// <param name="creator"></param>
+		/// <param name="reserved1"></param>
+		/// <returns></returns>
+		public int CreateBFProcessDefinition(int domainID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
+				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
+				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
+				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
+				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessDefinition", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
 	}
 }
