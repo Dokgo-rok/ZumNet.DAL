@@ -796,12 +796,14 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="processID"></param>
 		/// <param name="docName"></param>
 		/// <param name="description"></param>
+		/// <param name="selectable"></param>
 		/// <param name="xslName"></param>
 		/// <param name="cssName"></param>
 		/// <param name="jsName"></param>
 		/// <param name="usage"></param>
+		/// <param name="mainTable"></param>
 		/// <returns></returns>
-		public int HandleEAFormBasicManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description, string xslName, string cssName, string jsName, string usage)
+		public int HandleEAFormBasicManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description, string selectable, string xslName, string cssName, string jsName, string usage, string mainTable)
 		{
 			int iReturn = 0;
 
@@ -814,20 +816,110 @@ namespace ZumNet.DAL.FlowDac
 				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
 				ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
 				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
+				ParamSet.Add4Sql("@selectable", SqlDbType.Char, 1, selectable),
 				ParamSet.Add4Sql("@xslname", SqlDbType.VarChar, 100, xslName),
 				ParamSet.Add4Sql("@cssname", SqlDbType.VarChar, 100, cssName),
 				ParamSet.Add4Sql("@jsname", SqlDbType.VarChar, 100, jsName),
-				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage)
+				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage),
+				ParamSet.Add4Sql("@mainTable", SqlDbType.VarChar, 100, mainTable)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormBasicManagement", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
 			return iReturn;
+		}
+
+		/// <summary>
+		/// 폼 관련 업데이트
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="formID"></param>
+		/// <param name="tableDef"></param>
+		/// <param name="tableCount"></param>
+		/// <param name="usage"></param>
+		/// <returns></returns>
+		public int HandleEAFormTableManagement(string command, string formID, string tableDef, int tableCount, string usage)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@command", SqlDbType.Char, 2, command),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@tableDef", SqlDbType.NText, tableDef),
+				ParamSet.Add4Sql("@tableCount", SqlDbType.TinyInt, 1, tableCount),
+				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormTableManagement", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 양식 폼 기타 정보 저장
+		/// </summary>
+		/// <param name="formID"></param>
+		/// <param name="webEditor"></param>
+		/// <param name="htmlFile"></param>
+		/// <param name="processNameString"></param>
+		/// <param name="validation"></param>
+		/// <returns></returns>
+		public int HandleEAFormEtcManagement(string formID, string webEditor, string htmlFile, string processNameString, string validation)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@webEditor", SqlDbType.VarChar, 20, webEditor),
+				ParamSet.Add4Sql("@htmlFile", SqlDbType.NVarChar, 255, htmlFile),
+				ParamSet.Add4Sql("@processNameString", SqlDbType.VarChar, 200, processNameString),
+				ParamSet.Add4Sql("@validation", SqlDbType.VarChar, 1000, validation)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormEtcManagement", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public DataSet GetBFWorkItemOID(int oID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemOID", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
 		}
 	}
 }

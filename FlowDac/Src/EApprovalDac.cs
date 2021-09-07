@@ -2872,5 +2872,83 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         }
 
         #endregion
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="domainID"></param>
+        /// <param name="formID"></param>
+        /// <returns></returns>
+        public DataSet GetBFEAFormData(int domainID, string formID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormData", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 코드에 대한 조회
+        /// </summary>
+        /// <param name="itemKey"></param>
+        /// <param name="itemSubKey"></param>
+        /// <returns></returns>
+        public DataSet GetBFCodeRole(string itemKey, string itemSubKey)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@itemkey", SqlDbType.VarChar, 63, itemKey),
+                ParamSet.Add4Sql("@itemsubkey", SqlDbType.VarChar, 63, itemSubKey)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFSelectCodeRole", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 결재 문서 삭제
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="messageID"></param>
+        /// <returns></returns>
+		public int DeleteBFEAData(string command, int messageID)
+        {
+            int iReturn = 0;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 7, command),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFDeleteEAData", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
     }
 }
