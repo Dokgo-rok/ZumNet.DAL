@@ -207,7 +207,7 @@ namespace ZumNet.DAL.ServiceDac
             DataSet ds = null;
             SqlParameter[] parameters = new SqlParameter[]
             {
-                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, "Y"),
+                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, "V"),
                 ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId),
                 ParamSet.Add4Sql("@workdate", SqlDbType.Char, 10, workDate)
             };
