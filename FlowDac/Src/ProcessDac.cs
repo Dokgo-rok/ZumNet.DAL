@@ -1026,5 +1026,217 @@ namespace ZumNet.DAL.FlowDac
 
 			return iReturn;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="domainID"></param>
+		/// <param name="validFromDate"></param>
+		/// <param name="validToDate"></param>
+		/// <param name="processName"></param>
+		/// <param name="priority"></param>
+		/// <param name="description"></param>
+		/// <param name="inUse"></param>
+		/// <param name="creator"></param>
+		/// <param name="reserved1"></param>
+		/// <returns></returns>
+		public int CopyBFProcessDefinition(int processID, int domainID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
+				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
+				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
+				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
+				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCopyProcessDefinition", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessDefinitionForExport(int processID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinitionForExport", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="defID"></param>
+		/// <param name="domainID"></param>
+		/// <param name="processName"></param>
+		/// <param name="defXml"></param>
+		/// <param name="actXml"></param>
+		/// <param name="attXml"></param>
+		/// <param name="partXml"></param>
+		/// <returns></returns>
+		public int CreateBFProcessWithImport(string mode, int defID, int domainID, string processName, string defXml, string actXml, string attXml, string partXml)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@defid", SqlDbType.Int, 4, defID),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
+				ParamSet.Add4Sql("@def", SqlDbType.NVarChar, -1, defXml),
+				ParamSet.Add4Sql("@act", SqlDbType.NVarChar, -1, actXml),
+				ParamSet.Add4Sql("@att", SqlDbType.NVarChar, -1, attXml),
+				ParamSet.Add4Sql("@part", SqlDbType.NVarChar, -1, partXml)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessWithImport", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 회사 서비스 모드 가져오기
+		/// </summary>
+		/// <param name="companyCode"></param>
+		/// <returns></returns>
+		public DataSet GetBFServiceCompanyDetail(string companyCode)
+		{
+			DataSet dsReturn = null;
+			string strQuery = "SELECT BFFlowPreAppMode, BFFlowSvcMode, BFFlowSvcInterval FROM admin.PH_SERVICE_COMPANY_DETAIL (NOLOCK) WHERE CompanyCode = @companycode";
+			
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companyCode)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 전체 사용자 서비스 모드 설정 가져오기
+		/// </summary>
+		/// <returns></returns>
+		public DataSet GetBFServiceMemberDetail()
+		{
+			DataSet dsReturn = null;
+			string strQuery = @"SELECT UserID, EmpID, DisplayName, Grade1, GroupName, FlowPreAppMode, FlowSvcMode, FlowSvcInterval FROM admin.ph_view_OBJECT_UR_LIST (NOLOCK) WHERE GRType='D' AND Role='regular' ORDER BY FlowPreAppMode DESC, FlowSvcMode DESC, GroupName, DisplayName";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 서비스/선결 모드 변경
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="svcMode"></param>
+		/// <param name="interval"></param>
+		/// <param name="preAppMode"></param>
+		/// <returns></returns>
+		public int ChangeUserServiceMode(int userID, string svcMode, int interval, string preAppMode)
+		{
+			int iReturn = 0;
+			string strQuery = "UPDATE admin.PH_USER_CONFIGURATION WITH (ROWLOCK) SET UseBFFlowPreAppMode=@preapp, UseBFFlowSvcMode=@svcmode, BFFlowSvcInterval=@svcinterval WHERE UserID=@urId";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@urId", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@svcmode", SqlDbType.Char, 1, svcMode),
+				ParamSet.Add4Sql("@svcinterval", SqlDbType.TinyInt, 4, interval),
+				ParamSet.Add4Sql("@preapp", SqlDbType.Char, 1, preAppMode)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// Process, WorkItem, Report Master State 처리 상태 변경
+		/// </summary>
+		/// <param name="entityKind"></param>
+		/// <param name="targetID"></param>
+		/// <param name="stateValue"></param>
+		/// <returns></returns>
+		public int ChangeBFServiceState(string entityKind, string targetID, int stateValue)
+		{
+			int iReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@entity", SqlDbType.Char, 1, entityKind),
+				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, stateValue)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeState", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return iReturn;
+		}
 	}
 }

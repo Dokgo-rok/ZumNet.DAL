@@ -2950,5 +2950,198 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
             return iReturn;
         }
+
+        /// <summary>
+        /// 문서 수신 정책 변경 - 부서
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="reserved1"></param>
+        /// <returns></returns>
+        public int ChangeReceiverDeptPolicy(int groupID, string reserved1)
+        {
+            int iReturn = 0;
+            string strQuery = "UPDATE admin.PH_OBJECT_GR WITH (ROWLOCK) SET Reserved1 = @reserved1 WHERE GR_ID = @grid";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 10, reserved1)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
+
+        /// <summary>
+        /// 문서 수신 담당자 조회
+        /// </summary>
+        /// <param name="auAlias"></param>
+        /// <returns></returns>
+        public DataSet GetReceiverManager(string auAlias)
+        {
+            DataSet dsReturn = null;
+            string strQuery = @"
+                 SELECT a.ObjectID, a.TargetID, b.DisplayName, b.Grade1 FROM admin.PH_AUTHORITY a (NOLOCK)
+                    INNER JOIN admin.ph_view_OBJECT_UR_LIST b (NOLOCK)
+                        ON a.TargetID = b.UserID AND a.ObjectID = b.GR_ID
+                 WHERE a.AUAlias=@aualias AND a.ObjectType='GR' AND a.TargetType='UR'";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@aualias", SqlDbType.VarChar, 20, auAlias)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 권한(authority) 설정
+        /// </summary>
+        /// <param name="objId"></param>
+        /// <param name="objType"></param>
+        /// <param name="tgtId"></param>
+        /// <param name="tgtType"></param>
+        /// <param name="auAlias"></param>
+        /// <param name="dscpt"></param>
+        /// <returns></returns>
+        public int InsertAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias, string dscpt)
+        {
+            int iReturn = 0;
+            string strQuery = @"
+ INSERT INTO admin.PH_AUTHORITY (ObjectID, ObjectType, TargetID, TargetType, AUAlias, CreateDate, Description)
+ VALUES (@objectid, @objecttype, @targetid, @targettype, @aualias, GETDATE(), @dscpt)";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objId),
+                ParamSet.Add4Sql("@objecttype", SqlDbType.VarChar, 30, objType),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, tgtId),
+                ParamSet.Add4Sql("@targettype", SqlDbType.Char, 2, tgtType),
+                ParamSet.Add4Sql("@aualias", SqlDbType.VarChar, 20, auAlias),
+                ParamSet.Add4Sql("@dscpt", SqlDbType.NVarChar, 100, dscpt)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
+
+        /// <summary>
+        /// 특정 항목, 특정 권한에 지정된 권한(authority)자 삭제
+        /// </summary>
+        /// <param name="objId"></param>
+        /// <param name="objType"></param>
+        /// <param name="tgtId"></param>
+        /// <param name="tgtType"></param>
+        /// <param name="auAlias"></param>
+        /// <returns></returns>
+        public int DeleteAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias)
+        {
+            int iReturn = 0;
+
+            string strQuery = "DELETE FROM admin.PH_AUTHORITY WITH (ROWLOCK) WHERE ObjectID=@objectid AND ObjectType=@objecttype";
+            if (tgtId != 0 && tgtType != "") strQuery += " AND TargetID=@targetid AND TargetType=@targettype";
+            if (auAlias != "") strQuery += " AND AUAlias = @aualias";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objId),
+                ParamSet.Add4Sql("@objecttype", SqlDbType.VarChar, 30, objType),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, tgtId),
+                ParamSet.Add4Sql("@targettype", SqlDbType.Char, 2, tgtType),
+                ParamSet.Add4Sql("@aualias", SqlDbType.VarChar, 20, auAlias)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
+
+        /// <summary>
+        /// 공유된 문서함 삭제
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="targetID"></param>
+        /// <param name="folderType"></param>
+        /// <returns></returns>
+        public int DeleteEAFolderView(int groupID, int targetID, string folderType)
+        {
+            int iReturn = 0;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
+                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_DeleteEAFolderView", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
+
+        /// <summary>
+        /// 공유된 문서함 추가
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="targetID"></param>
+        /// <param name="folderType"></param>
+        /// <param name="seq"></param>
+        /// <param name="subSeq"></param>
+        /// <param name="registrant"></param>
+        /// <param name="reserved1"></param>
+        /// <returns></returns>
+        public int InsertEAFolderView(int groupID, int targetID, string folderType, int seq, int subSeq, string registrant, string reserved1)
+        {
+            int iReturn = 0;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
+                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType),
+                ParamSet.Add4Sql("@seq", SqlDbType.SmallInt, 2, seq),
+                ParamSet.Add4Sql("@subseq", SqlDbType.SmallInt, 2, subSeq),
+                ParamSet.Add4Sql("@registrant", SqlDbType.NVarChar, 100, registrant),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 500, reserved1)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_InsertEAFolderView", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
     }
 }
