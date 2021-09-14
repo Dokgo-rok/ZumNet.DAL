@@ -71,7 +71,7 @@ namespace ZumNet.DAL.ServiceDac
             SqlParameter[] parameters = new SqlParameter[]
             {
                 ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, ""),
-                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userId)
+                ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, userId)
             };
 
             ParamData pData = new ParamData("admin.up_ToDoGetAcl", parameters);
@@ -806,13 +806,13 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
         /// <param name="viewDate"></param>
         /// <param name="member"></param>
         /// <returns></returns>
-        public string GetWorkTimeRequest(string mode, int targetId, string location, string viewDate, string member)
+        public DataSet GetWorkTimeRequest(string mode, int targetId, string location, string viewDate, string member)
         {
-            string strReturn = "";
+            DataSet ds = null;
             SqlParameter[] parameters = new SqlParameter[]
             {
                 ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
-                ParamSet.Add4Sql("@viewer", SqlDbType.Int, 4, targetId),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetId),
                 ParamSet.Add4Sql("@location", SqlDbType.VarChar, 20, location),
                 ParamSet.Add4Sql("@viewdate", SqlDbType.Char, 10, viewDate),
                 ParamSet.Add4Sql("@member", SqlDbType.VarChar, 2000, member)
@@ -822,10 +822,10 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
-            return strReturn;
+            return ds;
         }
         #endregion
 
