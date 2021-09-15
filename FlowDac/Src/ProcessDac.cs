@@ -424,9 +424,10 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="searchCol"></param>
 		/// <param name="searchText"></param>
 		/// <param name="searchDate"></param>
+		/// <param name="totalMessage"></param>
 		/// <returns></returns>
 		public DataSet GetListPerMenu(string mode, string admin, string formId, int defId, int viewer, int state, int page, int count
-								, string baseSortCol, string sortCol, string sortType, string searchCol, string searchText, string searchDate)
+								, string baseSortCol, string sortCol, string sortType, string searchCol, string searchText, string searchDate, out int totalMessage)
 		{
 			DataSet dsReturn = null;
 
@@ -455,6 +456,7 @@ namespace ZumNet.DAL.FlowDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				totalMessage = Convert.ToInt32(pData.GetParamValue("@total_cnt").ToString());
 			}
 
 			return dsReturn;
