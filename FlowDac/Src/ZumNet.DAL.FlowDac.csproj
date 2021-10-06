@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EApprovalDac.cs" />
+    <Compile Include="EngineDac.cs" />
     <Compile Include="ProcessDac.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

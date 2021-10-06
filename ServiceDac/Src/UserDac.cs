@@ -1491,5 +1491,186 @@ namespace ZumNet.DAL.ServiceDac
 
 			return dsReturn;
 		}
+
+		/// <summary>
+		/// 사용자 LogonID 중복체크
+		/// </summary>
+		/// <param name="logonID"></param>
+		/// <returns></returns>
+		public DataSet CheckUserAlias(string logonID)
+		{
+			DataSet dsReturn = null;
+			string strQuery = "select empid from admin.ph_object_ur (nolock) where logonid = @logonID and outdate is null";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@logonID", SqlDbType.VarChar, 30, logonID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 사용자 기본 정보 수정
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="displayName"></param>
+		/// <param name="longName"></param>
+		/// <param name="firstName"></param>
+		/// <param name="lastName"></param>
+		/// <param name="employeeID"></param>
+		/// <param name="joinDate"></param>
+		/// <param name="secondMail"></param>
+		/// <param name="gradeCode1"></param>
+		/// <param name="gradeCode2"></param>
+		/// <param name="gradeCode3"></param>
+		/// <param name="gradeCode4"></param>
+		/// <param name="gradeCode5"></param>
+		/// <param name="isgw"></param>
+		/// <param name="ispdm"></param>
+		/// <param name="iserp"></param>
+		/// <param name="ismsg"></param>
+		public void UpdateURBasicInfo(int userID, string displayName, string longName, string firstName, string lastName, string employeeID, string joinDate, string secondMail, string gradeCode1, string gradeCode2, string gradeCode3, string gradeCode4, string gradeCode5, string isgw, string ispdm, string iserp, string ismsg)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, userID),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@longname", SqlDbType.NVarChar, 100, longName),
+				ParamSet.Add4Sql("@fname", SqlDbType.NVarChar, 50, firstName),
+				ParamSet.Add4Sql("@lname", SqlDbType.NVarChar, 50, lastName),
+				ParamSet.Add4Sql("@empid", SqlDbType.VarChar, 30, employeeID),
+				ParamSet.Add4Sql("@indate", SqlDbType.Char, 10, joinDate),
+				ParamSet.Add4Sql("@secondmail", SqlDbType.VarChar, 30, secondMail),
+				ParamSet.Add4Sql("@gradecode1", SqlDbType.VarChar, 10, gradeCode1),
+				ParamSet.Add4Sql("@gradecode2", SqlDbType.VarChar, 10, gradeCode2),
+				ParamSet.Add4Sql("@gradecode3", SqlDbType.VarChar, 10, gradeCode3),
+				ParamSet.Add4Sql("@gradecode4", SqlDbType.VarChar, 10, gradeCode4),
+				ParamSet.Add4Sql("@gradecode5", SqlDbType.VarChar, 10, gradeCode5),
+				ParamSet.Add4Sql("@isgw", SqlDbType.Char, 1, isgw),
+				ParamSet.Add4Sql("@ispdm", SqlDbType.Char, 1, ispdm),
+				ParamSet.Add4Sql("@iserp", SqlDbType.Char, 1, iserp),
+				ParamSet.Add4Sql("@ismsg", SqlDbType.Char, 1, ismsg)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BaseUpdateURBasicInfo", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 사용자 상세 정보 1 업데이트
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="personNo1"></param>
+		/// <param name="personNo2"></param>
+		/// <param name="birth"></param>
+		/// <param name="birthType"></param>
+		/// <param name="mobile"></param>
+		/// <param name="telephone"></param>
+		/// <param name="keyword1"></param>
+		/// <param name="keyword2"></param>
+		/// <param name="keyword3"></param>
+		/// <param name="keyword4"></param>
+		/// <param name="keyword5"></param>
+		/// <param name="keyword6"></param>
+		/// <param name="keyword7"></param>
+		public void UpdateURDetail1Info(int userID, string personNo1, string personNo2, string birth, string birthType, string mobile, string telephone, string keyword1, string keyword2, string keyword3, string keyword4, string keyword5, string keyword6, string keyword7)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, userID),
+				ParamSet.Add4Sql("@personno1", SqlDbType.VarChar, 20, personNo1),
+				ParamSet.Add4Sql("@personno2", SqlDbType.VarChar, 63, personNo2),
+				ParamSet.Add4Sql("@birth", SqlDbType.Char, 10, birth),
+				ParamSet.Add4Sql("@birthtype", SqlDbType.Char, 1, birthType),
+				ParamSet.Add4Sql("@mobile", SqlDbType.VarChar, 30, mobile),
+				ParamSet.Add4Sql("@telephone", SqlDbType.VarChar, 30, telephone),
+				ParamSet.Add4Sql("@keyword1", SqlDbType.NVarChar, 100, keyword1),
+				ParamSet.Add4Sql("@keyword2", SqlDbType.NVarChar, 100, keyword2),
+				ParamSet.Add4Sql("@keyword3", SqlDbType.NVarChar, 100, keyword3),
+				ParamSet.Add4Sql("@keyword4", SqlDbType.NVarChar, 100, keyword4),
+				ParamSet.Add4Sql("@keyword5", SqlDbType.NVarChar, 100, keyword5),
+				ParamSet.Add4Sql("@keyword6", SqlDbType.NVarChar, 100, keyword6),
+				ParamSet.Add4Sql("@keyword7", SqlDbType.NVarChar, 100, keyword7)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BaseUpdateURDetail1Info", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 사용자 상세 정보 2 업데이트
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="fax"></param>
+		/// <param name="homePhone"></param>
+		/// <param name="homePage"></param>
+		/// <param name="themePath"></param>
+		/// <param name="zipCode1"></param>
+		/// <param name="address1"></param>
+		/// <param name="detailAddress1"></param>
+		/// <param name="company"></param>
+		/// <param name="zipCode2"></param>
+		/// <param name="address2"></param>
+		/// <param name="detailAddress2"></param>
+		public void UpdateURDetail2Info(int userID, string fax, string homePhone, string homePage, int themePath, string zipCode1, string address1, string detailAddress1, string company, string zipCode2, string address2, string detailAddress2)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, userID),
+				ParamSet.Add4Sql("@fax", SqlDbType.VarChar, 30, fax),
+				ParamSet.Add4Sql("@homephone", SqlDbType.VarChar, 30, homePhone),
+				ParamSet.Add4Sql("@homepage", SqlDbType.NVarChar, 255, homePage),
+				ParamSet.Add4Sql("@themepath", SqlDbType.TinyInt, 1, themePath),
+				ParamSet.Add4Sql("@zipcode1", SqlDbType.VarChar, 10, zipCode1),
+				ParamSet.Add4Sql("@address1", SqlDbType.NVarChar, 100, address1),
+				ParamSet.Add4Sql("@detailaddress1", SqlDbType.NVarChar, 100, detailAddress1),
+				ParamSet.Add4Sql("@company", SqlDbType.NVarChar, 100, company),
+				ParamSet.Add4Sql("@zipcode2", SqlDbType.VarChar, 10, zipCode2),
+				ParamSet.Add4Sql("@address2", SqlDbType.NVarChar, 100, address2),
+				ParamSet.Add4Sql("@detailaddress2", SqlDbType.NVarChar, 100, detailAddress2)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BaseUpdateURDetail2Info", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 사용자 삭제
+		/// </summary>
+		/// <param name="userID"></param>
+		public void DeleteURInfo(int userID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, userID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BaseDeleteURInfo", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
 	}
 }

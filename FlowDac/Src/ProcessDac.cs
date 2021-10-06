@@ -1240,5 +1240,86 @@ namespace ZumNet.DAL.FlowDac
 
 			return iReturn;
 		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성 가져오기
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public DataSet SelectProcessInstanceAttribute(int oID, string activityID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oID", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstanceAttribute", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="showLine"></param>
+		/// <returns></returns>
+		public DataSet SelectProcessActivities(int processID, string parentActivityID, string showLine)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivities", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 특정 프로세스에 해당하는 양식들 가져오기
+		/// </summary>
+		/// <param name="defID"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessFormList(int defID)
+		{
+			DataSet dsReturn = null;
+			string strQuery = @"SELECT ISNULL(b.ClassName,'') AS ClassName, a.FormID, a.DocName, a.MainTable
+					FROM admin.PH_EA_FORMS a (NOLOCK) LEFT OUTER JOIN admin.PH_EA_CLASS b (NOLOCK) ON a.ClassID = b.ClassID
+					WHERE ProcessID = @defId ORDER BY a.DocName";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@defId", SqlDbType.Int, 4, defID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
 	}
 }
