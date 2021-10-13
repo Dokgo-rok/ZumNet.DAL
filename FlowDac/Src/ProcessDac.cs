@@ -1321,5 +1321,425 @@ namespace ZumNet.DAL.FlowDac
 
 			return dsReturn;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public int DeleteProcessActivity(string mode, int processID, string activityID)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="xmlInfo"></param>
+		/// <returns></returns>
+		public int InsertProcessParticipantBatch(string activityID, string xmlInfo)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, xmlInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessParticipantBatch", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <param name="xmlInfo"></param>
+		/// <returns></returns>
+		public int InsertProcessAttributeBatch(int processID, string activityID, string xmlInfo)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, xmlInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcesAttributeBatch", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="targetID"></param>
+		/// <returns></returns>
+		public int DeleteProcessAttributeBatch(string mode, string targetID)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="updateText"></param>
+		/// <param name="whereText"></param>
+		/// <returns></returns>
+		public int ChangeActivityField(string updateText, string whereText)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@updatetext", SqlDbType.VarChar, 200, updateText),
+				ParamSet.Add4Sql("@wheretext", SqlDbType.VarChar, 200, whereText)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeActivityField", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// Activity 속성 정보 조회
+		/// </summary>
+		/// <param name="attributeID"></param>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessAttribute(int attributeID, int processID, string activityID)
+		{
+			DataSet dsReturn = null;
+			
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@attributeid", SqlDbType.Int, 4, attributeID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// Activity 참여 정보 조회
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="actType"></param>
+		/// <param name="subType"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessActivityParticipantForAdmin(string activityID, string actType, string subType)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@acttype", SqlDbType.Char, 1, actType),
+				ParamSet.Add4Sql("@subtype", SqlDbType.Char, 1, subType)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivityParticipantForAdmin", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="processID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="random"></param>
+		/// <param name="inline"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="displayName"></param>
+		/// <param name="progress"></param>
+		/// <param name="partType"></param>
+		/// <param name="limited"></param>
+		/// <param name="review"></param>
+		/// <param name="showLine"></param>
+		/// <param name="scopeLine"></param>
+		/// <param name="mandatory"></param>
+		/// <param name="evalChart"></param>
+		/// <param name="actPreCond"></param>
+		/// <param name="actPostCond"></param>
+		/// <param name="workPreCond"></param>
+		/// <param name="workPostCond"></param>
+		/// <param name="description"></param>
+		/// <returns></returns>
+		public int CreateProcessActivity(string activityID, int processID, string parentActivityID, int step, int subStep, string random, string inline, string bizRole, string actRole, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine, string mandatory, int evalChart, string actPreCond, string actPostCond, string workPreCond, string workPostCond, string description)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inline),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
+				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
+				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
+				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
+				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, workPreCond),
+				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, workPostCond),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// Activity 업데이트
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="random"></param>
+		/// <param name="inline"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="displayName"></param>
+		/// <param name="progress"></param>
+		/// <param name="partType"></param>
+		/// <param name="limited"></param>
+		/// <param name="review"></param>
+		/// <param name="showLine"></param>
+		/// <param name="scopeLine"></param>
+		/// <param name="mandatory"></param>
+		/// <param name="evalChart"></param>
+		/// <param name="actPreCond"></param>
+		/// <param name="actPostCond"></param>
+		/// <param name="workPreCond"></param>
+		/// <param name="workPostCond"></param>
+		/// <param name="description"></param>
+		/// <returns></returns>
+		public int UpdateProcessActivity(string activityID, string parentActivityID, int step, int subStep, string random, string inline, string bizRole, string actRole, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine, string mandatory, int evalChart, string actPreCond, string actPostCond, string workPreCond, string workPostCond, string description)
+		{
+			int iReturn = -1;
+
+			SqlParameter sqlParam1 = new SqlParameter("@activityid", SqlDbType.VarChar, 33);
+			SqlParameter sqlParam2 = new SqlParameter("@parent_activityid", SqlDbType.VarChar, 33);
+			SqlParameter sqlParam3 = new SqlParameter("@step", SqlDbType.Int, 4);
+			SqlParameter sqlParam4 = new SqlParameter("@substep", SqlDbType.Int, 4);
+			SqlParameter sqlParam5 = new SqlParameter("@random", SqlDbType.Char, 1);
+			SqlParameter sqlParam6 = new SqlParameter("@inline", SqlDbType.Char, 1);
+			SqlParameter sqlParam7 = new SqlParameter("@bizrole", SqlDbType.VarChar, 30);
+			SqlParameter sqlParam8 = new SqlParameter("@actrole", SqlDbType.VarChar, 30);
+			SqlParameter sqlParam9 = new SqlParameter("@displayname", SqlDbType.NVarChar, 100);
+			SqlParameter sqlParam10 = new SqlParameter("@progress", SqlDbType.VarChar, 10);
+			SqlParameter sqlParam11 = new SqlParameter("@parttype", SqlDbType.Char, 5);
+			SqlParameter sqlParam12 = new SqlParameter("@limited", SqlDbType.VarChar, 63);
+			SqlParameter sqlParam13 = new SqlParameter("@review", SqlDbType.Char, 1);
+			SqlParameter sqlParam14 = new SqlParameter("@showline", SqlDbType.Char, 1);
+			SqlParameter sqlParam15 = new SqlParameter("@scopeline", SqlDbType.VarChar, 33);
+			SqlParameter sqlParam16 = new SqlParameter("@mandatory", SqlDbType.Char, 1);
+			SqlParameter sqlParam17 = new SqlParameter("@evalchart", SqlDbType.Int, 4);
+			SqlParameter sqlParam18 = new SqlParameter("@act_precond", SqlDbType.Char, 1);
+			SqlParameter sqlParam19 = new SqlParameter("@act_postcond", SqlDbType.Char, 1);
+			SqlParameter sqlParam20 = new SqlParameter("@wi_precond", SqlDbType.Char, 1);
+			SqlParameter sqlParam21 = new SqlParameter("@wi_postcond", SqlDbType.Char, 1);
+			SqlParameter sqlParam22 = new SqlParameter("@description", SqlDbType.NVarChar, 500);
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inline),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
+				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
+				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
+				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
+				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, workPreCond),
+				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, workPostCond),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 정의의 순번/하위 순번을 변경
+		/// </summary>
+		/// <param name="stepJson"></param>
+		/// <returns></returns>
+		public int ChangeProcessActivityStep(string stepJson)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@stepjson", SqlDbType.NVarChar, stepJson)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityStep", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// Activity 일반 정보 수정
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="displayName"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="review"></param>
+		/// <param name="progress"></param>
+		/// <param name="random"></param>
+		/// <param name="showLine"></param>
+		/// <param name="mandatory"></param>
+		/// <returns></returns>
+		public int UpdateProcessActivityGeneral(string activityID, string displayName, string bizRole, string actRole, string review, string progress, string random, string showLine, string mandatory)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityGeneral", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
 	}
 }
