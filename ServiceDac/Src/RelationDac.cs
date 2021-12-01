@@ -123,10 +123,8 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="messageID"></param>
 		/// <param name="seqID"></param>
 		/// <returns></returns>
-		public int DeleteCommentMessage(string xfAlias, string messageID, string seqID)
+		public void DeleteCommentMessage(string xfAlias, string messageID, string seqID)
 		{
-			int iReturn = 0;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 2000, xfAlias),
@@ -138,10 +136,8 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				iReturn = Convert.ToInt32(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
 
 		/// <summary>
