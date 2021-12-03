@@ -89,6 +89,34 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 지식관리 게시물 답글 목록
+		/// </summary>
+		/// <param name="folderID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="seqID"></param>
+		/// <returns></returns>
+		public DataSet GetKmsReplyList(int folderID, string xfAlias, int seqID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@FolderID", SqlDbType.Int, 4, folderID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@seqID", SqlDbType.Int, 4, seqID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_KmsGetReplyList", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
 		/// 익명 게시판의 답글 리스트
 		/// </summary>
 		/// <param name="folderID"></param>

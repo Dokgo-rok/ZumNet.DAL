@@ -2457,5 +2457,37 @@ namespace ZumNet.DAL.ServiceDac
 
 			return dsReturn;
 		}
+
+		/// <summary>
+		/// 지식관리 게시물 조회
+		/// </summary>
+		/// <param name="userID"></param>
+		/// <param name="folderID"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xfAlias"></param>
+		/// <returns></returns>
+		public DataSet GetKmsView(int userID, int folderID, string messageID, string xfAlias)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 33, messageID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_KmsGetView", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		
 	}
 }
