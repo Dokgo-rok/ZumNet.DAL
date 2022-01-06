@@ -323,6 +323,67 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 게시물 임시 저장
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorID"></param>
+		/// <param name="creatorDeptID"></param>
+		/// <param name="creatorDeptName"></param>
+		/// <param name="messageType"></param>
+		/// <param name="subject"></param>
+		/// <param name="body"></param>
+		/// <param name="bodyText"></param>
+		/// <param name="inherited"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="popupDate"></param>
+		/// <param name="publishDate"></param>
+		/// <param name="fileCount"></param>
+		/// <param name="fileInfo"></param>
+		/// <param name="isHot"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="isPopup"></param>
+		/// <param name="replyMail"></param>
+		/// <param name="topLine"></param>
+		public void CreateTemporaryMessage(string xfAlias, int messageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType
+								, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate
+								, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@XfAlias", SqlDbType.NVarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, messageID),
+				ParamSet.Add4Sql("@Creator", SqlDbType.NVarChar, 100, creator),
+				ParamSet.Add4Sql("@CreatorID", SqlDbType.Int, 4, creatorID),
+				ParamSet.Add4Sql("@creatordeptid", SqlDbType.Int, 4, creatorDeptID),
+				ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 200, creatorDeptName),
+				ParamSet.Add4Sql("@MsgType", SqlDbType.NVarChar, 30, messageType),
+				ParamSet.Add4Sql("@Subject", SqlDbType.NVarChar, 100, subject),
+				ParamSet.Add4Sql("@Body", SqlDbType.NText, body),
+				ParamSet.Add4Sql("@BodyText", SqlDbType.NVarChar, 1000, bodyText),
+				ParamSet.Add4Sql("@Inherited", SqlDbType.Char, 1, inherited),
+				ParamSet.Add4Sql("@ExpiredDate", SqlDbType.VarChar, 10, expiredDate),
+				ParamSet.Add4Sql("@PopUpDate", SqlDbType.VarChar, 10, popupDate),
+				ParamSet.Add4Sql("@PublishDate", SqlDbType.VarChar, 10, publishDate),
+				ParamSet.Add4Sql("@IsPopup", SqlDbType.Char, 1, isPopup),
+				ParamSet.Add4Sql("@ReplyMail", SqlDbType.Char, 1, replyMail),
+				ParamSet.Add4Sql("@TopLine", SqlDbType.Char, 1, topLine),
+				ParamSet.Add4Sql("@AttachFile", SqlDbType.Char, 1, fileCount),
+				ParamSet.Add4Sql("@FileInfo", SqlDbType.NText, fileInfo),
+				ParamSet.Add4Sql("@IsHot", SqlDbType.Char, 1, isHot),
+				ParamSet.Add4Sql("@Reserved1", SqlDbType.NVarChar, 100, reserved1)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_MsgSetTemporaryWrite", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
 		/// 토론 게시물 삭제
 		/// </summary>
 		/// <param name="creatorID"></param>
