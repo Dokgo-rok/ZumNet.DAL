@@ -103,7 +103,7 @@ namespace ZumNet.DAL.FlowDac
 				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessDefinition", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessDefinition", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -141,12 +141,199 @@ namespace ZumNet.DAL.FlowDac
 				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessDefinition", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFCopyProcessDefinition", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
 				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
+		}
+
+		/// <summary>
+		/// 특정 프로세스 정의 가져오기
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.ProcessDefinition GetProcessDefinition(int processID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.ProcessDefinition pd = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinition", parameters);
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					pd = new Framework.Entities.Flow.ProcessDefinition();
+
+					while (dr.Read())
+					{
+						pd.ProcessID = processID;
+						pd.DnID = Convert.ToInt16(dr["DN_ID"]);
+						pd.ValidFromDate = dr["ValidFromDate"].ToString();
+						pd.ValidToDate = dr["ValidToDate"].ToString();
+						pd.Name = dr["Name"].ToString();
+						pd.Priority = Convert.ToInt16(dr["Priority"]);
+						pd.Description = dr["Description"].ToString();
+						pd.InUse = dr["InUse"].ToString();
+						pd.Creator = dr["Creator"].ToString();
+						pd.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pd.Reserved1 = dr["Reserved1"].ToString();
+					}
+				}
+				dr.Close();
+			}
+			catch(Exception ex)
+            {
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+            finally
+            {
+				if (dr != null) dr.Dispose();
+			}
+
+			return pd;
+		}
+
+		/// <summary>
+		/// 특정 프로세스 정의 가져오기
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="option"></param>
+		/// <returns></returns>
+		public DataTable GetProcessDefinition(int processID, string option)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinition", parameters);
+
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DefList"];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 정의 목록을 가져온다.
+		/// </summary>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <returns></returns>
+		public DataTable GetProcessDefinitions(string sortCol, string sortType)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@sort_col", SqlDbType.VarChar, 100, sortCol),
+				ParamSet.Add4Sql("@sort_type", SqlDbType.VarChar, 5, sortType)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinitions", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DefList"];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 프로세스정의를 xml로 만든다.
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <returns></returns>
+		public DataSet GetProcessDefinitionForExport(int processID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinitionForExport", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 정의 가져오기
+		/// </summary>
+		/// <param name="domainID"></param>
+		/// <param name="processID"></param>
+		/// <param name="isInUse"></param>
+		/// <returns></returns>
+		public DataSet GetProcessListByCondition(int domainID, int processID, string isInUse)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@domainid", SqlDbType.TinyInt, 1, domainID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@isinuse", SqlDbType.Char, 1, isInUse)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessListByCondition", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
 		}
 		#endregion
 
@@ -204,6 +391,493 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return iReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 정보를 가져온다.
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.ProcessInstance SelectProcessInstance(int oID)
+        {
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.ProcessInstance pi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstance", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					pi = new Framework.Entities.Flow.ProcessInstance();
+
+					while (dr.Read())
+					{
+						pi.OID = oID;
+						pi.DnID = Convert.ToInt16(dr["DN_ID"]);
+						pi.SessionCode = dr["SessionCode"].ToString();
+						pi.XfAlias = dr["XFAlias"].ToString();
+						pi.MessageID = Convert.ToInt32(dr["MessageID"]);
+						pi.ProcessID = Convert.ToInt32(dr["ProcessID"]);
+						pi.Name = dr["Name"].ToString();
+						pi.State = Convert.ToInt16(dr["State"]);
+						pi.Priority = Convert.ToInt16(dr["Priority"]);
+						pi.Permission = dr["Permission"].ToString();
+						pi.Creator = dr["Creator"].ToString();
+						pi.CreatorID = Convert.ToInt32(dr["CreatorID"]);
+						pi.CreatorCN = dr["CreatorCN"].ToString();
+						pi.CreatorGrade = dr["CreatorGrade"].ToString();
+						pi.CreatorDept = dr["CreatorDept"].ToString();
+						pi.CreatorDeptID = Convert.ToInt32(dr["CreatorDeptID"]);
+						pi.CreatorDeptCode = dr["CreatorDeptCode"].ToString();
+						pi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.Started = Convert.ToDateTime(dr["Started"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.ExpectedEnd = Convert.ToDateTime(dr["ExpectedEnd"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.Reserved1 = dr["Reserved1"].ToString();
+						pi.Reserved2 = dr["Reserved2"].ToString();
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return pi;
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 정보를 가져온다.
+		/// </summary>
+		/// <param name="msgID"></param>
+		/// <param name="xfAlias"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.ProcessInstance SelectProcessInstance(int msgID, string xfAlias)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.ProcessInstance pi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, msgID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstanceMsgID", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					pi = new Framework.Entities.Flow.ProcessInstance();
+
+					while (dr.Read())
+					{
+						pi.OID = Convert.ToInt32(dr["OID"]);
+						pi.DnID = Convert.ToInt16(dr["DN_ID"]);
+						pi.SessionCode = dr["SessionCode"].ToString();
+						pi.XfAlias = xfAlias;
+						pi.MessageID = msgID;
+						pi.ProcessID = Convert.ToInt32(dr["ProcessID"]);
+						pi.Name = dr["Name"].ToString();
+						pi.State = Convert.ToInt16(dr["State"]);
+						pi.Priority = Convert.ToInt16(dr["Priority"]);
+						pi.Permission = dr["Permission"].ToString();
+						pi.Creator = dr["Creator"].ToString();
+						pi.CreatorID = Convert.ToInt32(dr["CreatorID"]);
+						pi.CreatorCN = dr["CreatorCN"].ToString();
+						pi.CreatorGrade = dr["CreatorGrade"].ToString();
+						pi.CreatorDept = dr["CreatorDept"].ToString();
+						pi.CreatorDeptID = Convert.ToInt32(dr["CreatorDeptID"]);
+						pi.CreatorDeptCode = dr["CreatorDeptCode"].ToString();
+						pi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.Started = Convert.ToDateTime(dr["Started"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.ExpectedEnd = Convert.ToDateTime(dr["ExpectedEnd"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						pi.Reserved1 = dr["Reserved1"].ToString();
+						pi.Reserved2 = dr["Reserved2"].ToString();
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return pi;
+		}
+
+		/// <summary>
+		/// 단일 참여자 정보를 가져온다.
+		/// </summary>
+		/// <param name="wID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.WorkItem SelectWorkItem(string wID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.WorkItem wi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItem", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					wi = new Framework.Entities.Flow.WorkItem();
+
+					while (dr.Read())
+					{
+						wi.WorkItemID = wID;
+						wi.OID = Convert.ToInt32(dr["OID"]);
+						wi.ParentWorkItemID = dr["ParentWorkItemID"].ToString();
+						wi.Priority = Convert.ToInt16(dr["Priority"]);
+						wi.Step = Convert.ToInt16(dr["Step"]);
+						wi.SubStep = Convert.ToInt16(dr["SubStep"]);
+						wi.Seq = Convert.ToInt16(dr["Seq"]);
+						wi.State = Convert.ToInt16(dr["State"]);
+						wi.SignStatus = Convert.ToInt16(dr["SignStatus"]);
+						wi.SignKind = Convert.ToInt16(dr["SignKind"]);
+						wi.ViewState = Convert.ToInt16(dr["ViewState"]);
+						wi.Flag = dr["Flag"].ToString();
+						wi.Designator = dr["Designator"].ToString();
+						wi.ActivityID = dr["ActivityID"].ToString();
+						wi.BizRole = dr["BizRole"].ToString();
+						wi.ActRole = dr["ActRole"].ToString();
+						wi.ParticipantID = dr["ParticipantID"].ToString();
+						wi.PartType = dr["PartType"].ToString();
+						wi.Limited = dr["Limited"].ToString();
+						wi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ReceivedDate = Convert.ToDateTime(dr["ReceivedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ViewDate = Convert.ToDateTime(dr["ViewDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompetencyCode = Convert.ToInt32(dr["CompetencyCode"]);
+						wi.Point = dr["Point"].ToString();
+						wi.Signature = dr["Signature"].ToString();
+						wi.Comment = dr["Comment"].ToString();
+						wi.ParticipantName = dr["ParticipantName"].ToString();
+						wi.ParticipantDeptCode = dr["ParticipantDeptCode"].ToString();
+						wi.ParticipantInfo1 = dr["ParticipantInfo1"].ToString();
+						wi.ParticipantInfo2 = dr["ParticipantInfo2"].ToString();
+						wi.ParticipantInfo3 = dr["ParticipantInfo3"].ToString();
+						wi.ParticipantInfo4 = dr["ParticipantInfo4"].ToString();
+						wi.ParticipantInfo5 = dr["ParticipantInfo5"].ToString();
+						wi.ParticipantInfo6 = dr["ParticipantInfo6"].ToString();
+						wi.Reserved1 = dr["Reserved1"].ToString();
+						wi.Reserved2 = dr["Reserved2"].ToString();
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return wi;
+		}
+
+		/// <summary>
+		/// 특정 프로세스에 해당하는 참여자들 정보를 가져온다.
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.WorkItemList SelectWorkItems(int oID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.WorkItemList wiList = null;
+			Framework.Entities.Flow.WorkItem wi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemOID", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					wiList = new Framework.Entities.Flow.WorkItemList();
+
+					while (dr.Read())
+					{
+						wi = new Framework.Entities.Flow.WorkItem();
+
+						wi.WorkItemID = dr["WorkItemID"].ToString();
+						wi.OID = Convert.ToInt32(dr["OID"]);
+						wi.ParentWorkItemID = dr["ParentWorkItemID"].ToString();
+						wi.Priority = Convert.ToInt16(dr["Priority"]);
+						wi.Step = Convert.ToInt16(dr["Step"]);
+						wi.SubStep = Convert.ToInt16(dr["SubStep"]);
+						wi.Seq = Convert.ToInt16(dr["Seq"]);
+						wi.State = Convert.ToInt16(dr["State"]);
+						wi.SignStatus = Convert.ToInt16(dr["SignStatus"]);
+						wi.SignKind = Convert.ToInt16(dr["SignKind"]);
+						wi.ViewState = Convert.ToInt16(dr["ViewState"]);
+						wi.Flag = dr["Flag"].ToString();
+						wi.Designator = dr["Designator"].ToString();
+						wi.ActivityID = dr["ActivityID"].ToString();
+						wi.BizRole = dr["BizRole"].ToString();
+						wi.ActRole = dr["ActRole"].ToString();
+						wi.ParticipantID = dr["ParticipantID"].ToString();
+						wi.PartType = dr["PartType"].ToString();
+						wi.Limited = dr["Limited"].ToString();
+						wi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ReceivedDate = Convert.ToDateTime(dr["ReceivedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ViewDate = Convert.ToDateTime(dr["ViewDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompetencyCode = Convert.ToInt32(dr["CompetencyCode"]);
+						wi.Point = dr["Point"].ToString();
+						wi.Signature = dr["Signature"].ToString();
+						wi.Comment = dr["Comment"].ToString();
+						wi.ParticipantName = dr["ParticipantName"].ToString();
+						wi.ParticipantDeptCode = dr["ParticipantDeptCode"].ToString();
+						wi.ParticipantInfo1 = dr["ParticipantInfo1"].ToString();
+						wi.ParticipantInfo2 = dr["ParticipantInfo2"].ToString();
+						wi.ParticipantInfo3 = dr["ParticipantInfo3"].ToString();
+						wi.ParticipantInfo4 = dr["ParticipantInfo4"].ToString();
+						wi.ParticipantInfo5 = dr["ParticipantInfo5"].ToString();
+						wi.ParticipantInfo6 = dr["ParticipantInfo6"].ToString();
+						wi.Reserved1 = dr["Reserved1"].ToString();
+						wi.Reserved2 = dr["Reserved2"].ToString();
+
+						wiList.Add(wi);
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return wiList;
+		}
+
+		/// <summary>
+		/// 특정 양식에 해당하는 참여자들 정보를 가져온다.
+		/// </summary>
+		/// <param name="msgID"></param>
+		/// <param name="xfAlias"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.WorkItemList SelectWorkItems(int msgID, string xfAlias)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.WorkItemList wiList = null;
+			Framework.Entities.Flow.WorkItem wi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, msgID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemMsgID", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					wiList = new Framework.Entities.Flow.WorkItemList();
+
+					while (dr.Read())
+					{
+						wi = new Framework.Entities.Flow.WorkItem();
+
+						wi.WorkItemID = dr["WorkItemID"].ToString();
+						wi.OID = Convert.ToInt32(dr["OID"]);
+						wi.ParentWorkItemID = dr["ParentWorkItemID"].ToString();
+						wi.Priority = Convert.ToInt16(dr["Priority"]);
+						wi.Step = Convert.ToInt16(dr["Step"]);
+						wi.SubStep = Convert.ToInt16(dr["SubStep"]);
+						wi.Seq = Convert.ToInt16(dr["Seq"]);
+						wi.State = Convert.ToInt16(dr["State"]);
+						wi.SignStatus = Convert.ToInt16(dr["SignStatus"]);
+						wi.SignKind = Convert.ToInt16(dr["SignKind"]);
+						wi.ViewState = Convert.ToInt16(dr["ViewState"]);
+						wi.Flag = dr["Flag"].ToString();
+						wi.Designator = dr["Designator"].ToString();
+						wi.ActivityID = dr["ActivityID"].ToString();
+						wi.BizRole = dr["BizRole"].ToString();
+						wi.ActRole = dr["ActRole"].ToString();
+						wi.ParticipantID = dr["ParticipantID"].ToString();
+						wi.PartType = dr["PartType"].ToString();
+						wi.Limited = dr["Limited"].ToString();
+						wi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ReceivedDate = Convert.ToDateTime(dr["ReceivedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ViewDate = Convert.ToDateTime(dr["ViewDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompetencyCode = Convert.ToInt32(dr["CompetencyCode"]);
+						wi.Point = dr["Point"].ToString();
+						wi.Signature = dr["Signature"].ToString();
+						wi.Comment = dr["Comment"].ToString();
+						wi.ParticipantName = dr["ParticipantName"].ToString();
+						wi.ParticipantDeptCode = dr["ParticipantDeptCode"].ToString();
+						wi.ParticipantInfo1 = dr["ParticipantInfo1"].ToString();
+						wi.ParticipantInfo2 = dr["ParticipantInfo2"].ToString();
+						wi.ParticipantInfo3 = dr["ParticipantInfo3"].ToString();
+						wi.ParticipantInfo4 = dr["ParticipantInfo4"].ToString();
+						wi.ParticipantInfo5 = dr["ParticipantInfo5"].ToString();
+						wi.ParticipantInfo6 = dr["ParticipantInfo6"].ToString();
+						wi.Reserved1 = dr["Reserved1"].ToString();
+						wi.Reserved2 = dr["Reserved2"].ToString();
+
+						wiList.Add(wi);
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return wiList;
+		}
+
+		/// <summary>
+		/// 특정 카테고리 역할에 해당하는 참여자 정보를 가져온다.
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="parentWID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.WorkItemList SelectWorkItems(int oID, string bizRole, string parentWID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.WorkItemList wiList = null;
+			Framework.Entities.Flow.WorkItem wi = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@parent_wid", SqlDbType.VarChar, 33, parentWID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemBizRole", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					wiList = new Framework.Entities.Flow.WorkItemList();
+
+					while (dr.Read())
+					{
+						wi = new Framework.Entities.Flow.WorkItem();
+
+						wi.OID = oID;
+						wi.WorkItemID = dr["WorkItemID"].ToString();
+						wi.ParentWorkItemID = dr["ParentWorkItemID"].ToString();
+						wi.Priority = Convert.ToInt16(dr["Priority"]);
+						wi.Step = Convert.ToInt16(dr["Step"]);
+						wi.SubStep = Convert.ToInt16(dr["SubStep"]);
+						wi.Seq = Convert.ToInt16(dr["Seq"]);
+						wi.State = Convert.ToInt16(dr["State"]);
+						wi.SignStatus = Convert.ToInt16(dr["SignStatus"]);
+						wi.SignKind = Convert.ToInt16(dr["SignKind"]);
+						wi.ViewState = Convert.ToInt16(dr["ViewState"]);
+						wi.Flag = dr["Flag"].ToString();
+						wi.Designator = dr["Designator"].ToString();
+						wi.ActivityID = dr["ActivityID"].ToString();
+						wi.BizRole = dr["BizRole"].ToString();
+						wi.ActRole = dr["ActRole"].ToString();
+						wi.ParticipantID = dr["ParticipantID"].ToString();
+						wi.PartType = dr["PartType"].ToString();
+						wi.Limited = dr["Limited"].ToString();
+						wi.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ReceivedDate = Convert.ToDateTime(dr["ReceivedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.ViewDate = Convert.ToDateTime(dr["ViewDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompletedDate = Convert.ToDateTime(dr["CompletedDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+						wi.CompetencyCode = Convert.ToInt32(dr["CompetencyCode"]);
+						wi.Point = dr["Point"].ToString();
+						wi.Signature = dr["Signature"].ToString();
+						wi.Comment = dr["Comment"].ToString();
+						wi.ParticipantName = dr["ParticipantName"].ToString();
+						wi.ParticipantDeptCode = dr["ParticipantDeptCode"].ToString();
+						wi.ParticipantInfo1 = dr["ParticipantInfo1"].ToString();
+						wi.ParticipantInfo2 = dr["ParticipantInfo2"].ToString();
+						wi.ParticipantInfo3 = dr["ParticipantInfo3"].ToString();
+						wi.ParticipantInfo4 = dr["ParticipantInfo4"].ToString();
+						wi.ParticipantInfo5 = dr["ParticipantInfo5"].ToString();
+						wi.ParticipantInfo6 = dr["ParticipantInfo6"].ToString();
+						wi.Reserved1 = dr["Reserved1"].ToString();
+						wi.Reserved2 = dr["Reserved2"].ToString();
+
+						wiList.Add(wi);
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return wiList;
 		}
 
 		/// <summary>
@@ -287,6 +961,1437 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return strReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성을 이용해서 일괄 참여자 정보를 구성한다. attribute = workitem 인 경우
+		/// </summary>
+		/// <param name="oid"></param>
+		/// <param name="activityID"></param>
+		/// <param name="attribute"></param>
+		/// <param name="partType"></param>
+		/// <param name="parentWID"></param>
+		/// <param name="priority"></param>
+		/// <param name="step"></param>
+		/// <param name="seq"></param>
+		/// <param name="state"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="signKind"></param>
+		/// <param name="viewState"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="limited"></param>
+		/// <param name="receivedDate"></param>
+		/// <param name="completedDate"></param>
+		/// <param name="competencyCode"></param>
+		/// <param name="comment"></param>
+		/// <returns></returns>
+		public string CreateWorkItemWithAttributes(int oid, string activityID, string attribute, string partType, string parentWID, int priority
+							, int step, int seq, int state, int signStatus, int signKind, int viewState, string bizRole, string actRole
+							, string limited, string receivedDate, string completedDate, int competencyCode, string comment)
+		{
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oid),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@attribute", SqlDbType.VarChar, 50, attribute),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@parent_wid", SqlDbType.VarChar, 33, parentWID),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, state),
+				ParamSet.Add4Sql("@signStatus", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@signkind", SqlDbType.Int, 4, signKind),
+				ParamSet.Add4Sql("@viewstate", SqlDbType.Int, 4, viewState),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 20, limited),
+				ParamSet.Add4Sql("@receiveddate", SqlDbType.VarChar, 20, receivedDate),
+				ParamSet.Add4Sql("@completeddate", SqlDbType.VarChar, 20, completedDate),
+				ParamSet.Add4Sql("@competencycode", SqlDbType.Int, 4, competencyCode),
+				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 1000, comment),
+				ParamSet.Add4Sql("@attributeinfo", SqlDbType.NText, ""),
+
+				ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateWorkItemWithAttributes", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 대결자 정보를 구성한다.
+		/// </summary>
+		/// <param name="partType"></param>
+		/// <param name="partID"></param>
+		/// <param name="wID"></param>
+		/// <param name="oid"></param>
+		/// <param name="parentWID"></param>
+		/// <param name="priority"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="seq"></param>
+		/// <param name="state"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="signKind"></param>
+		/// <param name="viewState"></param>
+		/// <param name="flag"></param>
+		/// <param name="designator"></param>
+		/// <param name="activityID"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="limited"></param>
+		/// <param name="receivedDate"></param>
+		/// <param name="completedDate"></param>
+		/// <param name="competencyCode"></param>
+		/// <param name="comment"></param>
+		/// <param name="partName"></param>
+		/// <param name="partDeptCode"></param>
+		public void CreateDeputyParticipant(string partType, string partID, string wID, int oid, string parentWID, int priority
+								, int step, int subStep, int seq, int state, int signStatus, int signKind, int viewState
+								, string flag, string designator, string activityID, string bizRole, string actRole, string limited, string receivedDate
+								, string completedDate, int competencyCode, string comment, string partName, string partDeptCode)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@part_id", SqlDbType.VarChar, 63, partID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oid),
+				ParamSet.Add4Sql("@parent_wid", SqlDbType.VarChar, 33, parentWID),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, state),
+				ParamSet.Add4Sql("@signStatus", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@signkind", SqlDbType.Int, 4, signKind),
+				ParamSet.Add4Sql("@viewstate", SqlDbType.Int, 4, viewState),
+				ParamSet.Add4Sql("@flag", SqlDbType.VarChar, 33, flag),
+				ParamSet.Add4Sql("@designator", SqlDbType.VarChar, 33, designator),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 20, limited),
+				ParamSet.Add4Sql("@receiveddate", SqlDbType.VarChar, 20, receivedDate),
+				ParamSet.Add4Sql("@completeddate", SqlDbType.VarChar, 20, completedDate),
+				ParamSet.Add4Sql("@competencycode", SqlDbType.Int, 4, competencyCode),
+				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 1000, comment),
+				ParamSet.Add4Sql("@part_name", SqlDbType.NVarChar, 200, partName),
+				ParamSet.Add4Sql("@part_deptcode", SqlDbType.NVarChar, 63, partDeptCode),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateWorkItemWithAttributes", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 기존 결재선 삭제 - 결재선은 완전 삭제로 한다.(결재선 추가 변경시만 사용)
+		/// </summary>
+		/// <param name="wID">결재자 식별자</param>
+		public void DeleteSignLine(string wID)
+        {
+			string strQuery = "DELETE FROM admin.BF_WORK_ITEM WITH (ROWLOCK) WHERE WorkItemID=@wid";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 기존 결재선 삭제
+		/// </summary>
+		/// <param name="wIDs">삭제할 결재자들</param>
+		public void DeleteSignLines(string wIDs)
+		{
+			string strQuery = "DELETE FROM admin.BF_WORK_ITEM WITH (ROWLOCK) WHERE WorkItemID IN ('" + wIDs.Replace(",", "','") + "')";
+
+			SqlParameter[] parameters = null;
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 현 결재자 위의 결재선 순서 및 결재 역할 변경 반영
+		/// </summary>
+		/// <param name="wID">결재자 식별자</param>
+		/// <param name="step">결재 단계</param>
+		/// <param name="subStep">결재 하위 단계</param>
+		/// <param name="seq">결재 단계 내에서의 순서</param>
+		/// <param name="signKind">결재 역할</param>
+		public void UpdateSignLine(string wID, int step, int subStep, int seq, int signKind)
+		{
+			string strQuery = "UPDATE admin.BF_WORK_ITEM WITH (ROWLOCK) SET Step = @step, SubStep = @substep, Seq = @seq, SignKind = @signkind WHERE WorkItemID=@wid";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@signkind", SqlDbType.Int, 4, signKind),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 참여자 정보를 갱신한다.
+		/// </summary>
+		/// <param name="wID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="seq"></param>
+		/// <param name="priority"></param>
+		/// <param name="state"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="signKind"></param>
+		/// <param name="viewState"></param>
+		/// <param name="flag"></param>
+		/// <param name="designator"></param>
+		/// <param name="receivedDate"></param>
+		/// <param name="completedDate"></param>
+		/// <param name="competencyCode"></param>
+		/// <param name="point"></param>
+		/// <param name="signature"></param>
+		/// <param name="comment"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		public void UpdateWorkItem(string wID, int step, int subStep, int seq, int priority, int state, int signStatus
+							, int signKind, int viewState, string flag, string designator, string receivedDate, string completedDate
+							, int competencyCode, string point, string signature, string comment, string reserved1, string reserved2)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, state),
+				ParamSet.Add4Sql("@signStatus", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@signkind", SqlDbType.Int, 4, signKind),
+				ParamSet.Add4Sql("@viewstate", SqlDbType.Int, 4, viewState),
+				ParamSet.Add4Sql("@flag", SqlDbType.VarChar, 33, flag),
+				ParamSet.Add4Sql("@designator", SqlDbType.VarChar, 33, designator),
+				ParamSet.Add4Sql("@receiveddate", SqlDbType.VarChar, 20, receivedDate),
+				ParamSet.Add4Sql("@completeddate", SqlDbType.VarChar, 20, completedDate),
+				ParamSet.Add4Sql("@competencycode", SqlDbType.Int, 4, competencyCode),
+				ParamSet.Add4Sql("@point", SqlDbType.VarChar, 15, point),
+				ParamSet.Add4Sql("@signature", SqlDbType.NVarChar, 250, signature),
+				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 1000, comment),
+				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 500, reserved1),
+				ParamSet.Add4Sql("@reserved2", SqlDbType.NVarChar, 1000, reserved2)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateWorkItem", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// WorkItem 읽은 일자 기록
+		/// </summary>
+		/// <param name="wID">작업 식별자</param>
+		public void UpdateWorkItemViewDate(string wID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateWorkItemViewDate", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 리스트뷰 상의 선택된 결재문서 삭제
+		/// </summary>
+		/// <param name="wID">선택된 WorkItemID</param>
+		public void DeleteWorkListItem(string wID)
+		{
+			string strQuery = "UPDATE admin.BF_WORK_ITEM WITH (ROWLOCK) SET DeleteDate = GETDATE() WHERE WorkItemID=@wid";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 리스트뷰 상의 선택된 결재문서들 삭제(최대 100건)
+		/// </summary>
+		/// <param name="wids">선택된 WorkItemID들</param>
+		public void DeleteWorkListItems(string wids)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wids", SqlDbType.VarChar, 3500, wids)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteWorkListItems", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// Process, WorkItem, Report Master State 처리 상태 변경
+		/// </summary>
+		/// <param name="entityKind">Process(p)인지 WorkItem(w), Report(r)인지 구별</param>
+		/// <param name="targetID"></param>
+		/// <param name="stateValue"></param>
+		public void ChangeState(string entityKind, string targetID, int stateValue)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@entity", SqlDbType.Char, 1, entityKind),
+				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID),
+				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, stateValue)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeState", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 반송, 취소, 보류등의 처리
+		/// </summary>
+		/// <param name="oID">프로세스 인스턴스 식별자</param>
+		/// <param name="wID">WorkItem 식별자</param>
+		/// <param name="signStatus">결재 처리 역할</param>
+		/// <param name="comment">첨언</param>
+		public void SetCurrentWorkItemOnlyOut(int oID, string wID, int signStatus, string comment)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 100, comment)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSetCurrentWorkItemOnlyOut", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 부재자 설정에 의한 대결자 정보 가져오기
+		/// </summary>
+		/// <param name="partID"></param>
+		/// <param name="partDeptCode"></param>
+		/// <param name="processID"></param>
+		/// <param name="formID"></param>
+		/// <returns></returns>
+		public DataTable GetDeputyParticipant(string partID, string partDeptCode, int processID, string formID)
+		{
+			string strNext = "";
+			return GetDeputyParticipant(partID, partDeptCode, processID, formID, out strNext);
+		}
+
+		/// <summary>
+		/// 부재자 설정에 의한 대결자 정보 가져오기
+		/// </summary>
+		/// <param name="partID"></param>
+		/// <param name="partDeptCode"></param>
+		/// <param name="processID"></param>
+		/// <param name="formID"></param>
+		/// <param name="nextStep"></param>
+		/// <returns></returns>
+		public DataTable GetDeputyParticipant(string partID, string partDeptCode, int processID, string formID, out string nextStep)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@part_id", SqlDbType.VarChar, 63, partID),
+				ParamSet.Add4Sql("@part_deptcode", SqlDbType.VarChar, 63, partDeptCode),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				
+				ParamSet.Add4Sql("@next", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetDeputyParticipant", "", parameters);
+
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DeputyParticipant"];
+			}
+			catch (Exception ex)
+            {
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+            finally
+            {
+				if (ds != null) ds.Dispose();
+            }
+
+			nextStep = pData.GetParamValue("@next").ToString();
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 대결자 정보 변경
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="userID"></param>
+		/// <param name="deputyID"></param>
+		/// <param name="deputyDept"></param>
+		/// <param name="processID"></param>
+		/// <param name="formID"></param>
+		public void SetDeputy(string mode, int userID, string deputyID, string deputyDept, int processID, string formID)
+        {
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@deputyid", SqlDbType.VarChar, 50, deputyID),
+				ParamSet.Add4Sql("@deputydept", SqlDbType.VarChar, 50, deputyDept),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSetDeputy", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 병렬 처리시 같은 레벨의 다른 작업들이 완료 됐는지를 확인
+		/// </summary>
+		/// <param name="oID">프로세스 인스턴스</param>
+		/// <param name="parentWID">상위 작업</param>
+		/// <param name="wID">현 작업</param>
+		/// <param name="step">단계</param>
+		/// <returns>0이면 병렬 완료 시킨다.</returns>
+		public int ConfirmParallelWorkItem(int oID, string parentWID, string wID, int step)
+		{
+			int iReturn = 0;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@parent_wid", SqlDbType.VarChar, 33, parentWID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFConfirmParallelWorkItem", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				iReturn = Convert.ToInt32(db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+			}
+			return iReturn;
+		}
+		#endregion
+
+		#region [프로세스 Activity 관련]
+		/// <summary>
+		/// 해당 Activity 가져오기
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.Activity GetProcessActivity(string activityID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.Activity activity = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivity", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					activity = new Framework.Entities.Flow.Activity();
+
+					while (dr.Read())
+					{
+						activity.ActivityID = activityID;
+						activity.ProcessID = Convert.ToInt32(dr["ProcessID"]);
+						activity.ParentActivityID = dr["ParentActivityID"].ToString();
+						activity.Step = Convert.ToInt16(dr["Step"]);
+						activity.SubStep = Convert.ToInt16(dr["SubStep"]);
+						activity.Random = dr["Random"].ToString();
+						activity.Inline = dr["Inline"].ToString();
+						activity.BizRole = dr["BizRole"].ToString();
+						activity.ActRole = dr["ActRole"].ToString();
+						activity.DisplayName = dr["DisplayName"].ToString();
+						activity.Progress = dr["Progress"].ToString();
+						activity.PartType = dr["PartType"].ToString();
+						activity.Limited = dr["Limited"].ToString();
+						activity.Review = dr["Review"].ToString();
+						activity.ShowLine = dr["ShowLine"].ToString();
+						activity.ScopeLine = dr["ScopeLine"].ToString();
+						activity.Mandatory = dr["Mandatory"].ToString();
+						activity.EvalChart = Convert.ToInt32(dr["EvalChart"]);
+						activity.ActivityPreCond = dr["ActivityPreCond"].ToString();
+						activity.ActivityPostCond = dr["ActivityPostCond"].ToString();
+						activity.WorkItemPreCond = dr["WorkItemPreCond"].ToString();
+						activity.WorkItemPostCond = dr["WorkItemPostCond"].ToString();
+						activity.Description = dr["Description"].ToString();
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return activity;
+		}
+
+		/// <summary>
+		/// 프로세스에 정의된 Activity들을 가져오기
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="parentActivity"></param>
+		/// <param name="showLine"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.ActivityList GetProcessActivities(int processID, string parentActivity, string showLine)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.ActivityList activityList = null;
+			Framework.Entities.Flow.Activity activity = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivity),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivities", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					activityList = new Framework.Entities.Flow.ActivityList();
+
+					while (dr.Read())
+					{
+						activity = new Framework.Entities.Flow.Activity();
+
+						activity.ProcessID = processID;
+						activity.ActivityID = dr["ActivityID"].ToString();
+						activity.ParentActivityID = dr["ParentActivityID"].ToString();
+						activity.Step = Convert.ToInt16(dr["Step"]);
+						activity.SubStep = Convert.ToInt16(dr["SubStep"]);
+						activity.Random = dr["Random"].ToString();
+						activity.Inline = dr["Inline"].ToString();
+						activity.BizRole = dr["BizRole"].ToString();
+						activity.ActRole = dr["ActRole"].ToString();
+						activity.DisplayName = dr["DisplayName"].ToString();
+						activity.Progress = dr["Progress"].ToString();
+						activity.PartType = dr["PartType"].ToString();
+						activity.Limited = dr["Limited"].ToString();
+						activity.Review = dr["Review"].ToString();
+						activity.ShowLine = dr["ShowLine"].ToString();
+						activity.ScopeLine = dr["ScopeLine"].ToString();
+						activity.Mandatory = dr["Mandatory"].ToString();
+						activity.EvalChart = Convert.ToInt32(dr["EvalChart"]);
+						activity.ActivityPreCond = dr["ActivityPreCond"].ToString();
+						activity.ActivityPostCond = dr["ActivityPostCond"].ToString();
+						activity.WorkItemPreCond = dr["WorkItemPreCond"].ToString();
+						activity.WorkItemPostCond = dr["WorkItemPostCond"].ToString();
+						activity.Description = dr["Description"].ToString();
+						activityList.Add(activity);
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return activityList;
+		}
+
+		/// <summary>
+		/// 프로세스에 정의된 Activity들을 가져오기
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="showLine"></param>
+		/// <returns></returns>
+		public DataSet SelectProcessActivities(int processID, string parentActivityID, string showLine)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivities", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// Activity Schema 가져오기
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="currentActID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.SchemaList GetProcessActivitySchema(int processID, string currentActID)
+		{
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.SchemaList schemaList = null;
+			Framework.Entities.Flow.Schema schema = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, currentActID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivitySchema", parameters);
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					schemaList = new Framework.Entities.Flow.SchemaList();
+
+					while (dr.Read())
+					{
+						schema = new Framework.Entities.Flow.Schema();
+						schema.SetEntities(dr["ActivityID"].ToString()
+									, dr["ParentActivityID"].ToString()
+									, Convert.ToInt16(dr["Step"])
+									, Convert.ToInt16(dr["SubStep"])
+									, dr["Random"].ToString()
+									, dr["Inline"].ToString()
+									, dr["BizRole"].ToString()
+									, dr["ActRole"].ToString()
+									, dr["DisplayName"].ToString()
+									, dr["Progress"].ToString()
+									, dr["PartType"].ToString()
+									, dr["ScopeLine"].ToString()
+									, dr["Mandatory"].ToString()
+									, Convert.ToInt32(dr["EvalChart"]));
+						schemaList.Add(schema);
+					}
+				}
+				dr.Close();
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return schemaList;
+		}
+
+		/// <summary>
+		/// 프로세스 단계 정의
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="processID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="random"></param>
+		/// <param name="inLine"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="displayName"></param>
+		/// <param name="progress"></param>
+		/// <param name="partType"></param>
+		/// <param name="limited"></param>
+		/// <param name="review"></param>
+		/// <param name="showLine"></param>
+		/// <param name="scopeLine"></param>
+		/// <param name="mandatory"></param>
+		/// <param name="evalChart"></param>
+		/// <param name="actPreCond"></param>
+		/// <param name="actPostCond"></param>
+		/// <param name="wiPreCond"></param>
+		/// <param name="wiPostCond"></param>
+		/// <param name="description"></param>
+		public void InsertProcessActivity(string activityID, int processID, string parentActivityID, int step, int subStep, string random, string inLine, string bizRole
+							, string actRole, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine
+							, string mandatory, int evalChart, string actPreCond, string actPostCond, string wiPreCond, string wiPostCond, string description)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inLine),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
+				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
+				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
+				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
+				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, wiPreCond),
+				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, wiPostCond),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 단계 정보 변경
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="parentActivityID"></param>
+		/// <param name="step"></param>
+		/// <param name="subStep"></param>
+		/// <param name="random"></param>
+		/// <param name="inLine"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="displayName"></param>
+		/// <param name="progress"></param>
+		/// <param name="partType"></param>
+		/// <param name="limited"></param>
+		/// <param name="review"></param>
+		/// <param name="showLine"></param>
+		/// <param name="scopeLine"></param>
+		/// <param name="mandatory"></param>
+		/// <param name="evalChart"></param>
+		/// <param name="actPreCond"></param>
+		/// <param name="actPostCond"></param>
+		/// <param name="wiPreCond"></param>
+		/// <param name="wiPostCond"></param>
+		/// <param name="description"></param>
+		/// <returns></returns>
+		public void UpdateProcessActivity(string activityID, string parentActivityID, int step, int subStep, string random, string inLine, string bizRole, string actRole
+							, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine, string mandatory
+							, int evalChart, string actPreCond, string actPostCond, string wiPreCond, string wiPostCond, string description)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inLine),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
+				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
+				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
+				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
+				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, wiPreCond),
+				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, wiPostCond),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 단계에 참여자 정의
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="seq"></param>
+		/// <param name="partID"></param>
+		/// <param name="partName"></param>
+		/// <param name="partDeptCode"></param>
+		public void InsertProcessParticipant(string activityID, int seq, string partID, string partName, string partDeptCode)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@part_id", SqlDbType.VarChar, 63, partID),
+				ParamSet.Add4Sql("@part_name", SqlDbType.NVarChar, 200, partName),
+				ParamSet.Add4Sql("@part_deptcode", SqlDbType.VarChar, 63, partDeptCode)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessParticipant", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 단계에 참여자 정의 - 배치
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="xmlInfo"></param>
+		public void InsertProcessParticipant(string activityID, string xmlInfo)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@part_name", SqlDbType.NText, xmlInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessParticipantBatch", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 단계에 정의된 참여자 삭제
+		/// </summary>
+		/// <param name="activityID"></param>
+		public void RemoveProcessParticipant(string activityID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFRemoveProcessParticipant", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 정의의 순번/하위 순번을 변경
+		/// </summary>
+		/// <param name="stepJson"></param>
+		/// <returns></returns>
+		public int ChangeProcessActivityStep(string stepJson)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@stepjson", SqlDbType.NVarChar, stepJson)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityStep", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// Activity 일반 정보 수정
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="displayName"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="review"></param>
+		/// <param name="progress"></param>
+		/// <param name="random"></param>
+		/// <param name="showLine"></param>
+		/// <param name="mandatory"></param>
+		/// <returns></returns>
+		public int UpdateProcessActivityGeneral(string activityID, string displayName, string bizRole, string actRole, string review, string progress, string random, string showLine, string mandatory)
+		{
+			int iReturn = -1;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
+				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
+				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
+				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
+				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityGeneral", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 특정 Activity에 미리 지정된 참여자 정보 가져오기
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="oID"></param>
+		/// <param name="parentWID"></param>
+		/// <param name="type"></param>
+		/// <param name="subType"></param>
+		/// <param name="subKey"></param>
+		/// <param name="optionValue"></param>
+		/// <returns></returns>
+		public DataTable GetActivityParticipants(string activityID, int oID, string parentWID, string type, string subType, string subKey, string optionValue)
+        {
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@pwid", SqlDbType.VarChar, 33, parentWID),
+				ParamSet.Add4Sql("@type", SqlDbType.Char, 1, type),
+				ParamSet.Add4Sql("@subtype", SqlDbType.Char, 1, subType),
+				ParamSet.Add4Sql("@subkey", SqlDbType.Char, 1, subKey),
+				ParamSet.Add4Sql("@option", SqlDbType.NVarChar, 500, optionValue)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivityParticipants", parameters);
+
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["ActivityParticipants"];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// Activity 참여 정보 조회
+		/// </summary>
+		/// <param name="activityID"></param>
+		/// <param name="actType"></param>
+		/// <param name="subType"></param>
+		/// <returns></returns>
+		public DataSet GetBFProcessActivityParticipantForAdmin(string activityID, string actType, string subType)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@acttype", SqlDbType.Char, 1, actType),
+				ParamSet.Add4Sql("@subtype", SqlDbType.Char, 1, subType)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivityParticipantForAdmin", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+		#endregion
+
+		#region [프로세스 속성 관련]
+		/// <summary>
+		/// 프로세스 인스턴스 속성 생성
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="activityID"></param>
+		/// <param name="attribute"></param>
+		/// <param name="display"></param>
+		/// <param name="value"></param>
+		/// <param name="dataType"></param>
+		/// <param name="relFlag"></param>
+		public void CreateProcessInstanceAttribute(int oID, string activityID, string attribute, string display, string value, string dataType, string relFlag)
+        {
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@attribute", SqlDbType.VarChar, 50, attribute),
+				ParamSet.Add4Sql("@display", SqlDbType.NText, display),
+				ParamSet.Add4Sql("@value", SqlDbType.NText, value),
+				ParamSet.Add4Sql("@datatype", SqlDbType.Char, 1, dataType),
+				ParamSet.Add4Sql("@relflag", SqlDbType.Char, 1, relFlag)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessInstanceAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성 배치 생성
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="attInfo"></param>
+		/// <returns></returns>
+		public void CreateProcessInstanceAttributeBatch(int oID, string attInfo)
+        {
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, attInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessInstanceAttributeBatch", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성 삭제
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="activityID"></param>
+		public void DeleteProcessInstanceAttributes(int oID, string activityID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessInstanceAttributes", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성 가져오기
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public DataTable SelectProcessInstanceAttribute(int oID, string activityID)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oID", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstanceAttribute", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["ActivityParticipants"];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 인스턴스 속성 가져오기
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="activityID"></param>
+		/// <param name="attributeValue"></param>
+		/// <returns></returns>
+		public string SelectProcessInstanceAttribute(int oID, string activityID, out string attributeValue)
+		{
+			SqlDataReader dr = null;
+			string strOut = "";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oID", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstanceAttribute", parameters);
+
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					while (dr.Read())
+					{
+						strOut = dr["attribute"].ToString();
+						strReturn = dr["Value"].ToString();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			attributeValue = strOut;
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 속성 정보들을 가져온다.
+		/// </summary>
+		/// <param name="attributeID"></param>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public Framework.Entities.Flow.Attributes SelectProcessAttribute(int attributeID, int processID, string activityID)
+        {
+			SqlDataReader dr = null;
+			Framework.Entities.Flow.Attributes attList = null;
+			Framework.Entities.Flow.Attribute att = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@attributeid", SqlDbType.Int, 4, attributeID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessAttribute", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dr = db.ExecuteReaderNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (dr.HasRows)
+				{
+					attList = new Framework.Entities.Flow.Attributes();
+
+					while (dr.Read())
+					{
+						att = new Framework.Entities.Flow.Attribute();
+
+						att.AttributeID = Convert.ToInt32(dr["AttributeID"]);
+						att.ProcessID = Convert.ToInt32(dr["ProcessID"]);
+						att.Pos = dr["Pos"].ToString();
+						att.ActivityID = dr["ActivityID"].ToString();
+						att.Condition = dr["Condition"].ToString();
+						att.Attribute1 = dr["Attribute"].ToString();
+						att.Status = Convert.ToInt32(dr["Status"]);
+						att.Description = dr["Description"].ToString();
+						att.Item1 = dr["Item1"].ToString();
+						att.Item2 = dr["Item2"].ToString();
+						att.Item3 = dr["Item3"].ToString();
+						att.Item4 = dr["Item4"].ToString();
+						att.Item5 = dr["Item5"].ToString();
+
+						attList.Add(att);
+					
+					}
+					dr.Close();
+				}
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (dr != null) dr.Dispose();
+			}
+
+			return attList;
+		}
+
+		/// <summary>
+		/// Activity 속성 정보 조회
+		/// </summary>
+		/// <param name="attributeID"></param>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <returns></returns>
+		public DataSet GetProcessAttribute(int attributeID, int processID, string activityID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@attributeid", SqlDbType.Int, 4, attributeID),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 속성 생성
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="pos"></param>
+		/// <param name="activityID"></param>
+		/// <param name="condition"></param>
+		/// <param name="attribute"></param>
+		/// <param name="status"></param>
+		/// <param name="description"></param>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <param name="item3"></param>
+		/// <param name="item4"></param>
+		/// <param name="item5"></param>
+		public void CreateProcessAttribute(int processID, string pos, string activityID, string condition, string attribute, int status
+										, string description, string item1, string item2, string item3, string item4, string item5)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@pos", SqlDbType.Char, 1, pos),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@condition", SqlDbType.VarChar, 5, condition),
+				ParamSet.Add4Sql("@attribute", SqlDbType.VarChar, 20, attribute),
+				ParamSet.Add4Sql("@status", SqlDbType.Int, 4, status),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 200, description),
+				ParamSet.Add4Sql("@item1", SqlDbType.NVarChar, 200, item1),
+				ParamSet.Add4Sql("@item2", SqlDbType.NVarChar, 200, item2),
+				ParamSet.Add4Sql("@item3", SqlDbType.NVarChar, 200, item3),
+				ParamSet.Add4Sql("@item4", SqlDbType.NVarChar, 200, item4),
+				ParamSet.Add4Sql("@item5", SqlDbType.NVarChar, 200, item5)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 속성 삭제
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="targetID"></param>
+		public void DeleteProcessAttribute(string mode, string targetID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 속성 변경 (processid는 변경 속성은 아니다)
+		/// </summary>
+		/// <param name="attributeID"></param>
+		/// <param name="pos"></param>
+		/// <param name="activityID"></param>
+		/// <param name="condition"></param>
+		/// <param name="attribute"></param>
+		/// <param name="status"></param>
+		/// <param name="description"></param>
+		/// <param name="item1"></param>
+		/// <param name="item2"></param>
+		/// <param name="item3"></param>
+		/// <param name="item4"></param>
+		/// <param name="item5"></param>
+		public void UpdateProcessAttribute(int attributeID, string pos, string activityID, string condition, string attribute, int status
+										, string description, string item1, string item2, string item3, string item4, string item5)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@attributeid", SqlDbType.Int, 4, attributeID),
+				ParamSet.Add4Sql("@pos", SqlDbType.Char, 1, pos),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@condition", SqlDbType.VarChar, 5, condition),
+				ParamSet.Add4Sql("@attribute", SqlDbType.VarChar, 20, attribute),
+				ParamSet.Add4Sql("@status", SqlDbType.Int, 4, status),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 200, description),
+				ParamSet.Add4Sql("@item1", SqlDbType.NVarChar, 200, item1),
+				ParamSet.Add4Sql("@item2", SqlDbType.NVarChar, 200, item2),
+				ParamSet.Add4Sql("@item3", SqlDbType.NVarChar, 200, item3),
+				ParamSet.Add4Sql("@item4", SqlDbType.NVarChar, 200, item4),
+				ParamSet.Add4Sql("@item5", SqlDbType.NVarChar, 200, item5)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 		}
 		#endregion
 
@@ -763,34 +2868,6 @@ namespace ZumNet.DAL.FlowDac
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="processID"></param>
-		/// <param name="isInUse"></param>
-		/// <returns></returns>
-		public DataSet GetProcessListByCondition(int domainID, int processID, string isInUse)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@domainid", SqlDbType.TinyInt, 1, domainID),
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@isinuse", SqlDbType.Char, 1, isInUse)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFGetProcessListByCondition", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="domainID"></param>
 		/// <param name="formID"></param>
@@ -924,176 +3001,7 @@ namespace ZumNet.DAL.FlowDac
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processID"></param>
-		/// <returns></returns>
-		public DataSet GetBFProcessDefinition(int processID)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinition", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processID"></param>
-		/// <param name="validFromDate"></param>
-		/// <param name="validToDate"></param>
-		/// <param name="processName"></param>
-		/// <param name="priority"></param>
-		/// <param name="description"></param>
-		/// <param name="inUse"></param>
-		/// <param name="creator"></param>
-		/// <param name="reserved1"></param>
-		/// <returns></returns>
-		public int UpdateBFProcessDefinition(int processID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
-				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
-				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
-				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
-				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
-				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
-				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessDefinition", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="validFromDate"></param>
-		/// <param name="validToDate"></param>
-		/// <param name="processName"></param>
-		/// <param name="priority"></param>
-		/// <param name="description"></param>
-		/// <param name="inUse"></param>
-		/// <param name="creator"></param>
-		/// <param name="reserved1"></param>
-		/// <returns></returns>
-		public int CreateBFProcessDefinition(int domainID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
-				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
-				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
-				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
-				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
-				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
-				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
-				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1),
-				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, ParameterDirection.Output)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessDefinition", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processID"></param>
-		/// <param name="domainID"></param>
-		/// <param name="validFromDate"></param>
-		/// <param name="validToDate"></param>
-		/// <param name="processName"></param>
-		/// <param name="priority"></param>
-		/// <param name="description"></param>
-		/// <param name="inUse"></param>
-		/// <param name="creator"></param>
-		/// <param name="reserved1"></param>
-		/// <returns></returns>
-		public int CopyBFProcessDefinition(int processID, int domainID, string validFromDate, string validToDate, string processName, int priority, string description, string inUse, string creator, string reserved1)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
-				ParamSet.Add4Sql("@from", SqlDbType.Char, 10, validFromDate),
-				ParamSet.Add4Sql("@to", SqlDbType.Char, 10, validToDate),
-				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
-				ParamSet.Add4Sql("@priority", SqlDbType.Int, 4, priority),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description),
-				ParamSet.Add4Sql("@inuse", SqlDbType.Char, 1, inUse),
-				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
-				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFCopyProcessDefinition", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processID"></param>
-		/// <returns></returns>
-		public DataSet GetBFProcessDefinitionForExport(int processID)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinitionForExport", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
+		
 
 		/// <summary>
 		/// 
@@ -1212,88 +3120,9 @@ namespace ZumNet.DAL.FlowDac
 
 			return iReturn;
 		}
+	
 
-		/// <summary>
-		/// Process, WorkItem, Report Master State 처리 상태 변경
-		/// </summary>
-		/// <param name="entityKind"></param>
-		/// <param name="targetID"></param>
-		/// <param name="stateValue"></param>
-		/// <returns></returns>
-		public int ChangeBFServiceState(string entityKind, string targetID, int stateValue)
-		{
-			int iReturn = 0;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@entity", SqlDbType.Char, 1, entityKind),
-				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID),
-				ParamSet.Add4Sql("@state", SqlDbType.Int, 4, stateValue)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFChangeState", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 프로세스 인스턴스 속성 가져오기
-		/// </summary>
-		/// <param name="oID"></param>
-		/// <param name="activityID"></param>
-		/// <returns></returns>
-		public DataSet SelectProcessInstanceAttribute(int oID, string activityID)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@oID", SqlDbType.Int, 4, oID),
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessInstanceAttribute", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processID"></param>
-		/// <param name="parentActivityID"></param>
-		/// <param name="showLine"></param>
-		/// <returns></returns>
-		public DataSet SelectProcessActivities(int processID, string parentActivityID, string showLine)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
-				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivities", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
+		
 
 		/// <summary>
 		/// 특정 프로세스에 해당하는 양식들 가져오기
@@ -1354,33 +3183,6 @@ namespace ZumNet.DAL.FlowDac
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="activityID"></param>
-		/// <param name="xmlInfo"></param>
-		/// <returns></returns>
-		public int InsertProcessParticipantBatch(string activityID, string xmlInfo)
-		{
-			int iReturn = -1;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, xmlInfo)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessParticipantBatch", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
 		/// <param name="processID"></param>
 		/// <param name="activityID"></param>
 		/// <param name="xmlInfo"></param>
@@ -1397,33 +3199,6 @@ namespace ZumNet.DAL.FlowDac
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFCreateProcesAttributeBatch", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="mode"></param>
-		/// <param name="targetID"></param>
-		/// <returns></returns>
-		public int DeleteProcessAttributeBatch(string mode, string targetID)
-		{
-			int iReturn = -1;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
-				ParamSet.Add4Sql("@targetid", SqlDbType.VarChar, 33, targetID)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessAttribute", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -1461,285 +3236,10 @@ namespace ZumNet.DAL.FlowDac
 			return iReturn;
 		}
 
-		/// <summary>
-		/// Activity 속성 정보 조회
-		/// </summary>
-		/// <param name="attributeID"></param>
-		/// <param name="processID"></param>
-		/// <param name="activityID"></param>
-		/// <returns></returns>
-		public DataSet GetBFProcessAttribute(int attributeID, int processID, string activityID)
-		{
-			DataSet dsReturn = null;
-			
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@attributeid", SqlDbType.Int, 4, attributeID),
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
-			};
+		
 
-			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessAttribute", "", parameters);
+		
 
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// Activity 참여 정보 조회
-		/// </summary>
-		/// <param name="activityID"></param>
-		/// <param name="actType"></param>
-		/// <param name="subType"></param>
-		/// <returns></returns>
-		public DataSet GetBFProcessActivityParticipantForAdmin(string activityID, string actType, string subType)
-		{
-			DataSet dsReturn = null;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@acttype", SqlDbType.Char, 1, actType),
-				ParamSet.Add4Sql("@subtype", SqlDbType.Char, 1, subType)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivityParticipantForAdmin", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-
-			return dsReturn;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="activityID"></param>
-		/// <param name="processID"></param>
-		/// <param name="parentActivityID"></param>
-		/// <param name="step"></param>
-		/// <param name="subStep"></param>
-		/// <param name="random"></param>
-		/// <param name="inline"></param>
-		/// <param name="bizRole"></param>
-		/// <param name="actRole"></param>
-		/// <param name="displayName"></param>
-		/// <param name="progress"></param>
-		/// <param name="partType"></param>
-		/// <param name="limited"></param>
-		/// <param name="review"></param>
-		/// <param name="showLine"></param>
-		/// <param name="scopeLine"></param>
-		/// <param name="mandatory"></param>
-		/// <param name="evalChart"></param>
-		/// <param name="actPreCond"></param>
-		/// <param name="actPostCond"></param>
-		/// <param name="workPreCond"></param>
-		/// <param name="workPostCond"></param>
-		/// <param name="description"></param>
-		/// <returns></returns>
-		public int CreateProcessActivity(string activityID, int processID, string parentActivityID, int step, int subStep, string random, string inline, string bizRole, string actRole, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine, string mandatory, int evalChart, string actPreCond, string actPostCond, string workPreCond, string workPostCond, string description)
-		{
-			int iReturn = -1;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
-				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
-				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
-				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
-				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inline),
-				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
-				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
-				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
-				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
-				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
-				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
-				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
-				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
-				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
-				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
-				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
-				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
-				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
-				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, workPreCond),
-				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, workPostCond),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessActivity", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// Activity 업데이트
-		/// </summary>
-		/// <param name="activityID"></param>
-		/// <param name="parentActivityID"></param>
-		/// <param name="step"></param>
-		/// <param name="subStep"></param>
-		/// <param name="random"></param>
-		/// <param name="inline"></param>
-		/// <param name="bizRole"></param>
-		/// <param name="actRole"></param>
-		/// <param name="displayName"></param>
-		/// <param name="progress"></param>
-		/// <param name="partType"></param>
-		/// <param name="limited"></param>
-		/// <param name="review"></param>
-		/// <param name="showLine"></param>
-		/// <param name="scopeLine"></param>
-		/// <param name="mandatory"></param>
-		/// <param name="evalChart"></param>
-		/// <param name="actPreCond"></param>
-		/// <param name="actPostCond"></param>
-		/// <param name="workPreCond"></param>
-		/// <param name="workPostCond"></param>
-		/// <param name="description"></param>
-		/// <returns></returns>
-		public int UpdateProcessActivity(string activityID, string parentActivityID, int step, int subStep, string random, string inline, string bizRole, string actRole, string displayName, string progress, string partType, string limited, string review, string showLine, string scopeLine, string mandatory, int evalChart, string actPreCond, string actPostCond, string workPreCond, string workPostCond, string description)
-		{
-			int iReturn = -1;
-
-			SqlParameter sqlParam1 = new SqlParameter("@activityid", SqlDbType.VarChar, 33);
-			SqlParameter sqlParam2 = new SqlParameter("@parent_activityid", SqlDbType.VarChar, 33);
-			SqlParameter sqlParam3 = new SqlParameter("@step", SqlDbType.Int, 4);
-			SqlParameter sqlParam4 = new SqlParameter("@substep", SqlDbType.Int, 4);
-			SqlParameter sqlParam5 = new SqlParameter("@random", SqlDbType.Char, 1);
-			SqlParameter sqlParam6 = new SqlParameter("@inline", SqlDbType.Char, 1);
-			SqlParameter sqlParam7 = new SqlParameter("@bizrole", SqlDbType.VarChar, 30);
-			SqlParameter sqlParam8 = new SqlParameter("@actrole", SqlDbType.VarChar, 30);
-			SqlParameter sqlParam9 = new SqlParameter("@displayname", SqlDbType.NVarChar, 100);
-			SqlParameter sqlParam10 = new SqlParameter("@progress", SqlDbType.VarChar, 10);
-			SqlParameter sqlParam11 = new SqlParameter("@parttype", SqlDbType.Char, 5);
-			SqlParameter sqlParam12 = new SqlParameter("@limited", SqlDbType.VarChar, 63);
-			SqlParameter sqlParam13 = new SqlParameter("@review", SqlDbType.Char, 1);
-			SqlParameter sqlParam14 = new SqlParameter("@showline", SqlDbType.Char, 1);
-			SqlParameter sqlParam15 = new SqlParameter("@scopeline", SqlDbType.VarChar, 33);
-			SqlParameter sqlParam16 = new SqlParameter("@mandatory", SqlDbType.Char, 1);
-			SqlParameter sqlParam17 = new SqlParameter("@evalchart", SqlDbType.Int, 4);
-			SqlParameter sqlParam18 = new SqlParameter("@act_precond", SqlDbType.Char, 1);
-			SqlParameter sqlParam19 = new SqlParameter("@act_postcond", SqlDbType.Char, 1);
-			SqlParameter sqlParam20 = new SqlParameter("@wi_precond", SqlDbType.Char, 1);
-			SqlParameter sqlParam21 = new SqlParameter("@wi_postcond", SqlDbType.Char, 1);
-			SqlParameter sqlParam22 = new SqlParameter("@description", SqlDbType.NVarChar, 500);
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, parentActivityID),
-				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
-				ParamSet.Add4Sql("@substep", SqlDbType.Int, 4, subStep),
-				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
-				ParamSet.Add4Sql("@inline", SqlDbType.Char, 1, inline),
-				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
-				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
-				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
-				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
-				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
-				ParamSet.Add4Sql("@limited", SqlDbType.VarChar, 63, limited),
-				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
-				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
-				ParamSet.Add4Sql("@scopeline", SqlDbType.VarChar, 33, scopeLine),
-				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory),
-				ParamSet.Add4Sql("@evalchart", SqlDbType.Int, 4, evalChart),
-				ParamSet.Add4Sql("@act_precond", SqlDbType.Char, 1, actPreCond),
-				ParamSet.Add4Sql("@act_postcond", SqlDbType.Char, 1, actPostCond),
-				ParamSet.Add4Sql("@wi_precond", SqlDbType.Char, 1, workPreCond),
-				ParamSet.Add4Sql("@wi_postcond", SqlDbType.Char, 1, workPostCond),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 500, description)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessActivity", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// 프로세스 정의의 순번/하위 순번을 변경
-		/// </summary>
-		/// <param name="stepJson"></param>
-		/// <returns></returns>
-		public int ChangeProcessActivityStep(string stepJson)
-		{
-			int iReturn = -1;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@stepjson", SqlDbType.NVarChar, stepJson)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityStep", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
-
-		/// <summary>
-		/// Activity 일반 정보 수정
-		/// </summary>
-		/// <param name="activityID"></param>
-		/// <param name="displayName"></param>
-		/// <param name="bizRole"></param>
-		/// <param name="actRole"></param>
-		/// <param name="review"></param>
-		/// <param name="progress"></param>
-		/// <param name="random"></param>
-		/// <param name="showLine"></param>
-		/// <param name="mandatory"></param>
-		/// <returns></returns>
-		public int UpdateProcessActivityGeneral(string activityID, string displayName, string bizRole, string actRole, string review, string progress, string random, string showLine, string mandatory)
-		{
-			int iReturn = -1;
-
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@displayname", SqlDbType.NVarChar, 100, displayName),
-				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
-				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
-				ParamSet.Add4Sql("@review", SqlDbType.Char, 1, review),
-				ParamSet.Add4Sql("@progress", SqlDbType.VarChar, 10, progress),
-				ParamSet.Add4Sql("@random", SqlDbType.Char, 1, random),
-				ParamSet.Add4Sql("@showline", SqlDbType.Char, 1, showLine),
-				ParamSet.Add4Sql("@mandatory", SqlDbType.Char, 1, mandatory)
-			};
-
-			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessActivityGeneral", "", parameters);
-
-			using (DbBase db = new DbBase())
-			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
-			}
-
-			return iReturn;
-		}
+		
 	}
 }
