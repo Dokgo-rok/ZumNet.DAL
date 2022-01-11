@@ -14,14 +14,15 @@ using ZumNet.Framework.Data;
 namespace ZumNet.DAL.FlowDac
 {
     /// <summary>
-    /// 
+    /// 결재 관리
     /// </summary>
     public class EApprovalDac : DacBase
     {
-		/// <summary>
-		/// 
-		/// </summary>
-		public EApprovalDac(string connectionString = "") : base(connectionString)
+        #region [생성자]
+        /// <summary>
+        /// 
+        /// </summary>
+        public EApprovalDac(string connectionString = "") : base(connectionString)
 		{
 
 		}
@@ -33,6 +34,7 @@ namespace ZumNet.DAL.FlowDac
 		{
 
 		}
+        #endregion
 
         #region [양식 관리]
 
@@ -215,6 +217,133 @@ namespace ZumNet.DAL.FlowDac
             return xfDef;
         }
 
+        /// <summary>
+        /// 양식 정의 가져오기
+        /// </summary>
+        /// <param name="domainID"></param>
+        /// <param name="formID"></param>
+        /// <returns></returns>
+        public DataSet GetBFEAFormData(int domainID, string formID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormData", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 양식 분류 관리
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormClass(int dnID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFSelectEAFormClass", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 결재 양식 분류 관리
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="classid"></param>
+        /// <param name="domainid"></param>
+        /// <param name="formname"></param>
+        /// <param name="formseqno"></param>
+        public void HandleEAFormClass(string command, int classid, int domainid, string formname, int formseqno)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
+                ParamSet.Add4Sql("@classid", SqlDbType.Int, classid),
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, domainid),
+                ParamSet.Add4Sql("@formname", SqlDbType.NVarChar, 100, formname),
+                ParamSet.Add4Sql("@formseqno", SqlDbType.Int, formseqno)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormKind", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 조회(등록되어 있는 모든 양식)
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormList(int dnID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormList", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+		/// 특정 프로세스에 해당하는 양식들 가져오기
+		/// </summary>
+		/// <param name="defID"></param>
+		/// <returns></returns>
+		public DataSet GetProcessForms(int defID)
+        {
+            DataSet dsReturn = null;
+            string strQuery = @"SELECT ISNULL(b.ClassName,'') AS ClassName, a.FormID, a.DocName, a.MainTable
+					FROM admin.PH_EA_FORMS a (NOLOCK) LEFT OUTER JOIN admin.PH_EA_CLASS b (NOLOCK) ON a.ClassID = b.ClassID
+					WHERE ProcessID = @defId ORDER BY a.DocName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@defId", SqlDbType.Int, 4, defID)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
         #endregion
 
         #region [문서 생성 및 변경, 조회]
@@ -297,9 +426,9 @@ namespace ZumNet.DAL.FlowDac
                         xfInst.CreatorDept = dr["CreatorDept"].ToString();
                         xfInst.CreatorDeptID = Convert.ToInt32(dr["CreatorDeptID"]);
                         xfInst.CreatorDeptCode = dr["CreatorDeptCode"].ToString();
-                        xfInst.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm");
-                        xfInst.PublishDate = Convert.ToDateTime(dr["PublishDate"]).ToString("yyyy-MM-dd HH:mm");
-                        xfInst.ExpiredDate = (dr.IsDBNull(24)) ? "" : Convert.ToDateTime(dr[24]).ToString("yyyy-MM-dd HH:mm");
+                        xfInst.CreateDate = Convert.ToDateTime(dr["CreateDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+                        xfInst.PublishDate = Convert.ToDateTime(dr["PublishDate"]).ToString("yyyy-MM-dd HH:mm:ss");
+                        xfInst.ExpiredDate = (dr.IsDBNull(24)) ? "" : Convert.ToDateTime(dr[24]).ToString("yyyy-MM-dd HH:mm:ss");
                         xfInst.HasAttachFile = dr["HasAttachFile"].ToString();
                         xfInst.LinkedMsg = dr["LinkedMsg"].ToString();
                         xfInst.CommentCount = Convert.ToInt32(dr["CommentCount"]);
@@ -394,6 +523,30 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+        /// 양식폼 필드 업데이트
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="targetField"></param>
+        /// <param name="targetValue"></param>
+        public void UpdateEAFormFieldValue(string formID, string targetField, string targetValue)
+        {
+            string query = @"UPDATE admin.PH_EA_FORMS WITH (ROWLOCK) SET {targetField} = @value WHERE FormID = @formid";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@value", SqlDbType.NVarChar, 500, targetValue)
+            };
+
+            ParamData pData = new ParamData(query, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
         /// 양식별 특정 필드 데이타 가져오기
         /// </summary>
         /// <param name="dbName">양식 데이타베이스</param>
@@ -462,9 +615,10 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="formTable"></param>
         /// <param name="externalKey1"></param>
         /// <returns></returns>
-        public DataSet SelectExternalKeyMsg(string dbName, string ekpDB, string formTable, string externalKey1)
+        public DataTable SelectExternalKeyMsg(string dbName, string ekpDB, string formTable, string externalKey1)
         {
-            DataSet dsReturn = null;
+            DataSet ds = null;
+            DataTable dtReturn = null;
 
             if (dbName != "") dbName += ".";
             string strSP = dbName + "admin.ph_up_SelectExternalKeyMsg";
@@ -478,12 +632,25 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strSP, "", "ExternalKeyMsg", 30, parameters);
 
-            using (DbBase db = new DbBase())
+            try
             {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                using (DbBase db = new DbBase())
+                {
+                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                }
+
+                if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+            }
+            finally
+            {
+                if (ds != null) ds.Dispose();
             }
 
-            return dsReturn;
+            return dtReturn;
         }
 
         /// <summary>
@@ -842,6 +1009,31 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+		/// 양식 특정 필드값 변경
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="fieldName"></param>
+		/// <param name="fieldValue"></param>
+		public void UpdateXFormSpecificField(string xfAlias, string messageID, string fieldName, string fieldValue)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, messageID),
+                ParamSet.Add4Sql("@field", SqlDbType.VarChar, 100, fieldName),
+                ParamSet.Add4Sql("@field_value", SqlDbType.NVarChar, 2000, fieldValue)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFUpdateXFormSpecificField", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
         /// 양식별 데이타 삭제
         /// </summary>
         /// <param name="dbName">양식 데이타베이스</param>
@@ -909,9 +1101,56 @@ namespace ZumNet.DAL.FlowDac
 
             return dsReturn;
         }
+
+        /// <summary>
+        /// 문서에 대한 전체 정보 조회
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <param name="messageID"></param>
+        /// <returns></returns>
+        public DataSet GetEADocumentTotalData(int dnID, int messageID)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, dnID),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetProcessTotalDataForAdmin", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 결재 문서 삭제
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="messageID"></param>
+		public void DeleteEAData(string command, int messageID)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 7, command),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFDeleteEAData", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
         #endregion
 
-        #region [관련문서 및 타시스템 이관 관련]
+        #region [관련문서, 문서배포 및 타시스템 이관 관련]
         /// <summary>
         /// 폴더에 양식 등록
         /// </summary>
@@ -1053,6 +1292,31 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+        /// 관련문서 정보 삭제하기
+        /// </summary>
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="linkedXfAlias"></param>
+        /// <param name="linkedMsgID"></param>
+        public void DeleteLinkedDoc(string xfAlias, string messageID, string linkedXfAlias, string linkedMsgID)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 33, messageID),
+                ParamSet.Add4Sql("@linkedxfalias", SqlDbType.VarChar, 30, linkedXfAlias),
+                ParamSet.Add4Sql("@linkedmsgid", SqlDbType.VarChar, 33, linkedMsgID)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_DeleteLinkedDoc", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
         /// 관련문서 정보 가져오기
         /// </summary>
         /// <param name="xfAlias"></param>
@@ -1157,6 +1421,83 @@ namespace ZumNet.DAL.FlowDac
             }
 
             return dsReturn;
+        }
+
+        /// <summary>
+        /// 문서배포목록 가져오기
+        /// </summary>
+        /// <param name="dlId"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="msgId"></param>
+        /// <param name="dlType"></param>
+        /// <returns></returns>
+        public DataSet SelectXFormDL(long dlId, string xfAlias, int msgId, string dlType)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dlid", SqlDbType.BigInt, 8, dlId),
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, msgId),
+                ParamSet.Add4Sql("@dltype", SqlDbType.VarChar, 30, dlType)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_SelectXFormDL", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// XFORM_DL 값 저장 - 문서배포
+        /// </summary>
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="step"></param>
+        /// <param name="dlType"></param>
+        /// <param name="display"></param>
+        /// <param name="value"></param>
+        /// <param name="registrantId"></param>
+        /// <param name="registrant"></param>
+        /// <param name="registrantDept"></param>
+        /// <param name="eventDate"></param>
+        /// <param name="reserved1"></param>
+        /// <returns></returns>
+        public long InsertXFormDL(string xfAlias, int messageID, string step, string dlType, string display, string value
+                        , int registrantId, string registrant, string registrantDept, string eventDate, string reserved1)
+        {
+            long lReturn = 0;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
+                ParamSet.Add4Sql("@step", SqlDbType.VarChar, 32, step),
+                ParamSet.Add4Sql("@dltype", SqlDbType.VarChar, 30, dlType),
+                ParamSet.Add4Sql("@display", SqlDbType.NText, display),
+                ParamSet.Add4Sql("@value", SqlDbType.NText, value),
+                ParamSet.Add4Sql("@registrantid", SqlDbType.Int, 4, registrantId),
+                ParamSet.Add4Sql("@registrant", SqlDbType.NVarChar, 50, registrant),
+                ParamSet.Add4Sql("@registrantDept", SqlDbType.NVarChar, 50, registrantDept),
+                ParamSet.Add4Sql("@eventdate", SqlDbType.VarChar, 20, eventDate),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1),
+
+                ParamSet.Add4Sql("@oid", SqlDbType.BigInt, 8, ParameterDirection.Output)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_InsertXFormDL", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                lReturn = Convert.ToInt64(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+            }
+
+            return lReturn;
         }
         #endregion
 
@@ -1440,7 +1781,7 @@ namespace ZumNet.DAL.FlowDac
         public int InsertFileAttach(string xfAlias, int messageID, string isFile, string fileName, string savedName
                         , string fileSize, string fileType, string prefix, string locationFolder, string storageFolder)
         {
-            return InsertFileAttach(xfAlias, messageID, isFile, fileName, savedName, fileSize, fileType, prefix, locationFolder, storageFolder, "", 0);
+            return InsertFileAttach(xfAlias, messageID, isFile, fileName, savedName, fileSize, fileType, prefix, locationFolder, storageFolder, "", 0, "O");
         }
 
         /// <summary>
@@ -1458,9 +1799,10 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="storageFolder"></param>
         /// <param name="drm"></param>
         /// <param name="seq"></param>
+        /// <param name="attType"></param>
         /// <returns></returns>
         public int InsertFileAttach(string xfAlias, int messageID, string isFile, string fileName, string savedName, string fileSize
-                                , string fileType, string prefix, string locationFolder, string storageFolder, string drm, int seq)
+                            , string fileType, string prefix, string locationFolder, string storageFolder, string drm, int seq, string attType)
         {
             int iReturn = 0;
 
@@ -1478,6 +1820,7 @@ namespace ZumNet.DAL.FlowDac
                 ParamSet.Add4Sql("@storagefolder", SqlDbType.NVarChar, 250, storageFolder),
                 ParamSet.Add4Sql("@drm", SqlDbType.VarChar, 20, drm),
                 ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+                ParamSet.Add4Sql("@atttype", SqlDbType.Char, 1, attType),
 
                 ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, ParameterDirection.Output)
             };
@@ -1701,131 +2044,7 @@ namespace ZumNet.DAL.FlowDac
         }
         #endregion
 
-        #region [외부시스템 연동 관련]
-        /// <summary>
-        /// 연동 시스템에 보낼 데이타 가져오기
-        /// </summary>
-        /// <param name="dbName"></param>
-        /// <param name="moduleID"></param>
-        /// <param name="ekpDB"></param>
-        /// <param name="formID"></param>
-        /// <param name="wID"></param>
-        /// <param name="tableName"></param>
-        /// <param name="version"></param>
-        /// <param name="msgID"></param>
-        /// <param name="oID"></param>
-        /// <returns></returns>
-        public string GetExtraDataForInterface(string dbName, string moduleID, string ekpDB, string formID
-                                        , string wID, string tableName, int version, int msgID, int oID)
-        {
-            string strReturn = "";
-            if (dbName != "") dbName += ".";
-            string strSP = dbName + "admin.ph_up_GetExtraDataForInterface";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
-                ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-                ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
-                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
-                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
-                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
-                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
-            };
-
-            ParamData pData = new ParamData(strSP, "", "ExtraData", 30, parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return strReturn;
-        }
-
-        /// <summary>
-        /// 연동 시스템에 받은 데이타로 양식 필드들 변경
-        /// </summary>
-        /// <param name="dbName"></param>
-        /// <param name="moduleID"></param>
-        /// <param name="dnAlias"></param>
-        /// <param name="formID"></param>
-        /// <param name="tableName"></param>
-        /// <param name="version"></param>
-        /// <param name="msgID"></param>
-        /// <param name="interfaceValue"></param>
-        public void UpdateFormMainFieldForInterface(string dbName, string moduleID, string dnAlias, string formID
-                                            , string tableName, int version, int msgID, string interfaceValue)
-        {
-            if (dbName != "") dbName += ".";
-            string strSP = dbName + "admin.ph_up_UpdateFormMainFieldForInterface";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
-                ParamSet.Add4Sql("@dnalias", SqlDbType.VarChar, 63, dnAlias),
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
-                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
-                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
-                ParamSet.Add4Sql("@f_value", SqlDbType.NVarChar, 4000, interfaceValue)
-            };
-
-            ParamData pData = new ParamData(strSP, "", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-        }
-
-        /// <summary>
-        /// 메일(외부로 보내는 경우) 시스템으로 보낼 데이타 가져오기
-        /// </summary>
-        /// <param name="dbName"></param>
-        /// <param name="moduleID"></param>
-        /// <param name="ekpDB"></param>
-        /// <param name="mailDomain"></param>
-        /// <param name="formID"></param>
-        /// <param name="tableName"></param>
-        /// <param name="version"></param>
-        /// <param name="msgID"></param>
-        /// <param name="oID"></param>
-        /// <returns></returns>
-        public DataSet GetExtraDataForMail(string dbName, string moduleID, string ekpDB, string mailDomain
-                                        , string formID, string tableName, int version, int msgID, int oID)
-        {
-            DataSet dsReturn = null;
-            if (dbName != "") dbName += ".";
-            string strSP = dbName + "admin.ph_up_GetExtraDataForMail";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
-                ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
-                ParamSet.Add4Sql("@maildomain", SqlDbType.VarChar, 100, mailDomain),
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
-                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
-                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
-                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
-
-                ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
-            };
-
-            ParamData pData = new ParamData(strSP, "", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return dsReturn;
-        }
-        #endregion
-
-        #region [개인 결재선 관련]
+        #region [결재선 관련]
         /// <summary>
         /// 개인 결재선 가져오기
         /// </summary>
@@ -2104,6 +2323,38 @@ namespace ZumNet.DAL.FlowDac
                 string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
+
+        /// <summary>
+        /// 자동결재선 가져오기
+        /// </summary>
+        /// <param name="oId"></param>
+        /// <param name="urId"></param>
+        /// <param name="defId"></param>
+        /// <param name="formId"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public DataSet GetAutoSignInfo(int oId, int urId, int defId, string formId, string option)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oId),
+                ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, urId),
+                ParamSet.Add4Sql("@defid", SqlDbType.Int, 4, defId),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar,33, formId),
+                ParamSet.Add4Sql("@option", SqlDbType.VarChar, 20, option)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetAutoSignInfo", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
         #endregion
 
         #region [결재 이외 양식 생성 및 변경, 조회]
@@ -2274,7 +2525,7 @@ namespace ZumNet.DAL.FlowDac
         }
         #endregion
 
-        #region [결재 비밀번호 사용 여부]
+        #region [결재 비밀번호 관련]
         /// <summary>
         /// 개인별 결재 비밀번호 사용 여부 가져오기
         /// </summary>
@@ -2323,6 +2574,55 @@ namespace ZumNet.DAL.FlowDac
             using (DbBase db = new DbBase())
             {
                 string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 결재 비밀번호 확인
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
+        public string CheckApprovalPassword(int userID, string pwd)
+        {
+            string strReturn = "";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+                ParamSet.Add4Sql("@password", SqlDbType.VarChar, 20, pwd),
+
+                ParamSet.Add4Sql("@result_flag", SqlDbType.Char, 1, ParameterDirection.Output)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFCheckApprovalPassword", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// 결재 비밀번호 변경
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="pwd"></param>
+        public void UpdateApprovalPassword(int userID, string pwd)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+                ParamSet.Add4Sql("@password", SqlDbType.VarChar, 20, pwd)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFUpdateApprovalPassword", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -2484,6 +2784,197 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+        /// 부서 수신담당자 가져오기
+        /// </summary>
+        /// <param name="auAlias"></param>
+        /// <returns></returns>
+        public DataSet GetRcvManager(string auAlias)
+        {
+            DataSet dsReturn = null;
+            string strQuery = @"
+                 SELECT a.ObjectID, a.TargetID, b.DisplayName, b.Grade1 FROM admin.PH_AUTHORITY a (NOLOCK)
+                    INNER JOIN admin.ph_view_OBJECT_UR_LIST b (NOLOCK)
+                        ON a.TargetID = b.UserID AND a.ObjectID = b.GR_ID
+                 WHERE a.AUAlias=@aualias AND a.ObjectType='GR' AND a.TargetType='UR'";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@aualias", SqlDbType.VarChar, 20, auAlias)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 그룹 양식 담당수신 담당자 가져오기
+        /// </summary>
+        /// <param name="grID"></param>
+        /// <param name="formId"></param>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        public DataTable GetGroupCharge(int grID, string formId, string option)
+        {
+            DataSet ds = null;
+            DataTable dtReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, grID),
+                ParamSet.Add4Sql("@formID", SqlDbType.VarChar, 33, formId),
+                ParamSet.Add4Sql("@option", SqlDbType.VarChar, 100, option)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFGetGroupCharge", parameters);
+
+            try
+            {
+                using (DbBase db = new DbBase())
+                {
+                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                }
+
+                if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+            }
+            catch (Exception ex)
+            {
+                Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+            }
+            finally
+            {
+                if (ds != null) ds.Dispose();
+            }
+
+            return dtReturn;
+        }
+
+        /// <summary>
+        /// 특정 양식에 해당하는 담당자 정보 가져오기
+        /// </summary>
+        /// <param name="dnId"></param>
+        /// <param name="formId"></param>
+        /// <returns></returns>
+        public DataSet SelectEAFormCharge(int dnId, string formId)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, dnId),
+                ParamSet.Add4Sql("@formID", SqlDbType.VarChar, 33, formId)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_SelectEAFormCharge", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 양식별 담당 지정
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <param name="chargeId"></param>
+        /// <param name="objectType"></param>
+        /// <param name="seq"></param>
+        /// <param name="chargeDeptId"></param>
+        /// <param name="reserved1"></param>
+        public void InsertEAFormCharge(string formId, int chargeId, string objectType, int seq, int chargeDeptId, string reserved1)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formId),
+                ParamSet.Add4Sql("@chargeid", SqlDbType.Int, 4, chargeId),
+                ParamSet.Add4Sql("@objtype", SqlDbType.Char, 2, objectType),
+                ParamSet.Add4Sql("@seq", SqlDbType.SmallInt, 2, seq),
+                ParamSet.Add4Sql("@chargegrid", SqlDbType.Int, 4, chargeDeptId),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 4000, reserved1)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_InsertEAFormCharge", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 담당자 정보 변경
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="info"></param>
+        public void UpdateEAFormCharge(string formID, string info)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, info)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_UpdateEAFormChargeBatch", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 담당 관리 변경 - JSON 이용
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="chargejson"></param>
+        public void UpdateEAFormChargeJson(string formID, string chargejson)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@chargejson", SqlDbType.NVarChar, chargejson)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_UpdateEAFormChargeJson", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 담당 삭제 : 2010-09-01 이전은 담당부서 삭제면 담당자도 삭제. 이후로는 따로 삭제
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <param name="chargeId"></param>
+        /// <param name="objectType"></param>
+        public void DeleteEAFormCharge(string formId, int chargeId, string objectType)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formId),
+                ParamSet.Add4Sql("@chargeid", SqlDbType.Int, 4, chargeId),
+                ParamSet.Add4Sql("@objtype", SqlDbType.Char, 2, objectType)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_DeleteEAFormCharge", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
         /// 부서 수신담당자 인지(부서의 특정 사용자가 특정 역할을 가졌는지 여부)
         /// </summary>
         /// <param name="grId"></param>
@@ -2540,6 +3031,87 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+        /// 공유된 문서함 삭제
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="targetID"></param>
+        /// <param name="folderType"></param>
+        public void DeleteEAFolderView(int groupID, int targetID, string folderType)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
+                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_DeleteEAFolderView", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 부서문서함 공유 설정
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="targetID"></param>
+        /// <param name="folderType"></param>
+        /// <param name="seq"></param>
+        /// <param name="subSeq"></param>
+        /// <param name="registrant"></param>
+        /// <param name="reserved1"></param>
+        public void InsertEAFolderView(int groupID, int targetID, string folderType, int seq, int subSeq, string registrant, string reserved1)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
+                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType),
+                ParamSet.Add4Sql("@seq", SqlDbType.SmallInt, 2, seq),
+                ParamSet.Add4Sql("@subseq", SqlDbType.SmallInt, 2, subSeq),
+                ParamSet.Add4Sql("@registrant", SqlDbType.NVarChar, 100, registrant),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 500, reserved1)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_InsertEAFolderView", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 공유된 문서함 순서 변경
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="dir"></param>
+        /// <param name="grId"></param>
+        /// <param name="targetId"></param>
+        /// <param name="fdType"></param>
+        public void UpdateEAFolderViewOrder(string mode, string dir, int grId, int targetId, string fdType)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+                ParamSet.Add4Sql("@dir", SqlDbType.Char, 1, dir),
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, grId),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetId),
+                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, fdType)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_UpdateEAFolderViewOrder", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
         /// 겸직부서 가져오기
         /// </summary>
         /// <param name="userId"></param>
@@ -2591,6 +3163,33 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
             return dsReturn;
         }
+
+        /// <summary>
+        /// 문서 수신 정책 변경 - 부서
+        /// </summary>
+        /// <param name="groupID"></param>
+        /// <param name="reserved1"></param>
+        /// <returns></returns>
+        public int ChangeReceiverDeptPolicy(int groupID, string reserved1)
+        {
+            int iReturn = 0;
+            string strQuery = "UPDATE admin.PH_OBJECT_GR WITH (ROWLOCK) SET Reserved1 = @reserved1 WHERE GR_ID = @grid";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 10, reserved1)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return iReturn;
+        }
         #endregion
 
         #region [문서명 검색, 사용자 이름 검색]
@@ -2637,170 +3236,7 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         }
         #endregion
 
-        #region [양식 분류 관리]
-
-        /// <summary>
-        /// 양식 분류 관리
-        /// </summary>
-        /// <param name="dnID"></param>
-        /// <returns></returns>
-        public DataSet GetEAFormClass(int dnID)
-        {
-            DataSet dsReturn = null;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_BFSelectEAFormClass", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return dsReturn;
-        }
-
-        /// <summary>
-        /// 결재 양식 분류 관리
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="classid"></param>
-        /// <param name="domainid"></param>
-        /// <param name="formname"></param>
-        /// <param name="formseqno"></param>
-        public void HandleEAFormClass(string command, int classid, int domainid, string formname, int formseqno)
-        {
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
-                ParamSet.Add4Sql("@classid", SqlDbType.Int, classid),
-                ParamSet.Add4Sql("@domainid", SqlDbType.Int, domainid),
-                ParamSet.Add4Sql("@formname", SqlDbType.NVarChar, 100, formname),
-                ParamSet.Add4Sql("@formseqno", SqlDbType.Int, formseqno)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormKind", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-        }
-
-        /// <summary>
-        /// 양식 조회(등록되어 있는 모든 양식)
-        /// </summary>
-        /// <param name="dnID"></param>
-        /// <returns></returns>
-        public DataSet GetEAFormList(int dnID)
-        {
-            DataSet dsReturn = null;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, dnID)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormList", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return dsReturn;
-        }
-
-        #endregion
-
-        #region [ 양식 문서 정보 ]
-
-        /// <summary>
-        /// 문서에 대한 전체 정보 조회
-        /// </summary>
-        /// <param name="dnID"></param>
-        /// <param name="messageID"></param>
-        /// <returns></returns>
-        public DataSet GetEADocumentTotalData(int dnID, int messageID)
-        {
-            DataSet dsReturn = null;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, dnID),
-                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_BFGetProcessTotalDataForAdmin", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return dsReturn;
-        }
-
-        #endregion
-
-        #region [ 양식 담당 관리 ]
-
-        /// <summary>
-        /// 양식 담당 관리 변경 - JSON 이용
-        /// </summary>
-        /// <param name="formID"></param>
-        /// <param name="chargejson"></param>
-        public void UpdateEAFormChargeJson(string formID, string chargejson)
-        {
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-                ParamSet.Add4Sql("@chargejson", SqlDbType.NVarChar, chargejson)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_UpdateEAFormChargeJson", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-        }
-
-        #endregion
-
-        #region [ 양식 부가 설정 ]
-
-        /// <summary>
-        /// 양식폼 필드 업데이트
-        /// </summary>
-        /// <param name="formID"></param>
-        /// <param name="targetField"></param>
-        /// <param name="targetValue"></param>
-        public void UpdateEAFormFieldValue(string formID, string targetField, string targetValue)
-        {
-            string query = $"UPDATE admin.PH_EA_FORMS WITH (ROWLOCK) SET {targetField} = @value WHERE FormID = @formid";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-                ParamSet.Add4Sql("@value", SqlDbType.NVarChar, 500, targetValue)
-            };
-
-            ParamData pData = new ParamData(query, "text", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-        }
-
-        #endregion
-
-        #region [ 양식 알림 설정 ]
-
+        #region [알림관리, 열람권한]
         /// <summary>
         /// 양식 알림 설정 정보 조회
         /// </summary>
@@ -2816,6 +3252,82 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             };
 
             ParamData pData = new ParamData("admin.ph_up_SelectEAFormNotice", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 양식별 추가 정보 가져오기
+        /// </summary>
+        /// <param name="dnId"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormAdditionalInfo(int dnId)
+        {
+            DataSet dsReturn = null;
+            string strQuery = @"
+SELECT ClassID, Seq, ClassName
+FROM admin.PH_EA_CLASS (NOLOCK)
+WHERE DN_ID = @dnid
+ORDER BY Seq
+
+SELECT FormID, ClassID, DocName, MainTable, Usage, Version
+, ISNULL(Reserved1, '') AS 'Reserved1'
+, ISNULL(Reserved2, '') AS 'Reserved2'
+FROM admin.PH_EA_FORMS (NOLOCK)
+WHERE DN_ID = @dnid
+ORDER BY ClassID, DocName
+";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, dnId)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 양식별 추가 정보 가져오기
+        /// </summary>
+        /// <param name="dnId"></param>
+        /// <returns></returns>
+        public DataSet GetEAFormNoticeSet(int dnId)
+        {
+            DataSet dsReturn = null;
+            string strQuery = @"
+SELECT ClassID, Seq, ClassName
+FROM admin.PH_EA_CLASS (NOLOCK)
+WHERE DN_ID = @dnid
+ORDER BY Seq
+
+SELECT a.FormID, a.ClassID, a.DocName, REPLACE(a.MainTable, 'FORM_', '') AS 'MainTable', a.Usage
+	, a.Version, b.Period, b.Field, b.Deferment, b.MailUse, b.MsgUse, b.PushUse
+    , CASE WHEN b.FormID IS NULL THEN 'N' ELSE 'Y' END AS 'FormSet'
+FROM admin.PH_EA_FORMS a (NOLOCK)
+LEFT OUTER JOIN admin.PH_EA_FORM_NOTICE b (NOLOCK)
+ON a.FormID = b.FormID
+WHERE 1=1 --a.Usage <> '9'
+ORDER BY DocName, Version
+";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, dnId)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
 
             using (DbBase db = new DbBase())
             {
@@ -2871,33 +3383,208 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             }
         }
 
-        #endregion
-
         /// <summary>
-        /// 
+        /// 양식 열람 권한 가져오기
         /// </summary>
-        /// <param name="domainID"></param>
-        /// <param name="formID"></param>
-        /// <returns></returns>
-        public DataSet GetBFEAFormData(int domainID, string formID)
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="urId"></param>
+        /// <param name="grId"></param>
+        /// <returns>권한</returns>
+        public string CheckAppAcl(string xfAlias, int messageID, int urId, int grId)
         {
-            DataSet dsReturn = null;
+            string strReturn = "";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
-                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID)
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
+                ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, urId),
+                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, grId)
             };
 
-            ParamData pData = new ParamData("admin.ph_up_BFGetEAFormData", "", parameters);
+            ParamData pData = new ParamData("admin.ph_up_BFCheckAppAcl", parameters);
 
             using (DbBase db = new DbBase())
             {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
 
-            return dsReturn;
+            return strReturn;
         }
+        #endregion
+
+        #region [관리툴 사용]
+        /// <summary>
+        /// 양식 관리 테이블에 정보 생성, 수정, 삭제(Reserved1,2는 따로 관리된다)
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="domainID"></param>
+        /// <param name="formID"></param>
+        /// <param name="classID"></param>
+        /// <param name="processID"></param>
+        /// <param name="docName"></param>
+        /// <param name="description"></param>
+        /// <param name="mainTable"></param>
+        /// <param name="mainTableDef"></param>
+        /// <param name="subTableCount"></param>
+        /// <param name="subTableDef"></param>
+        /// <param name="xslName"></param>
+        /// <param name="cssName"></param>
+        /// <param name="jsName"></param>
+        /// <param name="version"></param>
+        /// <param name="usage"></param>
+        /// <param name="editor"></param>
+        /// <param name="htmlTemplatePath"></param>
+        /// <param name="limited"></param>
+        /// <param name="processString"></param>
+        /// <param name="validation"></param>
+        /// <param name="reserved1"></param>
+        /// <param name="reserved2"></param>
+        /// <param name="mainTableStatement"></param>
+        /// <param name="subTableStatement"></param>
+        /// <param name="selectTable"></param>
+        public void HandleEAFormManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description
+                                , string mainTable, string mainTableDef, string subTableCount, string subTableDef, string xslName, string cssName, string jsName
+                                , string version, string usage, string editor, string htmlTemplatePath, string limited, string processString, string validation
+                                , string reserved1, string reserved2, string mainTableStatement, string subTableStatement, string selectTable)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@classid", SqlDbType.Int, 4, classID),
+                ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+                ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
+                ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
+                ParamSet.Add4Sql("@maintable", SqlDbType.VarChar, 100, mainTable),
+                ParamSet.Add4Sql("@maintabledef", SqlDbType.NText, mainTableDef),
+                ParamSet.Add4Sql("@subtablecount", SqlDbType.TinyInt, 1, Framework.Util.StringHelper.SafeInt(subTableCount, 0)),
+                ParamSet.Add4Sql("@subtabledef", SqlDbType.NText, subTableDef),
+                
+                ParamSet.Add4Sql("@xslname", SqlDbType.VarChar, 100, xslName),
+                ParamSet.Add4Sql("@cssname", SqlDbType.VarChar, 100, cssName),
+                ParamSet.Add4Sql("@jsname", SqlDbType.VarChar, 100, jsName),
+                ParamSet.Add4Sql("@version", SqlDbType.SmallInt, 2, Framework.Util.StringHelper.SafeInt(version, 1)),
+                ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage),
+                ParamSet.Add4Sql("@webeditor", SqlDbType.VarChar, 20, editor),
+                ParamSet.Add4Sql("@htmlfile", SqlDbType.NVarChar, 255, htmlTemplatePath),
+                ParamSet.Add4Sql("@limited", SqlDbType.Char, 1, limited),
+                ParamSet.Add4Sql("@processnamestring", SqlDbType.VarChar, 200, processString),
+                ParamSet.Add4Sql("@validation", SqlDbType.VarChar, 1000, validation),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1),
+                ParamSet.Add4Sql("@reserved2", SqlDbType.NVarChar, 500, reserved2),
+                ParamSet.Add4Sql("@createmaintabletext", SqlDbType.NText, mainTableStatement),
+                ParamSet.Add4Sql("@createsubtabletext", SqlDbType.NText, subTableStatement),
+                ParamSet.Add4Sql("@selectable", SqlDbType.Char, 1, selectTable)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormManagement", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+		/// 
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="domainID"></param>
+		/// <param name="formID"></param>
+		/// <param name="classID"></param>
+		/// <param name="processID"></param>
+		/// <param name="docName"></param>
+		/// <param name="description"></param>
+		/// <param name="selectable"></param>
+		/// <param name="xslName"></param>
+		/// <param name="cssName"></param>
+		/// <param name="jsName"></param>
+		/// <param name="usage"></param>
+		/// <param name="mainTable"></param>
+		public void HandleEAFormBasicManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description
+                                        , string selectable, string xslName, string cssName, string jsName, string usage, string mainTable)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
+                ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@classid", SqlDbType.Int, 4, classID),
+                ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+                ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
+                ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
+                ParamSet.Add4Sql("@selectable", SqlDbType.Char, 1, selectable),
+                ParamSet.Add4Sql("@xslname", SqlDbType.VarChar, 100, xslName),
+                ParamSet.Add4Sql("@cssname", SqlDbType.VarChar, 100, cssName),
+                ParamSet.Add4Sql("@jsname", SqlDbType.VarChar, 100, jsName),
+                ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage),
+                ParamSet.Add4Sql("@mainTable", SqlDbType.VarChar, 100, mainTable)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormBasicManagement", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 폼 관련 업데이트
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="formID"></param>
+        /// <param name="tableDef"></param>
+        /// <param name="tableCount"></param>
+        /// <param name="usage"></param>
+        public void HandleEAFormTableManagement(string command, string formID, string tableDef, int tableCount, string usage)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@command", SqlDbType.Char, 2, command),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@tableDef", SqlDbType.NText, tableDef),
+                ParamSet.Add4Sql("@tableCount", SqlDbType.TinyInt, 1, tableCount),
+                ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormTableManagement", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 폼 기타 정보 저장
+        /// </summary>
+        /// <param name="formID"></param>
+        /// <param name="webEditor"></param>
+        /// <param name="htmlFile"></param>
+        /// <param name="processNameString"></param>
+        /// <param name="validation"></param>
+        public void HandleEAFormEtcManagement(string formID, string webEditor, string htmlFile, string processNameString, string validation)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@webEditor", SqlDbType.VarChar, 20, webEditor),
+                ParamSet.Add4Sql("@htmlFile", SqlDbType.NVarChar, 255, htmlFile),
+                ParamSet.Add4Sql("@processNameString", SqlDbType.VarChar, 200, processNameString),
+                ParamSet.Add4Sql("@validation", SqlDbType.VarChar, 1000, validation)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormEtcManagement", "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }        
 
         /// <summary>
         /// 코드에 대한 조회
@@ -2924,88 +3611,7 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
             return dsReturn;
         }
-
-        /// <summary>
-        /// 결재 문서 삭제
-        /// </summary>
-        /// <param name="command"></param>
-        /// <param name="messageID"></param>
-        /// <returns></returns>
-		public int DeleteBFEAData(string command, int messageID)
-        {
-            int iReturn = 0;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@command", SqlDbType.VarChar, 7, command),
-                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_BFDeleteEAData", "", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return iReturn;
-        }
-
-        /// <summary>
-        /// 문서 수신 정책 변경 - 부서
-        /// </summary>
-        /// <param name="groupID"></param>
-        /// <param name="reserved1"></param>
-        /// <returns></returns>
-        public int ChangeReceiverDeptPolicy(int groupID, string reserved1)
-        {
-            int iReturn = 0;
-            string strQuery = "UPDATE admin.PH_OBJECT_GR WITH (ROWLOCK) SET Reserved1 = @reserved1 WHERE GR_ID = @grid";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
-                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 10, reserved1)
-            };
-
-            ParamData pData = new ParamData(strQuery, "text", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return iReturn;
-        }
-
-        /// <summary>
-        /// 문서 수신 담당자 조회
-        /// </summary>
-        /// <param name="auAlias"></param>
-        /// <returns></returns>
-        public DataSet GetReceiverManager(string auAlias)
-        {
-            DataSet dsReturn = null;
-            string strQuery = @"
-                 SELECT a.ObjectID, a.TargetID, b.DisplayName, b.Grade1 FROM admin.PH_AUTHORITY a (NOLOCK)
-                    INNER JOIN admin.ph_view_OBJECT_UR_LIST b (NOLOCK)
-                        ON a.TargetID = b.UserID AND a.ObjectID = b.GR_ID
-                 WHERE a.AUAlias=@aualias AND a.ObjectType='GR' AND a.TargetType='UR'";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@aualias", SqlDbType.VarChar, 20, auAlias)
-            };
-
-            ParamData pData = new ParamData(strQuery, "text", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return dsReturn;
-        }
+           
 
         /// <summary>
         /// 권한(authority) 설정
@@ -3016,10 +3622,8 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         /// <param name="tgtType"></param>
         /// <param name="auAlias"></param>
         /// <param name="dscpt"></param>
-        /// <returns></returns>
-        public int InsertAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias, string dscpt)
+        public void InsertAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias, string dscpt)
         {
-            int iReturn = 0;
             string strQuery = @"
  INSERT INTO admin.PH_AUTHORITY (ObjectID, ObjectType, TargetID, TargetType, AUAlias, CreateDate, Description)
  VALUES (@objectid, @objecttype, @targetid, @targettype, @aualias, GETDATE(), @dscpt)";
@@ -3040,8 +3644,33 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             {
                 string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
+        }
 
-            return iReturn;
+        /// <summary>
+        /// 특정 항목에 지정된 권한(authority)자 삭제
+        /// </summary>
+        /// <param name="objId"></param>
+        /// <param name="objType"></param>
+        /// <param name="tgtId"></param>
+        /// <param name="tgtType"></param>
+        public void DeleteAuthority(int objId, string objType, int tgtId, string tgtType)
+        {
+            string strQuery = @"DELETE FROM admin.PH_AUTHORITY WITH (ROWLOCK) WHERE ObjectID=@objectid AND ObjectType=@objecttype AND TargetID=@targetid AND TargetType=@targettype";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@objectid", SqlDbType.Int, 4, objId),
+                ParamSet.Add4Sql("@objecttype", SqlDbType.VarChar, 30, objType),
+                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, tgtId),
+                ParamSet.Add4Sql("@targettype", SqlDbType.Char, 2, tgtType)
+            };
+
+            ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
         }
 
         /// <summary>
@@ -3052,11 +3681,8 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
         /// <param name="tgtId"></param>
         /// <param name="tgtType"></param>
         /// <param name="auAlias"></param>
-        /// <returns></returns>
-        public int DeleteAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias)
+        public void DeleteAuthority(int objId, string objType, int tgtId, string tgtType, string auAlias)
         {
-            int iReturn = 0;
-
             string strQuery = "DELETE FROM admin.PH_AUTHORITY WITH (ROWLOCK) WHERE ObjectID=@objectid AND ObjectType=@objecttype";
             if (tgtId != 0 && tgtType != "") strQuery += " AND TargetID=@targetid AND TargetType=@targettype";
             if (auAlias != "") strQuery += " AND AUAlias = @aualias";
@@ -3076,72 +3702,7 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
             {
                 string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
-
-            return iReturn;
-        }
-
-        /// <summary>
-        /// 공유된 문서함 삭제
-        /// </summary>
-        /// <param name="groupID"></param>
-        /// <param name="targetID"></param>
-        /// <param name="folderType"></param>
-        /// <returns></returns>
-        public int DeleteEAFolderView(int groupID, int targetID, string folderType)
-        {
-            int iReturn = 0;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
-                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
-                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_DeleteEAFolderView", "", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return iReturn;
-        }
-
-        /// <summary>
-        /// 공유된 문서함 추가
-        /// </summary>
-        /// <param name="groupID"></param>
-        /// <param name="targetID"></param>
-        /// <param name="folderType"></param>
-        /// <param name="seq"></param>
-        /// <param name="subSeq"></param>
-        /// <param name="registrant"></param>
-        /// <param name="reserved1"></param>
-        /// <returns></returns>
-        public int InsertEAFolderView(int groupID, int targetID, string folderType, int seq, int subSeq, string registrant, string reserved1)
-        {
-            int iReturn = 0;
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, groupID),
-                ParamSet.Add4Sql("@targetid", SqlDbType.Int, 4, targetID),
-                ParamSet.Add4Sql("@fdtype", SqlDbType.VarChar, 5, folderType),
-                ParamSet.Add4Sql("@seq", SqlDbType.SmallInt, 2, seq),
-                ParamSet.Add4Sql("@subseq", SqlDbType.SmallInt, 2, subSeq),
-                ParamSet.Add4Sql("@registrant", SqlDbType.NVarChar, 100, registrant),
-                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 500, reserved1)
-            };
-
-            ParamData pData = new ParamData("admin.ph_up_InsertEAFolderView", "", parameters);
-
-            using (DbBase db = new DbBase())
-            {
-                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-            }
-
-            return iReturn;
-        }
+        }       
+        #endregion
     }
 }

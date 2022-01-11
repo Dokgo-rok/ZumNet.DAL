@@ -13,14 +13,15 @@ using ZumNet.Framework.Data;
 namespace ZumNet.DAL.FlowDac
 {
     /// <summary>
-	/// 
+	/// 프로세스 관리
 	/// </summary>
 	public class ProcessDac : DacBase
     {
-		/// <summary>
-		/// 
-		/// </summary>
-		public ProcessDac(string connectionString = "") : base(connectionString)
+        #region [생성자]
+        /// <summary>
+        /// 
+        /// </summary>
+        public ProcessDac(string connectionString = "") : base(connectionString)
 		{
 		}
 
@@ -30,6 +31,7 @@ namespace ZumNet.DAL.FlowDac
 		public ProcessDac(SqlConnection connection) : base(connection)
 		{
 		}
+		#endregion
 
 		#region [프로세스 정의]
 		/// <summary>
@@ -73,6 +75,44 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return iReturn;
+		}
+
+		/// <summary>
+		/// 프로세스 정의 파일(xml)을 이용해서 프로세스 생성
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="defID"></param>
+		/// <param name="domainID"></param>
+		/// <param name="processName"></param>
+		/// <param name="defXml"></param>
+		/// <param name="actXml"></param>
+		/// <param name="attXml"></param>
+		/// <param name="partXml"></param>
+		/// <returns>OK, ET</returns>
+		public string CreateProcessWithImport(string mode, int defID, int domainID, string processName, string defXml, string actXml, string attXml, string partXml)
+		{
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@defid", SqlDbType.Int, 4, defID),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
+				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
+				ParamSet.Add4Sql("@def", SqlDbType.NVarChar, -1, defXml),
+				ParamSet.Add4Sql("@act", SqlDbType.NVarChar, -1, actXml),
+				ParamSet.Add4Sql("@att", SqlDbType.NVarChar, -1, attXml),
+				ParamSet.Add4Sql("@part", SqlDbType.NVarChar, -1, partXml)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessWithImport", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return strReturn;
 		}
 
 		/// <summary>
@@ -211,10 +251,9 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="processID"></param>
 		/// <param name="option"></param>
 		/// <returns></returns>
-		public DataTable GetProcessDefinition(int processID, string option)
+		public DataSet GetProcessDefinition(int processID, string option)
 		{
-			DataSet ds = null;
-			DataTable dtReturn = null;
+			DataSet dsReturn = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -223,25 +262,12 @@ namespace ZumNet.DAL.FlowDac
 
 			ParamData pData = new ParamData("admin.ph_up_BFGetProcessDefinition", parameters);
 
-            try
-            {
-				using (DbBase db = new DbBase())
-				{
-					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				}
-
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DefList"];
-			}
-			catch (Exception ex)
+			using (DbBase db = new DbBase())
 			{
-				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
-			}
-			finally
-			{
-				if (ds != null) ds.Dispose();
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return dtReturn;
+			return dsReturn;
 		}
 
 		/// <summary>
@@ -701,6 +727,30 @@ namespace ZumNet.DAL.FlowDac
 		}
 
 		/// <summary>
+		/// 특정 프로세스에 해당하는 참여자들 정보를 가져온다.
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public DataSet SelectWorkItemOID(int oID)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemOID", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
 		/// 특정 양식에 해당하는 참여자들 정보를 가져온다.
 		/// </summary>
 		/// <param name="msgID"></param>
@@ -1026,6 +1076,31 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return strReturn;
+		}
+
+		/// <summary>
+		/// WorkItem 상의 참여자 정보 관련 작업 
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="workItemId"></param>
+		/// <param name="urId"></param>
+		/// <param name="grId"></param>
+		public void SetWorkItemParticipant(string mode, string workItemId, int urId, int grId)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, workItemId),
+				ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, urId),
+				ParamSet.Add4Sql("@grid", SqlDbType.Int, 4, grId)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSetWorkItemParticipant", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 		}
 
 		/// <summary>
@@ -1447,6 +1522,104 @@ namespace ZumNet.DAL.FlowDac
 			}
 			return iReturn;
 		}
+
+		/// <summary>
+		/// 프로세스 정상 종료 처리
+		/// </summary>
+		/// <param name="oID">프로세스 인스턴스</param>
+		/// <param name="wID">작업자</param>
+		/// <param name="lastPoint"></param>
+		/// <returns></returns>
+		public void SetProcessNormalComplete(int oID, string wID, string lastPoint)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@point", SqlDbType.VarChar, 20, lastPoint)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSetProcessNormalComplete", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 내 참여자 처리 상태에 따른 전체 완료 처리
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public string ChangeProcessStateComplete(int oID)
+		{
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessStateComplete", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 프로세스명 재구성 저장
+		/// </summary>
+		/// <param name="msgId"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="formDB"></param>
+		/// <param name="formTable"></param>
+		/// <param name="processNameDef"></param>
+		public void SetProcessName(int msgId, string xfAlias, string formDB, string formTable, string processNameDef)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.NVarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@formdb", SqlDbType.NVarChar, 100, formDB),
+				ParamSet.Add4Sql("@table", SqlDbType.NVarChar, 100, formTable),
+				ParamSet.Add4Sql("@pmdef", SqlDbType.NVarChar, 200, processNameDef)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSetProcessName", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 참여자 완료 처리, review=3 중 대기 상태는 처리 안한다.
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="wIDs"></param>
+		/// <param name="optionValue"></param>
+		public void ChangeViewStateComplete(int oID, string wIDs, string optionValue)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@wids", SqlDbType.VarChar, 3000, wIDs),
+				ParamSet.Add4Sql("@point", SqlDbType.VarChar, 20, optionValue)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeViewStateComplete", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
 		#endregion
 
 		#region [프로세스 Activity 관련]
@@ -1816,6 +1989,29 @@ namespace ZumNet.DAL.FlowDac
 		}
 
 		/// <summary>
+		/// 프로세스 정의에서 단계를 삭제한다.
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		public void DeleteProcessActivity(string mode, int processID, string activityID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessActivity", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
 		/// 프로세스 단계에 참여자 정의
 		/// </summary>
 		/// <param name="activityID"></param>
@@ -2005,7 +2201,7 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="actType"></param>
 		/// <param name="subType"></param>
 		/// <returns></returns>
-		public DataSet GetBFProcessActivityParticipantForAdmin(string activityID, string actType, string subType)
+		public DataSet GetProcessActivityParticipantForAdmin(string activityID, string actType, string subType)
 		{
 			DataSet dsReturn = null;
 
@@ -2024,6 +2220,27 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return dsReturn;
+		}
+
+		/// <summary>
+		/// Activity의 일정 단계의 필드 속성 변경
+		/// </summary>
+		/// <param name="updateText"></param>
+		/// <param name="whereText"></param>
+		public void ChangeActivityField(string updateText, string whereText)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@updatetext", SqlDbType.VarChar, 200, updateText),
+				ParamSet.Add4Sql("@wheretext", SqlDbType.VarChar, 200, whereText)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFChangeActivityField", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
 		}
 		#endregion
 
@@ -2387,6 +2604,29 @@ namespace ZumNet.DAL.FlowDac
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFUpdateProcessAttribute", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 최초 프로세스 인스턴스 속성 배치 생성
+		/// </summary>
+		/// <param name="processID"></param>
+		/// <param name="activityID"></param>
+		/// <param name="xmlInfo"></param>
+		public void CreateProcesAttributeBatch(int processID, string activityID, string xmlInfo)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, xmlInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateProcesAttributeBatch", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -2865,133 +3105,460 @@ namespace ZumNet.DAL.FlowDac
 
 		#endregion
 
+		#region [문서번호, 알림대상자, 결재선 및 기타]
 		/// <summary>
-		/// 
+		/// 문서번호 발번
 		/// </summary>
-		/// <param name="command"></param>
-		/// <param name="domainID"></param>
-		/// <param name="formID"></param>
-		/// <param name="classID"></param>
-		/// <param name="processID"></param>
-		/// <param name="docName"></param>
-		/// <param name="description"></param>
-		/// <param name="selectable"></param>
-		/// <param name="xslName"></param>
-		/// <param name="cssName"></param>
-		/// <param name="jsName"></param>
-		/// <param name="usage"></param>
-		/// <param name="mainTable"></param>
-		/// <returns></returns>
-		public int HandleEAFormBasicManagement(string command, int domainID, string formID, int classID, int processID, string docName, string description, string selectable, string xslName, string cssName, string jsName, string usage, string mainTable)
+		/// <param name="mode"></param>
+		/// <param name="dnID"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="deptCode"></param>
+		/// <param name="formId"></param>
+		/// <param name="option"></param>
+		/// <returns>발급된 문서번호</returns>
+		public string GetDocumentNumber(string mode, int dnID, string xfAlias, string deptCode, string formId, string option)
 		{
-			int iReturn = 0;
+			string strReturn = "";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@command", SqlDbType.VarChar, 6, command),
-				ParamSet.Add4Sql("@domainid", SqlDbType.Int, 4, domainID),
-				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-				ParamSet.Add4Sql("@classid", SqlDbType.Int, 4, classID),
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
-				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
-				ParamSet.Add4Sql("@selectable", SqlDbType.Char, 1, selectable),
-				ParamSet.Add4Sql("@xslname", SqlDbType.VarChar, 100, xslName),
-				ParamSet.Add4Sql("@cssname", SqlDbType.VarChar, 100, cssName),
-				ParamSet.Add4Sql("@jsname", SqlDbType.VarChar, 100, jsName),
-				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage),
-				ParamSet.Add4Sql("@mainTable", SqlDbType.VarChar, 100, mainTable)
+				ParamSet.Add4Sql("@mode", SqlDbType.VarChar, 20, mode),
+				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, dnID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.NVarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@deptcode", SqlDbType.VarChar, 30, deptCode),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formId),
+				ParamSet.Add4Sql("@option", SqlDbType.NVarChar, 63, option),
+
+				ParamSet.Add4Sql("@docnumber", SqlDbType.NVarChar, 30, ParameterDirection.Output)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormBasicManagement", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_GetDocumentNumber", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return strReturn;
 		}
 
 		/// <summary>
-		/// 폼 관련 업데이트
+		/// 정상 진행의 경우 알림 대상자 가져오기
 		/// </summary>
-		/// <param name="command"></param>
-		/// <param name="formID"></param>
-		/// <param name="tableDef"></param>
-		/// <param name="tableCount"></param>
-		/// <param name="usage"></param>
+		/// <param name="wID"></param>
 		/// <returns></returns>
-		public int HandleEAFormTableManagement(string command, string formID, string tableDef, int tableCount, string usage)
+		public DataTable GetProcessNormalNotice(string wID)
 		{
-			int iReturn = 0;
-
+			DataSet ds = null;
+			DataTable dtReturn = null;
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@command", SqlDbType.Char, 2, command),
-				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-				ParamSet.Add4Sql("@tableDef", SqlDbType.NText, tableDef),
-				ParamSet.Add4Sql("@tableCount", SqlDbType.TinyInt, 1, tableCount),
-				ParamSet.Add4Sql("@usage", SqlDbType.Char, 1, usage)
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormTableManagement", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessNormalNotice", "", parameters);
 
-			using (DbBase db = new DbBase())
+			try
 			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
 			}
 
-			return iReturn;
+			return dtReturn;
 		}
 
 		/// <summary>
-		/// 양식 폼 기타 정보 저장
+		/// 결재 상태에 따른 알림 대상자 가져오기
 		/// </summary>
-		/// <param name="formID"></param>
-		/// <param name="webEditor"></param>
-		/// <param name="htmlFile"></param>
-		/// <param name="processNameString"></param>
-		/// <param name="validation"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="oID"></param>
+		/// <param name="signStatus"></param>
+		/// <param name="wID"></param>
+		/// <param name="targetWID"></param>
 		/// <returns></returns>
-		public int HandleEAFormEtcManagement(string formID, string webEditor, string htmlFile, string processNameString, string validation)
+		public DataTable GetProcessNotice(string moduleID, int oID, int signStatus, string wID, string targetWID)
 		{
-			int iReturn = 0;
-
+			DataSet ds = null;
+			DataTable dtReturn = null;
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
-				ParamSet.Add4Sql("@webEditor", SqlDbType.VarChar, 20, webEditor),
-				ParamSet.Add4Sql("@htmlFile", SqlDbType.NVarChar, 255, htmlFile),
-				ParamSet.Add4Sql("@processNameString", SqlDbType.VarChar, 200, processNameString),
-				ParamSet.Add4Sql("@validation", SqlDbType.VarChar, 1000, validation)
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@signstatus", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@targetwid", SqlDbType.VarChar, 33, targetWID)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFHandleEAFormEtcManagement", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFGetProcessNotice", "", parameters);
 
-			using (DbBase db = new DbBase())
+			try
 			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
 			}
 
-			return iReturn;
+			return dtReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// 연동 시스템에 결재자 정보를 넘겨 주기 위한 쿼리
 		/// </summary>
 		/// <param name="oID"></param>
+		/// <param name="wID"></param>
+		/// <param name="formID"></param>
+		/// <param name="flag"></param>
+		/// <param name="nextParticipants"></param>
 		/// <returns></returns>
-		public DataSet GetBFWorkItemOID(int oID)
+		public DataTable GetSignInfoForInterface(int oID, string wID, string formID, string flag, out string nextParticipants)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@flag", SqlDbType.VarChar, 3, flag),
+
+				ParamSet.Add4Sql("@next_wid", SqlDbType.VarChar, 1000, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetSignInfoForInterface", "", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			nextParticipants = pData.GetParamValue("@next_wid").ToString();
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 기저장된 결재선 XML을 가져온다.
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="oID"></param>
+		/// <param name="actDate"></param>
+		/// <param name="status"></param>
+		/// <param name="viewKey"></param>
+		/// <returns></returns>
+		public DataTable SelectProcessSignInform(string mode, int oID, string actDate, int status, string viewKey)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@actdate", SqlDbType.VarChar, 20, actDate),
+				ParamSet.Add4Sql("@status", SqlDbType.Int, 4, status),
+				ParamSet.Add4Sql("@viewkey", SqlDbType.VarChar, 63, viewKey)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectProcessSignInform", "", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+
+		/// <summary>
+		/// 결재선 저장
+		/// </summary>
+		/// <param name="oID"></param>
+		/// <param name="status"></param>
+		/// <param name="viewKey"></param>
+		/// <param name="signInfo"></param>
+		public void InsertProcessSignInform(int oID, int status, string viewKey, string signInfo)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@status", SqlDbType.Int, 4, status),
+				ParamSet.Add4Sql("@viewkey", SqlDbType.VarChar, 63, viewKey),
+				ParamSet.Add4Sql("@signinfo", SqlDbType.NText, signInfo)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertProcessSignInform", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [수행 기록 저장]
+		/// <summary>
+		/// 프로세스 수행 기록 로그 저장
+		/// </summary>
+		/// <param name="webServer"></param>
+		/// <param name="dnID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="state"></param>
+		/// <param name="status"></param>
+		/// <param name="startDate"></param>
+		/// <param name="duration"></param>
+		/// <param name="docName"></param>
+		/// <param name="procName"></param>
+		/// <param name="creator"></param>
+		/// <param name="creatorDept"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <param name="partID"></param>
+		/// <param name="partName"></param>
+		/// <param name="partCode"></param>
+		/// <param name="partDept"></param>
+		/// <param name="parentActRole"></param>
+		/// <param name="parentPartId"></param>
+		/// <param name="parentPartName"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="formID"></param>
+		/// <param name="procInstID"></param>
+		/// <param name="workItemID"></param>
+		/// <param name="exceptionInfo"></param>
+		public void InsertBFFlowAudit(string webServer, int dnID, string companyCode, int state, int status, string startDate
+								, string duration, string docName, string procName, string creator, string creatorDept, string bizRole, string actRole
+								, string partID, string partName, string partCode, string partDept, string parentActRole, string parentPartId, string parentPartName
+								, string xfAlias, string messageID, string formID, string procInstID, string workItemID, string exceptionInfo)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@dnid", SqlDbType.TinyInt, 1, dnID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@state", SqlDbType.SmallInt, 2, state),
+				ParamSet.Add4Sql("@status", SqlDbType.SmallInt, 2, status),
+				ParamSet.Add4Sql("@startdate", SqlDbType.VarChar, 20, startDate),
+				ParamSet.Add4Sql("@duration", SqlDbType.VarChar, 10, duration),
+				ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
+				ParamSet.Add4Sql("@procname", SqlDbType.NVarChar, 200, procName),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 50, creator),
+				ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 100, creatorDept),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@partid", SqlDbType.NVarChar, 50, partID),
+				ParamSet.Add4Sql("@partname", SqlDbType.NVarChar, 100, partName),
+				ParamSet.Add4Sql("@partcode", SqlDbType.NVarChar, 50, partCode),
+				ParamSet.Add4Sql("@partdept", SqlDbType.NVarChar, 100, partDept),
+				ParamSet.Add4Sql("@parentactrole", SqlDbType.VarChar, 30, parentActRole),
+				ParamSet.Add4Sql("@parentpartid", SqlDbType.NVarChar, 50, parentPartId),
+				ParamSet.Add4Sql("@parentpartname", SqlDbType.NVarChar, 100, parentPartName),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 32, messageID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 32, formID),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID),
+				ParamSet.Add4Sql("@exceptioninfo", SqlDbType.NVarChar, -1, exceptionInfo),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertBFFlowAudit", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 수행 기록 로그 가져오기
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="webServer"></param>
+		/// <param name="auditId"></param>
+		/// <param name="date"></param>
+		/// <returns></returns>
+		public DataTable SelectBFFlowAudit(string mode, string webServer, long auditId, string date)
+		{
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@auditid", SqlDbType.BigInt, 8, auditId),
+				ParamSet.Add4Sql("@date", SqlDbType.VarChar, 20, date)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectBFFlowAudit", "", 30, parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return dtReturn;
+		}
+		#endregion
+
+		#region [서비스 모드 관련]
+		/// <summary>
+		/// 서비스 모드로 요청한 정보 저장
+		/// </summary>
+		/// <param name="webServer"></param>
+		/// <param name="dnID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="reqState"></param>
+		/// <param name="priority"></param>
+		/// <param name="reqDate"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="formID"></param>
+		/// <param name="procInstID"></param>
+		/// <param name="workItemID"></param>
+		/// <param name="workItemStatus"></param>
+		/// <param name="requesterID"></param>
+		/// <param name="requesterLogonID"></param>
+		/// <param name="requesterDeptID"></param>
+		/// <param name="requesterDeptCode"></param>
+		/// <param name="mailDomain"></param>
+		/// <param name="rootFolder"></param>
+		/// <param name="schemaPath"></param>
+		/// <param name="formPath"></param>
+		/// <param name="formInfo"></param>
+		/// <param name="fileInfo"></param>
+		/// <param name="attrInfo"></param>
+		/// <param name="lineInfo"></param>
+		/// <param name="curLineInfo"></param>
+		/// <param name="targetLineInfo"></param>
+		/// <param name="deleteLine"></param>
+		/// <param name="reserved1"></param>
+		/// <param name="reserved2"></param>
+		/// <param name="reserved3"></param>
+		public void InsertBFFlowService(string webServer, int dnID, string companyCode, int reqState, int priority, string reqDate
+								, string xfAlias, string messageID, string formID, string procInstID, string workItemID, int workItemStatus
+								, int requesterID, string requesterLogonID, int requesterDeptID, string requesterDeptCode
+								, string mailDomain, string rootFolder, string schemaPath, string formPath, string formInfo, string fileInfo, string attrInfo
+								, string lineInfo, string curLineInfo, string targetLineInfo, string deleteLine, string reserved1, string reserved2, string reserved3)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@dnid", SqlDbType.TinyInt, 1, dnID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@reqstate", SqlDbType.Int, 4, reqState),
+				ParamSet.Add4Sql("@priority", SqlDbType.SmallInt, 2, priority),
+				ParamSet.Add4Sql("@reqdate", SqlDbType.VarChar, 20, reqDate),
+				ParamSet.Add4Sql("@xfalis", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 32, messageID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 32, formID),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID),
+				ParamSet.Add4Sql("@workitemstatus", SqlDbType.SmallInt, 2, workItemStatus),
+				ParamSet.Add4Sql("@requesterid", SqlDbType.Int, 4, requesterID),
+				ParamSet.Add4Sql("@requesterlogonid", SqlDbType.VarChar, 30, requesterLogonID),
+				ParamSet.Add4Sql("@requesterdeptid", SqlDbType.Int, 4, requesterDeptID),
+				ParamSet.Add4Sql("@requesterdeptcode", SqlDbType.VarChar, 30, requesterDeptCode),
+				ParamSet.Add4Sql("@maildomain", SqlDbType.NVarChar, 100, mailDomain),
+				ParamSet.Add4Sql("@rootfolder", SqlDbType.NVarChar, 100, rootFolder),
+				ParamSet.Add4Sql("@schemapath", SqlDbType.NVarChar, 200, schemaPath),
+				ParamSet.Add4Sql("@formpath", SqlDbType.NVarChar, 200, formPath),
+				ParamSet.Add4Sql("@forminfo", SqlDbType.NText, formInfo),
+				ParamSet.Add4Sql("@fileinfo", SqlDbType.NText, fileInfo),
+				ParamSet.Add4Sql("@attrinfo", SqlDbType.NText, attrInfo),
+				ParamSet.Add4Sql("@lineinfo", SqlDbType.NText, lineInfo),
+				ParamSet.Add4Sql("@curlineinfo", SqlDbType.NText, curLineInfo),
+				ParamSet.Add4Sql("@targetlineinfo", SqlDbType.NText, targetLineInfo),
+				ParamSet.Add4Sql("@deleteline", SqlDbType.NText, deleteLine),
+				ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 200, reserved1),
+				ParamSet.Add4Sql("@reserved2", SqlDbType.NVarChar, 200, reserved2),
+				ParamSet.Add4Sql("@reserved3", SqlDbType.NVarChar, 200, reserved3),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertBFFlowService", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 서비스 모드에서 처리해야 할 서비스 가져오기
+		/// </summary>
+		/// <param name="webServer">서비스가 구동되는 서버명</param>
+		/// <param name="serviceDate">구동 시각</param>
+		/// <returns></returns>
+		public DataSet SelectBFFlowService(string webServer, string serviceDate)
 		{
 			DataSet dsReturn = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@servicedate", SqlDbType.VarChar, 20, serviceDate)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemOID", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFSelectBFFlowService", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -3001,43 +3568,120 @@ namespace ZumNet.DAL.FlowDac
 			return dsReturn;
 		}
 
-		
-
 		/// <summary>
-		/// 
+		/// 선택된 서비스 정보 가져오기
 		/// </summary>
-		/// <param name="mode"></param>
-		/// <param name="defID"></param>
-		/// <param name="domainID"></param>
-		/// <param name="processName"></param>
-		/// <param name="defXml"></param>
-		/// <param name="actXml"></param>
-		/// <param name="attXml"></param>
-		/// <param name="partXml"></param>
+		/// <param name="svcId">처리할 서비스ID</param>
 		/// <returns></returns>
-		public int CreateBFProcessWithImport(string mode, int defID, int domainID, string processName, string defXml, string actXml, string attXml, string partXml)
+		public DataSet SelectBFFlowService(long svcId)
 		{
-			int iReturn = 0;
+			DataSet dsReturn = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
-				ParamSet.Add4Sql("@defid", SqlDbType.Int, 4, defID),
-				ParamSet.Add4Sql("@dnid", SqlDbType.Int, 4, domainID),
-				ParamSet.Add4Sql("@name", SqlDbType.NVarChar, 200, processName),
-				ParamSet.Add4Sql("@def", SqlDbType.NVarChar, -1, defXml),
-				ParamSet.Add4Sql("@act", SqlDbType.NVarChar, -1, actXml),
-				ParamSet.Add4Sql("@att", SqlDbType.NVarChar, -1, attXml),
-				ParamSet.Add4Sql("@part", SqlDbType.NVarChar, -1, partXml)
+				ParamSet.Add4Sql("@svcid", SqlDbType.BigInt, 8, svcId)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFCreateProcessWithImport", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFSelectBFFlowService", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 서비스 모드를 사용하는 여부와 대기 간격을 가져온다.
+		/// </summary>
+		/// <param name="urId"></param>
+		/// <returns>0이면 사용안함, 그 이상 대기 간격</returns>
+		public int UseBFFlowSvcMode(int urId)
+		{
+			DataSet ds = null;
+			int iReturn = 0;
+			string strQuery = @"SELECT UseBFFlowSvcMode, BFFlowSvcInterval FROM admin.PH_USER_CONFIGURATION (NOLOCK) WHERE UserID = @urid"; ;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, urId)
+			};
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+            try
+            {
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0)
+				{
+					string strUse = ds.Tables[0].Rows[0]["UseBFFlowSvcMode"].ToString();
+					int iInterval = Convert.ToInt32(ds.Tables[0].Rows[0]["BFFlowSvcInterval"]);
+
+					if (strUse == "Y") iReturn = iInterval;
+					else iReturn = 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return iReturn;
+		}
+
+		/// <summary>
+		/// 서비스 모드를 사용하는 여부와 대기 간격 및 선결 사용여부 가져오기
+		/// </summary>
+		/// <param name="urId"></param>
+		/// <param name="preAppMode"></param>
+		/// <returns></returns>
+		public int UseBFFlowSvcMode(int urId, out string preAppMode)
+		{
+			DataSet ds = null;
+			int iReturn = 0;
+			string strPreAppMode = "";
+			string strQuery = @"SELECT UseBFFlowPreAppMode, UseBFFlowSvcMode, BFFlowSvcInterval FROM admin.PH_USER_CONFIGURATION (NOLOCK) WHERE UserID = @urid"; ;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, urId)
+			};
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0)
+				{
+					strPreAppMode = ds.Tables[0].Rows[0]["UseBFFlowPreAppMode"].ToString();
+					string strUse = ds.Tables[0].Rows[0]["UseBFFlowSvcMode"].ToString();
+					int iInterval = Convert.ToInt32(ds.Tables[0].Rows[0]["BFFlowSvcInterval"]);
+
+					if (strUse == "Y") iReturn = iInterval;
+					else iReturn = 0;
+				}
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+			preAppMode = strPreAppMode;
 			return iReturn;
 		}
 
@@ -3046,11 +3690,11 @@ namespace ZumNet.DAL.FlowDac
 		/// </summary>
 		/// <param name="companyCode"></param>
 		/// <returns></returns>
-		public DataSet GetBFServiceCompanyDetail(string companyCode)
+		public DataSet GetBFFlowSvcMode(string companyCode)
 		{
 			DataSet dsReturn = null;
 			string strQuery = "SELECT BFFlowPreAppMode, BFFlowSvcMode, BFFlowSvcInterval FROM admin.PH_SERVICE_COMPANY_DETAIL (NOLOCK) WHERE CompanyCode = @companycode";
-			
+
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 30, companyCode)
@@ -3070,15 +3714,12 @@ namespace ZumNet.DAL.FlowDac
 		/// 전체 사용자 서비스 모드 설정 가져오기
 		/// </summary>
 		/// <returns></returns>
-		public DataSet GetBFServiceMemberDetail()
+		public DataSet GetUserSvcMode()
 		{
 			DataSet dsReturn = null;
 			string strQuery = @"SELECT UserID, EmpID, DisplayName, Grade1, GroupName, FlowPreAppMode, FlowSvcMode, FlowSvcInterval FROM admin.ph_view_OBJECT_UR_LIST (NOLOCK) WHERE GRType='D' AND Role='regular' ORDER BY FlowPreAppMode DESC, FlowSvcMode DESC, GroupName, DisplayName";
 
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				
-			};
+			SqlParameter[] parameters = null;
 
 			ParamData pData = new ParamData(strQuery, "text", parameters);
 
@@ -3091,24 +3732,34 @@ namespace ZumNet.DAL.FlowDac
 		}
 
 		/// <summary>
-		/// 서비스/선결 모드 변경
+		/// 선결, 서비스 모드 사용 및 간격 설정
 		/// </summary>
-		/// <param name="userID"></param>
-		/// <param name="svcMode"></param>
+		/// <param name="urId"></param>
+		/// <param name="useSvc"></param>
 		/// <param name="interval"></param>
-		/// <param name="preAppMode"></param>
 		/// <returns></returns>
-		public int ChangeUserServiceMode(int userID, string svcMode, int interval, string preAppMode)
+		public void ChangeBFFlowSvcMode(int urId, string useSvc, int interval)
 		{
-			int iReturn = 0;
-			string strQuery = "UPDATE admin.PH_USER_CONFIGURATION WITH (ROWLOCK) SET UseBFFlowPreAppMode=@preapp, UseBFFlowSvcMode=@svcmode, BFFlowSvcInterval=@svcinterval WHERE UserID=@urId";
+			ChangeBFFlowSvcMode(urId, "N", useSvc, interval);
+		}
+
+		/// <summary>
+		/// 선결, 서비스 모드 사용 및 간격 설정
+		/// </summary>
+		/// <param name="urId"></param>
+		/// <param name="usePreApp"></param>
+		/// <param name="useSvc"></param>
+		/// <param name="interval"></param>
+		public void ChangeBFFlowSvcMode(int urId, string usePreApp, string useSvc, int interval)
+		{
+			string strQuery = "UPDATE admin.PH_USER_CONFIGURATION WITH (ROWLOCK) SET UseBFFlowPreAppMode = @usepre, UseBFFlowSvcMode = @usesvc, BFFlowSvcInterval = @interval WHERE UserID=@urId";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@urId", SqlDbType.Int, 4, userID),
-				ParamSet.Add4Sql("@svcmode", SqlDbType.Char, 1, svcMode),
-				ParamSet.Add4Sql("@svcinterval", SqlDbType.TinyInt, 4, interval),
-				ParamSet.Add4Sql("@preapp", SqlDbType.Char, 1, preAppMode)
+				ParamSet.Add4Sql("@urId", SqlDbType.Int, 4, urId),
+				ParamSet.Add4Sql("@usepre", SqlDbType.Char, 1, usePreApp),
+				ParamSet.Add4Sql("@usesvc", SqlDbType.Char, 1, useSvc),
+				ParamSet.Add4Sql("@interval", SqlDbType.TinyInt, 4, interval)
 			};
 
 			ParamData pData = new ParamData(strQuery, "text", parameters);
@@ -3117,31 +3768,93 @@ namespace ZumNet.DAL.FlowDac
 			{
 				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
-
-			return iReturn;
 		}
-	
-
-		
 
 		/// <summary>
-		/// 특정 프로세스에 해당하는 양식들 가져오기
+		/// 선결 서비스 요청 정보 저장
 		/// </summary>
-		/// <param name="defID"></param>
+		/// <param name="webServer"></param>
+		/// <param name="dnID"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="reqState"></param>
+		/// <param name="priority"></param>
+		/// <param name="reqDate"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="formID"></param>
+		/// <param name="procInstID"></param>
+		/// <param name="workItemID"></param>
+		/// <param name="workItemStatus"></param>
+		/// <param name="signature"></param>
+		/// <param name="comment"></param>
+		/// <param name="requester"></param>
+		/// <param name="requesterID"></param>
+		/// <param name="requesterDept"></param>
+		/// <param name="requesterDeptID"></param>
+		/// <param name="mailDomain"></param>
+		/// <param name="rootFolder"></param>
+		/// <param name="schemaPath"></param>
+		/// <param name="formPath"></param>
+		/// <param name="remoteHost"></param>
+		/// <param name="httpUserAgent"></param>
+		public void InsertBFFlowPreApproval(string webServer, int dnID, string companyCode, int reqState, int priority, string reqDate
+								, string xfAlias, string messageID, string formID, string procInstID, string workItemID, int workItemStatus
+								, string signature, string comment, string requester, int requesterID, string requesterDept, int requesterDeptID
+								, string mailDomain, string rootFolder, string schemaPath, string formPath, string remoteHost, string httpUserAgent)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@dnid", SqlDbType.TinyInt, 1, dnID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@reqstate", SqlDbType.Int, 4, reqState),
+				ParamSet.Add4Sql("@priority", SqlDbType.SmallInt, 2, priority),
+				ParamSet.Add4Sql("@reqdate", SqlDbType.VarChar, 20, reqDate),
+				ParamSet.Add4Sql("@xfalis", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 32, messageID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 32, formID),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID),
+				ParamSet.Add4Sql("@workitemstatus", SqlDbType.SmallInt, 2, workItemStatus),
+				ParamSet.Add4Sql("@workitemsignature", SqlDbType.NVarChar, 250, signature),
+				ParamSet.Add4Sql("@workitemcomment", SqlDbType.NVarChar, 1000, comment),
+				ParamSet.Add4Sql("@requester", SqlDbType.NVarChar, 100, requester),
+				ParamSet.Add4Sql("@requesterid", SqlDbType.Int, 4, requesterID),
+				ParamSet.Add4Sql("@requesterdept", SqlDbType.NVarChar, 100, requesterDept),
+				ParamSet.Add4Sql("@requesterdeptid", SqlDbType.Int, 4, requesterDeptID),
+				ParamSet.Add4Sql("@maildomain", SqlDbType.NVarChar, 100, mailDomain),
+				ParamSet.Add4Sql("@rootfolder", SqlDbType.NVarChar, 100, rootFolder),
+				ParamSet.Add4Sql("@schemapath", SqlDbType.NVarChar, 200, schemaPath),
+				ParamSet.Add4Sql("@formpath", SqlDbType.NVarChar, 200, formPath),
+				ParamSet.Add4Sql("@remotehost", SqlDbType.VarChar, 30, remoteHost),
+				ParamSet.Add4Sql("@httpuseragent", SqlDbType.VarChar, 200, httpUserAgent),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertBFFlowPreApproval", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 선결 서비스 모드에서 처리해야 할 정보 가져오기
+		/// </summary>
+		/// <param name="webServer"></param>
+		/// <param name="serviceDate"></param>
 		/// <returns></returns>
-		public DataSet GetBFProcessFormList(int defID)
+		public DataSet SelectBFFlowPreApproval(string webServer, string serviceDate)
 		{
 			DataSet dsReturn = null;
-			string strQuery = @"SELECT ISNULL(b.ClassName,'') AS ClassName, a.FormID, a.DocName, a.MainTable
-					FROM admin.PH_EA_FORMS a (NOLOCK) LEFT OUTER JOIN admin.PH_EA_CLASS b (NOLOCK) ON a.ClassID = b.ClassID
-					WHERE ProcessID = @defId ORDER BY a.DocName";
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@defId", SqlDbType.Int, 4, defID)
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@servicedate", SqlDbType.VarChar, 20, serviceDate)
 			};
 
-			ParamData pData = new ParamData(strQuery, "text", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFSelectBFFlowPreApproval", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
@@ -3152,94 +3865,220 @@ namespace ZumNet.DAL.FlowDac
 		}
 
 		/// <summary>
-		/// 
+		/// 선택된 서비스 정보 가져오기
 		/// </summary>
-		/// <param name="mode"></param>
-		/// <param name="processID"></param>
-		/// <param name="activityID"></param>
+		/// <param name="svcId"></param>
 		/// <returns></returns>
-		public int DeleteProcessActivity(string mode, int processID, string activityID)
+		public DataSet SelectBFFlowPreApproval(long svcId)
 		{
-			int iReturn = -1;
+			DataSet dsReturn = null;
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID)
+				ParamSet.Add4Sql("@svcid", SqlDbType.BigInt, 8, svcId)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFDeleteProcessActivity", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFSelectBFFlowPreApproval", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return dsReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// 선결재 처리 요청 취소
 		/// </summary>
-		/// <param name="processID"></param>
-		/// <param name="activityID"></param>
-		/// <param name="xmlInfo"></param>
-		/// <returns></returns>
-		public int InsertProcessAttributeBatch(int processID, string activityID, string xmlInfo)
+		/// <param name="svcId"></param>
+		/// <param name="companyCode"></param>
+		/// <param name="procInstID"></param>
+		/// <param name="workItemID"></param>
+		public void CancelBFFlowPreApproval(long svcId, string companyCode, string procInstID, string workItemID)
 		{
-			int iReturn = -1;
-
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, activityID),
-				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, xmlInfo)
+				ParamSet.Add4Sql("@svcid", SqlDbType.BigInt, 8, svcId),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFCreateProcesAttributeBatch", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFCancelBFFlowPreApproval", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [작업연결, 캐비넷]
+		/// <summary>
+		/// 다음 작업 정보 기록
+		/// </summary>
+		/// <param name="companyCode"></param>
+		/// <param name="partType"></param>
+		/// <param name="partId"></param>
+		/// <param name="wnKind"></param>
+		/// <param name="reqDate"></param>
+		/// <param name="expiredDate"></param>
+		/// <param name="appInfo"></param>
+		/// <param name="preAppInfo"></param>
+		/// <param name="requesterId"></param>
+		/// <param name="requester"></param>
+		/// <param name="requesterDeptID"></param>
+		/// <param name="requesterDept"></param>
+		/// <param name="colInfo"></param>
+		/// <returns>WorkNotice ID</returns>
+		public long CreateWorkItemNotice(string companyCode, string partType, string partId, string wnKind
+								, string reqDate, string expiredDate, string appInfo, string preAppInfo, string requesterId
+								, string requester, string requesterDeptID, string requesterDept, string colInfo)
+		{
+			long lReturn = 0;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@parttype", SqlDbType.Char, 5, partType),
+				ParamSet.Add4Sql("@partid", SqlDbType.VarChar, 63, partId),
+				ParamSet.Add4Sql("@wnkind", SqlDbType.VarChar, 20, wnKind),
+				ParamSet.Add4Sql("@reqdate", SqlDbType.VarChar, 20, reqDate),
+				ParamSet.Add4Sql("@expireddate", SqlDbType.VarChar, 20, expiredDate),
+				ParamSet.Add4Sql("@appinfo", SqlDbType.NVarChar, 500, appInfo),
+				ParamSet.Add4Sql("@preappinfo", SqlDbType.NVarChar, 500, preAppInfo),
+				ParamSet.Add4Sql("@requesterid", SqlDbType.VarChar, 63, requesterId),
+				ParamSet.Add4Sql("@requester", SqlDbType.NVarChar, 100, requester),
+				ParamSet.Add4Sql("@requesterdeptid", SqlDbType.VarChar, 63, requesterDeptID),
+				ParamSet.Add4Sql("@requesterdept", SqlDbType.NVarChar, 100, requesterDept),
+				ParamSet.Add4Sql("@colinfo", SqlDbType.NText, colInfo),
+
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateWorkItemNotice", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				lReturn = Convert.ToInt64(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 			}
 
-			return iReturn;
+			return lReturn;
 		}
 
 		/// <summary>
-		/// 
+		/// 선택된 연결 작업 정보 가져오기
 		/// </summary>
-		/// <param name="updateText"></param>
-		/// <param name="whereText"></param>
+		/// <param name="wnId"></param>
 		/// <returns></returns>
-		public int ChangeActivityField(string updateText, string whereText)
+		public DataRow SelectWorkItemNotice(long wnId)
 		{
-			int iReturn = -1;
-
+			DataSet ds = null;
+			DataRow rowReturn = null;
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@updatetext", SqlDbType.VarChar, 200, updateText),
-				ParamSet.Add4Sql("@wheretext", SqlDbType.VarChar, 200, whereText)
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, wnId)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFChangeActivityField", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemNotice", "", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0) rowReturn = ds.Tables[0].Rows[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
+			}
+
+			return rowReturn;
+		}
+
+		/// <summary>
+		/// 선택된 연결 작업 정보로 이전 양식 데이타 가져오기
+		/// </summary>
+		/// <param name="wnId"></param>
+		/// <param name="option1"></param>
+		/// <param name="option2"></param>
+		/// <returns></returns>
+		public DataSet GetWorkNoticePreAppData(long wnId, string option1, string option2)
+		{
+			DataSet dsReturn = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, wnId),
+				ParamSet.Add4Sql("@option1", SqlDbType.NVarChar, 100, option1),
+				ParamSet.Add4Sql("@option2", SqlDbType.NVarChar, 100, option2)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFGetWorkNoticePreAppData", "", 30, parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				iReturn = (string.IsNullOrWhiteSpace(strReturn)) ? 0 : -1;
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 
-			return iReturn;
+			return dsReturn;
 		}
 
-		
+		/// <summary>
+		/// 배포목록으로 CABINET 생성
+		/// </summary>
+		/// <param name="dlId"></param>
+		/// <param name="bizRole"></param>
+		/// <param name="actRole"></param>
+		/// <returns></returns>
+		public string CreateWorkItemCabinetWithDL(long dlId, string bizRole, string actRole)
+		{
+			string strReturn = "";
 
-		
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dlid", SqlDbType.BigInt, 8, dlId),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
 
-		
+				ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFCreateWorkItemCabinetWithDL", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return strReturn;
+		}
+
+		/// <summary>
+		/// CABINET 문서 삭제
+		/// </summary>
+		/// <param name="cids">선택된 cabinet들</param>
+		public void DeleteWorkItemCabinet(string cids)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@cabinetids", SqlDbType.Text, cids)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFDeleteWorkItemCabinet", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
 	}
 }

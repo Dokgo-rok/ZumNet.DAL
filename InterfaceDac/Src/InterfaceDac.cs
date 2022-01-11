@@ -14,14 +14,15 @@ using ZumNet.Framework.Data;
 namespace ZumNet.DAL.InterfaceDac
 {
     /// <summary>
-	/// 
+	/// 연동 처리
 	/// </summary>
 	public class InterfaceDac : DacBase
     {
-		/// <summary>
-		/// 
-		/// </summary>
-		public InterfaceDac(string connectionString = "") : base(connectionString)
+        #region [생성자]
+        /// <summary>
+        /// 
+        /// </summary>
+        public InterfaceDac(string connectionString = "") : base(connectionString)
 		{
 		}
 
@@ -31,17 +32,18 @@ namespace ZumNet.DAL.InterfaceDac
 		public InterfaceDac(SqlConnection connection) : base(connection)
 		{
 		}
+        #endregion
 
-		#region [연동 대상 데이타 저장, 조회 및 모니터링]
-		/// <summary>
-		/// 외부시스템과 연동하기 위한 데이타 쿼리
-		/// </summary>
-		/// <param name="dbName"></param>
-		/// <param name="requestState"></param>
-		/// <param name="companyCode"></param>
-		/// <param name="stampID"></param>
-		/// <returns></returns>
-		public DataSet GetIFSendSync(string dbName, int requestState, string companyCode, string stampID)
+        #region [연동 대상 데이타 저장, 조회 및 모니터링]
+        /// <summary>
+        /// 외부시스템과 연동하기 위한 데이타 쿼리
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="requestState"></param>
+        /// <param name="companyCode"></param>
+        /// <param name="stampID"></param>
+        /// <returns></returns>
+        public DataSet GetIFSendSync(string dbName, int requestState, string companyCode, string stampID)
 		{
 			DataSet dsReturn = null;
 			if (dbName != "") dbName += ".";
@@ -977,6 +979,130 @@ namespace ZumNet.DAL.InterfaceDac
 			{
 				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
+		}
+		#endregion
+
+		#region [외부시스템 연동 관련]
+		/// <summary>
+		/// 연동 시스템에 보낼 데이타 가져오기
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="formID"></param>
+		/// <param name="wID"></param>
+		/// <param name="tableName"></param>
+		/// <param name="version"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public string GetExtraDataForInterface(string dbName, string moduleID, string ekpDB, string formID
+										, string wID, string tableName, int version, int msgID, int oID)
+		{
+			string strReturn = "";
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_GetExtraDataForInterface";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "ExtraData", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 연동 시스템에 받은 데이타로 양식 필드들 변경
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="dnAlias"></param>
+		/// <param name="formID"></param>
+		/// <param name="tableName"></param>
+		/// <param name="version"></param>
+		/// <param name="msgID"></param>
+		/// <param name="interfaceValue"></param>
+		public void UpdateFormMainFieldForInterface(string dbName, string moduleID, string dnAlias, string formID
+											, string tableName, int version, int msgID, string interfaceValue)
+		{
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_UpdateFormMainFieldForInterface";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@dnalias", SqlDbType.VarChar, 63, dnAlias),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+				ParamSet.Add4Sql("@f_value", SqlDbType.NVarChar, 4000, interfaceValue)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 메일(외부로 보내는 경우) 시스템으로 보낼 데이타 가져오기
+		/// </summary>
+		/// <param name="dbName"></param>
+		/// <param name="moduleID"></param>
+		/// <param name="ekpDB"></param>
+		/// <param name="mailDomain"></param>
+		/// <param name="formID"></param>
+		/// <param name="tableName"></param>
+		/// <param name="version"></param>
+		/// <param name="msgID"></param>
+		/// <param name="oID"></param>
+		/// <returns></returns>
+		public DataSet GetExtraDataForMail(string dbName, string moduleID, string ekpDB, string mailDomain
+										, string formID, string tableName, int version, int msgID, int oID)
+		{
+			DataSet dsReturn = null;
+			if (dbName != "") dbName += ".";
+			string strSP = dbName + "admin.ph_up_GetExtraDataForMail";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+				ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
+				ParamSet.Add4Sql("@maildomain", SqlDbType.VarChar, 100, mailDomain),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+				ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+
+				ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
 		}
 		#endregion
 	}
