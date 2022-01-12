@@ -3346,32 +3346,6 @@ namespace ZumNet.DAL.FlowDac
 		/// <summary>
 		/// 프로세스 수행 기록 로그 저장
 		/// </summary>
-		/// <param name="webServer"></param>
-		/// <param name="dnID"></param>
-		/// <param name="companyCode"></param>
-		/// <param name="state"></param>
-		/// <param name="status"></param>
-		/// <param name="startDate"></param>
-		/// <param name="duration"></param>
-		/// <param name="docName"></param>
-		/// <param name="procName"></param>
-		/// <param name="creator"></param>
-		/// <param name="creatorDept"></param>
-		/// <param name="bizRole"></param>
-		/// <param name="actRole"></param>
-		/// <param name="partID"></param>
-		/// <param name="partName"></param>
-		/// <param name="partCode"></param>
-		/// <param name="partDept"></param>
-		/// <param name="parentActRole"></param>
-		/// <param name="parentPartId"></param>
-		/// <param name="parentPartName"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="messageID"></param>
-		/// <param name="formID"></param>
-		/// <param name="procInstID"></param>
-		/// <param name="workItemID"></param>
-		/// <param name="exceptionInfo"></param>
 		public void InsertBFFlowAudit(string webServer, int dnID, string companyCode, int state, int status, string startDate
 								, string duration, string docName, string procName, string creator, string creatorDept, string bizRole, string actRole
 								, string partID, string partName, string partCode, string partDept, string parentActRole, string parentPartId, string parentPartName
@@ -3405,6 +3379,55 @@ namespace ZumNet.DAL.FlowDac
 				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
 				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID),
 				ParamSet.Add4Sql("@exceptioninfo", SqlDbType.NVarChar, -1, exceptionInfo),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFInsertBFFlowAudit", "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 프로세스 수행기록 로그 저장 - Engine에서 사용
+		/// </summary>
+		public void InsertBFFlowAudit(string webServer, int dnID, string companyCode, int state, int status, string receivedDate, string startDate
+								, string duration, string docName, string procName, string creator, string creatorDept, string bizRole, string actRole
+								, string partID, string partName, string partCode, string partDept, string parentActRole, string parentPartId, string parentPartName
+								, string xfAlias, string messageID, string formID, string procInstID, string workItemID, string exceptionInfo, string remoteHost, string httpUserAgent)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@websrv", SqlDbType.VarChar, 50, webServer),
+				ParamSet.Add4Sql("@dnid", SqlDbType.TinyInt, 1, dnID),
+				ParamSet.Add4Sql("@companycode", SqlDbType.VarChar, 50, companyCode),
+				ParamSet.Add4Sql("@state", SqlDbType.SmallInt, 2, state),
+				ParamSet.Add4Sql("@status", SqlDbType.SmallInt, 2, status),
+				ParamSet.Add4Sql("@receiveddate", SqlDbType.VarChar, 20, receivedDate),
+				ParamSet.Add4Sql("@startdate", SqlDbType.VarChar, 20, startDate),
+				ParamSet.Add4Sql("@duration", SqlDbType.VarChar, 10, duration),
+				ParamSet.Add4Sql("@docname", SqlDbType.NVarChar, 100, docName),
+				ParamSet.Add4Sql("@procname", SqlDbType.NVarChar, 200, procName),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 50, creator),
+				ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 100, creatorDept),
+				ParamSet.Add4Sql("@bizrole", SqlDbType.VarChar, 30, bizRole),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 30, actRole),
+				ParamSet.Add4Sql("@partid", SqlDbType.NVarChar, 50, partID),
+				ParamSet.Add4Sql("@partname", SqlDbType.NVarChar, 100, partName),
+				ParamSet.Add4Sql("@partcode", SqlDbType.NVarChar, 50, partCode),
+				ParamSet.Add4Sql("@partdept", SqlDbType.NVarChar, 100, partDept),
+				ParamSet.Add4Sql("@parentactrole", SqlDbType.VarChar, 30, parentActRole),
+				ParamSet.Add4Sql("@parentpartid", SqlDbType.NVarChar, 50, parentPartId),
+				ParamSet.Add4Sql("@parentpartname", SqlDbType.NVarChar, 100, parentPartName),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 32, messageID),
+				ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 32, formID),
+				ParamSet.Add4Sql("@procinstid", SqlDbType.VarChar, 32, procInstID),
+				ParamSet.Add4Sql("@workitemid", SqlDbType.VarChar, 32, workItemID),
+				ParamSet.Add4Sql("@exceptioninfo", SqlDbType.NVarChar, -1, exceptionInfo),
+				ParamSet.Add4Sql("@remotehost", SqlDbType.VarChar, 30, remoteHost),
+				ParamSet.Add4Sql("@httpuseragent", SqlDbType.VarChar, 200, httpUserAgent)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFInsertBFFlowAudit", "", parameters);
