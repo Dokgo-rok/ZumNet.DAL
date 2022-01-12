@@ -1009,6 +1009,88 @@ namespace ZumNet.DAL.FlowDac
         }
 
         /// <summary>
+        /// 양식 데이타 수정 및 이력기록
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="msgID"></param>
+        /// <param name="ekpDB"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="tableName"></param>
+        /// <param name="subKey"></param>
+        /// <param name="field"></param>
+        /// <param name="fieldLabel"></param>
+        /// <param name="fieldValue"></param>
+        /// <param name="actorKey"></param>
+        /// <param name="actor"></param>
+        /// <param name="actorID"></param>
+        /// <param name="reserved1"></param>
+        public void UpdateFormDataHistory(string dbName, int msgID, string ekpDB, string xfAlias, string tableName, string subKey, string field
+                                        , string fieldLabel, string fieldValue, string actorKey, string actor, int actorID, string reserved1)
+        {
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_UpdateFormDataHistory";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+                ParamSet.Add4Sql("@ekpdb", SqlDbType.NVarChar, 50, ekpDB),
+                ParamSet.Add4Sql("@xfalias", SqlDbType.NVarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@table_name", SqlDbType.NVarChar, 100, tableName),
+                ParamSet.Add4Sql("@subkey", SqlDbType.NVarChar, 33, subKey),
+                ParamSet.Add4Sql("@field", SqlDbType.NVarChar, 100, field),
+                ParamSet.Add4Sql("@field_label", SqlDbType.NVarChar, 100, fieldLabel),
+                ParamSet.Add4Sql("@field_value", SqlDbType.NVarChar, -1, fieldValue),
+                ParamSet.Add4Sql("@actorkey", SqlDbType.NVarChar, 33, actorKey),
+                ParamSet.Add4Sql("@actor", SqlDbType.NVarChar, 100, actor),
+                ParamSet.Add4Sql("@actorid", SqlDbType.Int, 4, actorID),
+                ParamSet.Add4Sql("@reserved1", SqlDbType.NVarChar, 255, reserved1)
+            };
+
+            ParamData pData = new ParamData(strSP, "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 양식 MAIN, SUB 테이블 데이타 변경
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="messageID"></param>
+        /// <param name="tableName"></param>
+        /// <param name="version"></param>
+        /// <param name="subTableCount"></param>
+        /// <param name="mainField"></param>
+        /// <param name="subTableDef"></param>
+        /// <param name="subField"></param>
+        public void UpdateFormDataBatch(string dbName, int messageID, string tableName, int version
+                                    , int subTableCount, string mainField, string subTableDef, string subField)
+        {
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_UpdateFormDataBatch";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
+                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+                ParamSet.Add4Sql("@subtable_cnt", SqlDbType.Int, 4, subTableCount),
+                ParamSet.Add4Sql("@main_field", SqlDbType.NText, mainField),
+                ParamSet.Add4Sql("@subtable_def", SqlDbType.NText, subTableDef),
+                ParamSet.Add4Sql("@sub_field", SqlDbType.NText, subField)
+            };
+
+            ParamData pData = new ParamData(strSP, "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
 		/// 양식 특정 필드값 변경
 		/// </summary>
 		/// <param name="xfAlias"></param>
@@ -3411,6 +3493,130 @@ ORDER BY DocName, Version
             }
 
             return strReturn;
+        }
+        #endregion
+
+        #region [외부시스템 연동 관련]
+        /// <summary>
+        /// 연동 시스템에 보낼 데이타 가져오기
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="moduleID"></param>
+        /// <param name="ekpDB"></param>
+        /// <param name="formID"></param>
+        /// <param name="wID"></param>
+        /// <param name="tableName"></param>
+        /// <param name="version"></param>
+        /// <param name="msgID"></param>
+        /// <param name="oID"></param>
+        /// <returns></returns>
+        public string GetExtraDataForInterface(string dbName, string moduleID, string ekpDB, string formID
+                                        , string wID, string tableName, int version, int msgID, int oID)
+        {
+            string strReturn = "";
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_GetExtraDataForInterface";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+                ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+            };
+
+            ParamData pData = new ParamData(strSP, "", "ExtraData", 30, parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// 연동 시스템에 받은 데이타로 양식 필드들 변경
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="moduleID"></param>
+        /// <param name="dnAlias"></param>
+        /// <param name="formID"></param>
+        /// <param name="tableName"></param>
+        /// <param name="version"></param>
+        /// <param name="msgID"></param>
+        /// <param name="interfaceValue"></param>
+        public void UpdateFormMainFieldForInterface(string dbName, string moduleID, string dnAlias, string formID
+                                            , string tableName, int version, int msgID, string interfaceValue)
+        {
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_UpdateFormMainFieldForInterface";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+                ParamSet.Add4Sql("@dnalias", SqlDbType.VarChar, 63, dnAlias),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+                ParamSet.Add4Sql("@f_value", SqlDbType.NVarChar, 4000, interfaceValue)
+            };
+
+            ParamData pData = new ParamData(strSP, "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 메일(외부로 보내는 경우) 시스템으로 보낼 데이타 가져오기
+        /// </summary>
+        /// <param name="dbName"></param>
+        /// <param name="moduleID"></param>
+        /// <param name="ekpDB"></param>
+        /// <param name="mailDomain"></param>
+        /// <param name="formID"></param>
+        /// <param name="tableName"></param>
+        /// <param name="version"></param>
+        /// <param name="msgID"></param>
+        /// <param name="oID"></param>
+        /// <returns></returns>
+        public DataSet GetExtraDataForMail(string dbName, string moduleID, string ekpDB, string mailDomain
+                                        , string formID, string tableName, int version, int msgID, int oID)
+        {
+            DataSet dsReturn = null;
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_GetExtraDataForMail";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@moduleid", SqlDbType.VarChar, 50, moduleID),
+                ParamSet.Add4Sql("@ekp_db", SqlDbType.NVarChar, 200, ekpDB),
+                ParamSet.Add4Sql("@maildomain", SqlDbType.VarChar, 100, mailDomain),
+                ParamSet.Add4Sql("@formid", SqlDbType.VarChar, 33, formID),
+                ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
+                ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
+                ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgID),
+                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+
+                ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
+            };
+
+            ParamData pData = new ParamData(strSP, "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
         }
         #endregion
 
