@@ -43,9 +43,11 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="companyCode"></param>
         /// <param name="stampID"></param>
         /// <returns></returns>
-        public DataSet GetIFSendSync(string dbName, int requestState, string companyCode, string stampID)
+        public DataTable GetIFSendSync(string dbName, int requestState, string companyCode, string stampID)
 		{
-			DataSet dsReturn = null;
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
 			if (dbName != "") dbName += ".";
 			string strSP = dbName + "admin.ph_up_GetIFSendSync";
 
@@ -58,12 +60,25 @@ namespace ZumNet.DAL.InterfaceDac
 
 			ParamData pData = new ParamData(strSP, "", "IFSendSync", 30, parameters);
 
-			using (DbBase db = new DbBase())
+			try
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
 			}
 
-			return dsReturn;
+			return dtReturn;
 		}
 
 		/// <summary>
@@ -72,9 +87,11 @@ namespace ZumNet.DAL.InterfaceDac
 		/// <param name="dbName"></param>
 		/// <param name="interfaceID"></param>
 		/// <returns></returns>
-		public DataSet GetIFSendSync(string dbName, long interfaceID)
+		public DataTable GetIFSendSync(string dbName, long interfaceID)
 		{
-			DataSet dsReturn = null;
+			DataSet ds = null;
+			DataTable dtReturn = null;
+
 			if (dbName != "") dbName += ".";
 			string strSP = dbName + "admin.ph_up_GetIFSendSync";
 
@@ -85,12 +102,25 @@ namespace ZumNet.DAL.InterfaceDac
 
 			ParamData pData = new ParamData(strSP, "", "IFSendSync", 30, parameters);
 
-			using (DbBase db = new DbBase())
+			try
 			{
-				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				using (DbBase db = new DbBase())
+				{
+					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+			finally
+			{
+				if (ds != null) ds.Dispose();
 			}
 
-			return dsReturn;
+			return dtReturn;
 		}
 
 		/// <summary>

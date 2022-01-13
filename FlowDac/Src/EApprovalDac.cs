@@ -2521,10 +2521,9 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="formTable"></param>
         /// <param name="mainField"></param>
         /// <param name="subField"></param>
-        /// <returns></returns>
-        public int UpdateFormDataNotEA(string fiid, string xfalias, string formTable, string mainField, string subField)
+        public void UpdateFormDataNotEA(string fiid, string xfalias, string formTable, string mainField, string subField)
         {
-            return UpdateFormDataNotEA(fiid, xfalias, formTable, 0, mainField, subField, "", "", 0, "");
+            UpdateFormDataNotEA(fiid, xfalias, formTable, 0, mainField, subField, "", "", 0, "");
         }
 
         /// <summary>
@@ -2541,10 +2540,9 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="actorId"></param>
         /// <param name="reserved1"></param>
         /// <returns></returns>
-        public int UpdateFormDataNotEA(string fiid, string xfalias, string formTable, int subTableCnt, string mainField
+        public void UpdateFormDataNotEA(string fiid, string xfalias, string formTable, int subTableCnt, string mainField
                                     , string subField, string actorKey, string actor, int actorId, string reserved1)
         {
-            int iReturn = 0;
             string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
             string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
 
@@ -2570,10 +2568,8 @@ namespace ZumNet.DAL.FlowDac
 
             using (DbBase db = new DbBase())
             {
-                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
-
-            return iReturn;
         }
 
         /// <summary>
