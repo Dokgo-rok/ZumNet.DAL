@@ -1810,7 +1810,7 @@ namespace ZumNet.DAL.FlowDac
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@processid", SqlDbType.Int, 4, processID),
-				ParamSet.Add4Sql("@parent_activityid", SqlDbType.VarChar, 33, currentActID)
+				ParamSet.Add4Sql("@activityid", SqlDbType.VarChar, 33, currentActID)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFGetProcessActivitySchema", parameters);

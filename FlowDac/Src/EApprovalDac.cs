@@ -2768,9 +2768,11 @@ namespace ZumNet.DAL.FlowDac
         /// <param name="docLevel"></param>
         /// <param name="keepYear"></param>
         /// <returns></returns>
-        public DataSet RetrieveDocData(int dnID, int docLevel, int keepYear)
+        public DataRow RetrieveDocData(int dnID, int docLevel, int keepYear)
         {
-            DataSet dsReturn = null;
+            DataSet ds = null;
+            DataRow drReturn = null;
+
             string strQuery = @"SELECT a.DisplayName AS DocLevel, b.DisplayName AS KeepYear
                         FROM admin.PH_DOC_LEVEL a (NOLOCK), admin.PH_DOC_KEEPYEAR b (NOLOCK)
                         WHERE a.DN_ID = @dnid AND b.DN_ID = @dnid AND a.DocLevel = @doclevel AND b.KeepYear = @keepyear";
@@ -2784,12 +2786,25 @@ namespace ZumNet.DAL.FlowDac
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            using (DbBase db = new DbBase())
+            try
             {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                using (DbBase db = new DbBase())
+                {
+                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                }
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0) drReturn = ds.Tables[0].Rows[0];
+            }
+            catch (Exception ex)
+            {
+                Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+            }
+            finally
+            {
+                if (ds != null) ds.Dispose();
             }
 
-            return dsReturn;
+            return drReturn;
         }
         #endregion
 
@@ -3219,9 +3234,10 @@ namespace ZumNet.DAL.FlowDac
         /// </summary>
         /// <param name="opID"></param>
         /// <returns></returns>
-        public DataSet RetrieveCorpInfo(int opID)
+        public DataRow RetrieveCorpInfo(int opID)
         {
-            DataSet dsReturn = null;
+            DataSet ds = null;
+            DataRow drReturn = null;
 
             string strQuery = @"
 SELECT Logo, Address, CEO, RepresentPhone, Domain, HomePage, Logo_Small, CompanyName, CompanyCode
@@ -3234,12 +3250,25 @@ FROM admin.PH_OBJECT_OP (NOLOCK) WHERE OP_ID = @opid";
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
 
-            using (DbBase db = new DbBase())
+            try
             {
-                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                using (DbBase db = new DbBase())
+                {
+                    ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                }
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0) drReturn = ds.Tables[0].Rows[0];
+            }
+            catch (Exception ex)
+            {
+                Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+            }
+            finally
+            {
+                if (ds != null) ds.Dispose();
             }
 
-            return dsReturn;
+            return drReturn;
         }
 
         /// <summary>
