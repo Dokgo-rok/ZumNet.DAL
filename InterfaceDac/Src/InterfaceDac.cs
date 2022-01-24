@@ -1011,5 +1011,180 @@ namespace ZumNet.DAL.InterfaceDac
 			}
 		}
 		#endregion
+
+		#region [나의할일 (결재문서, ECN, 금형) 조회기록]
+		/// <summary>
+		/// 조회 로깅 설정
+		/// </summary>
+		/// <param name="xfAlias">양식구분</param>
+		/// <param name="fdID">폴더구별자</param>
+		/// <param name="actorID">조회자</param>
+		/// <param name="msgID">양식식별자</param>
+		/// <param name="ip">IP</param>
+		public void ViewCount(string xfAlias, int fdID, int actorID, string msgID, string ip)
+		{
+			string strQuery = @"
+IF @xfalias = 'tooling' -- 금형대장
+BEGIN
+    SELECT @msgid = fiid FROM BFFLOWFORMS_CRESYN.admin.REGISTER_TOOLING (NOLOCK) WHERE TOOLING_NUMBER = @msgid
+END
+
+IF NOT EXISTS (SELECT Viewer FROM admin.PH_EVENT_VIEW (NOLOCK) 
+	WHERE XFAlias = @xfalias AND MessageID = @msgid AND Viewer = @actorid)
+BEGIN
+	INSERT INTO admin.PH_EVENT_VIEW WITH(ROWLOCK)
+	(XFAlias, MessageID, Viewer, ViewDate)
+	VALUES (@xfalias, @msgid, @actorid, GETDATE())
+END
+
+INSERT INTO admin.PH_EVENT_AUDIT WITH (ROWLOCK)
+(FD_ID, ActTime, XFAlias, MessageID, Actor, IP)
+VALUES
+(@fdid, GETDATE(), @xfalias, @msgid, @actorid, @ip)
+";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@fdid", SqlDbType.Int, 4, fdID),
+				ParamSet.Add4Sql("@actorid", SqlDbType.Int, 4, actorID),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 30, msgID),
+				ParamSet.Add4Sql("@ip", SqlDbType.VarChar, 30, ip)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 나의할일 조회설정
+		/// </summary>
+		/// <param name="xfAlias">양식구분</param>
+		/// <param name="actorID">조회자</param>
+		/// <param name="msgID">양식식별자</param>
+		/// <param name="wnID">연결작업ID</param>
+		public void ViewCount(string xfAlias, int actorID, string msgID, string wnID)
+		{
+			string strQuery = @"
+IF @xfalias = 'ecnplan'
+BEGIN
+    UPDATE admin.BF_WORK_ITEM_NOTICE WITH (ROWLOCK)
+    SET ViewDate = GETDATE()
+    WHERE AppAlias = @xfalias AND AppMID = @msgid AND PartID = @actorid --WnID = @wnid
+    AND (ViewDate IS NULL OR ViewDate > GETDATE())
+END
+ELSE
+BEGIN
+    UPDATE admin.BF_WORK_ITEM_NOTICE WITH (ROWLOCK)
+    SET ViewDate = GETDATE()
+    WHERE WnID = @wnid
+    AND (ViewDate IS NULL OR ViewDate > GETDATE())
+END
+";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@actorid", SqlDbType.Int, 4, actorID),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 30, msgID),
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, Convert.ToInt64(wnID))
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// ECN업무계획서 작업 상태 설정
+		/// </summary>
+		/// <param name="ecnType"></param>
+		/// <param name="xfAlias"></param>
+		/// <param name="actorID"></param>
+		/// <param name="msgID"></param>
+		/// <param name="wnID"></param>
+		public void SetECNFlag(string ecnType, string xfAlias, int actorID, int msgID, string wnID)
+		{
+			string strQuery = @"
+IF @type = 'P'
+BEGIN
+    UPDATE admin.BF_WORK_ITEM_NOTICE WITH (ROWLOCK)
+    SET Col1 = 'Y'
+    WHERE AppAlias = @xfalias AND AppMID = @msgid AND PartID = @actorid --WnID = @wnid
+END
+ELSE IF @type = 'A'
+BEGIN
+    UPDATE admin.BF_WORK_ITEM_NOTICE WITH (ROWLOCK)
+    SET Col2 = 'Y'
+    WHERE AppAlias = @xfalias AND AppMID = @msgid
+END
+";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@type", SqlDbType.Char, 1, ecnType),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@actorid", SqlDbType.Int, 4, actorID),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 30, msgID),
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, Convert.ToInt64(wnID))
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 나의할일 이관
+		/// </summary>
+		/// <param name="wnIDs"></param>
+		/// <param name="targetUserID"></param>
+		/// <param name="targetName"></param>
+		/// <param name="targetCode"></param>
+		/// <param name="targetMail"></param>
+		public void TransferWorkNotice(string wnIDs, string targetUserID, string targetName, string targetCode, string targetMail)
+		{
+			string strQuery = @"
+INSERT INTO admin.BF_WORK_ITEM_NOTICE
+(
+	CompanyCode, WnDisplay, WnState, WnKind, PartType, PartID, PartName, PartCode, PartMail, ReqDate, CreateDate
+	, AppAlias, AppID, AppDN, AppMID, AppPIID, PreAppAlias, PreAppID, PreAppDN, PreMID, PrePIID, PreWIID
+	, RequesterID, Requester, RequesterDeptID, RequesterDept, Col3, Col4, Col5
+)
+SELECT CompanyCode, WnDisplay, WnState, WnKind, PartType, @partid, @partname, @partcode, @partmail, CONVERT(VARCHAR(19), GETDATE(), 121), GETDATE()
+	, AppAlias, AppID, AppDN, AppMID, AppPIID, PreAppAlias, PreAppID, PreAppDN, PreMID, PrePIID, PreWIID
+	, RequesterID, Requester, RequesterDeptID, RequesterDept, WnID, PartID, PartName
+FROM admin.BF_WORK_ITEM_NOTICE
+WHERE WnID IN (" + wnIDs + @")
+
+UPDATE admin.BF_WORK_ITEM_NOTICE SET WnState = 5, CompletedDate = GETDATE(), Col4 = @partid, Col5 = @partname
+WHERE WnID IN (" + wnIDs + ")";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@partid", SqlDbType.VarChar, 50, targetUserID),
+				ParamSet.Add4Sql("@partname", SqlDbType.NVarChar, 50, targetName),
+				ParamSet.Add4Sql("@partcode", SqlDbType.NVarChar, 50, targetCode),
+				ParamSet.Add4Sql("@partmail", SqlDbType.NVarChar, 50, targetMail)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
 	}
 }
