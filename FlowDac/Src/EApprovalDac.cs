@@ -127,7 +127,7 @@ namespace ZumNet.DAL.FlowDac
             }
             catch (Exception ex)
             {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetEAFormData");
+                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "");
             }
             finally
             {
@@ -204,7 +204,7 @@ namespace ZumNet.DAL.FlowDac
             }
             catch (Exception ex)
             {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetEAFormData");
+                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "");
             }
             finally
             {
@@ -450,7 +450,7 @@ namespace ZumNet.DAL.FlowDac
             }
             catch (Exception ex)
             {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "SelectXFMainEntity");
+                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "");
             }
             finally
             {
@@ -765,7 +765,7 @@ namespace ZumNet.DAL.FlowDac
             }
             catch (Exception ex)
             {
-                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetFormOptionInfo");
+                ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "");
             }
             finally
             {

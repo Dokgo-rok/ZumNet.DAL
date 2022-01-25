@@ -1304,9 +1304,20 @@ namespace ZumNet.DAL.FlowDac
 		/// <param name="wID">작업 식별자</param>
 		public void UpdateWorkItemViewDate(string wID)
 		{
+			UpdateWorkItemViewDate(wID, 0);
+		}
+
+		/// <summary>
+		/// WorkItem 및 작업연결 읽은 일자 기록
+		/// </summary>
+		/// <param name="wID"></param>
+		/// <param name="wnID"></param>
+		public void UpdateWorkItemViewDate(string wID, long wnID)
+		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID)
+				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
+				ParamSet.Add4Sql("@wnid", SqlDbType.BigInt, 8, wnID)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFUpdateWorkItemViewDate", "", parameters);
@@ -2996,7 +3007,7 @@ namespace ZumNet.DAL.FlowDac
 			}
 			catch(Exception ex)
             {
-				ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "GetWorkItemCount");
+				ZumNet.Framework.Exception.ExceptionManager.ThrowException(ex, MethodBase.GetCurrentMethod(), "", "");
 			}
             finally
             {
