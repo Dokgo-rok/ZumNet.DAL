@@ -2862,7 +2862,7 @@ namespace ZumNet.DAL.FlowDac
             SqlParameter[] parameters = new SqlParameter[]
             {
                 ParamSet.Add4Sql("@chargeid", SqlDbType.Int, 4, chargeId),
-                ParamSet.Add4Sql("@objtype", SqlDbType.Char, 2, chargeId)
+                ParamSet.Add4Sql("@objtype", SqlDbType.Char, 2, objType)
             };
 
             ParamData pData = new ParamData(strQuery, "text", parameters);
