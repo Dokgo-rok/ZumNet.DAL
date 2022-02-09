@@ -314,7 +314,7 @@ namespace ZumNet.DAL.ServiceDac
 
             using (DbBase db = new DbBase())
             {
-                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -608,7 +608,7 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                iReturn = Convert.ToInt64(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+                iReturn = Convert.ToInt64(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -644,7 +644,7 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
         #endregion
@@ -658,9 +658,9 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
         /// <param name="reqSubject"></param>
         /// <param name="reason"></param>
         /// <returns></returns>
-        public long InsertWorkTimeRequest(int userId, string workDate, string reqSubject, string reason)
+        public int InsertWorkTimeRequest(int userId, string workDate, string reqSubject, string reason)
         {
-            long iReturn = 0;
+            int iReturn = 0;
 
             SqlParameter[] parameters = new SqlParameter[]
             {
@@ -669,14 +669,14 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
                 ParamSet.Add4Sql("@reqsubject", SqlDbType.NVarChar, 200, reqSubject),
                 ParamSet.Add4Sql("@reason", SqlDbType.NVarChar, 500, reason),
 
-                ParamSet.Add4Sql("@oid", SqlDbType.BigInt, 8, ParameterDirection.Output)
+                ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, ParameterDirection.Output)
             };
 
             ParamData pData = new ParamData("admin.ph_up_InsertWorkTimeRequest", parameters);
 
             using (DbBase db = new DbBase())
             {
-                iReturn = Convert.ToInt64(db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
+                iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
             }
 
             return iReturn;
@@ -703,7 +703,7 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -739,7 +739,7 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
@@ -766,7 +766,7 @@ WHERE UserID = @userid AND WorkDate >= @from AND WorkDate <= @to
 
             using (DbBase db = new DbBase())
             {
-                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
 
