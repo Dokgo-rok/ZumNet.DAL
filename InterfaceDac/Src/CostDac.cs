@@ -1297,7 +1297,7 @@ namespace ZumNet.DAL.InterfaceDac
                 ParamSet.Add4Sql("@item", SqlDbType.VarChar, 50, item)
             };
 
-            ParamData pData = new ParamData(this._formDB + ".dbo.up_GET_MC_SUMMARY_ITEM", "", parameters);
+            ParamData pData = new ParamData(this._formDB + ".dbo.up_GET_MC_SUMMARY_ITEM", "", 60, parameters);
 
             using (DbBase db = new DbBase())
             {
