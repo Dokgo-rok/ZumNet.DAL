@@ -323,7 +323,7 @@ namespace ZumNet.DAL.ServiceDac
                 ParamSet.Add4Sql("@todate", SqlDbType.Char, 10, toDate)
             };
 
-            ParamData pData = new ParamData("admin.up_ToDoGetList", parameters);
+            ParamData pData = new ParamData("admin.up_ToDoGetList", "", 30, parameters);
 
             using (DbBase db = new DbBase())
             {
@@ -585,7 +585,7 @@ UPDATE admin.PH_XF_SCHEDULE SET CommentCount = @cnt WHERE MessageID = @msgid
                 ParamSet.Add4Sql("@targetgr", SqlDbType.Int, 4, targetGR)
             };
 
-            ParamData pData = new ParamData("admin.up_ToDoGetReport", parameters);
+            ParamData pData = new ParamData("admin.up_ToDoGetReport", "", 60, parameters);
 
             using (DbBase db = new DbBase())
             {
