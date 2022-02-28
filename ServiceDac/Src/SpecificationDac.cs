@@ -597,7 +597,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 특정 참여자(참여자, 자원) 일정 검색 리스트
+		/// 특정 참여자(참여자, 자원) 일정 검색 리스트 => 일정 리스트 + 일정에 따른 참여자 목록
 		/// </summary>
 		/// <param name="domainID"></param>
 		/// <param name="participants"></param>
