@@ -185,7 +185,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="partType"></param>
 		/// <param name="sendMail"></param>
 		/// <param name="note"></param>
-		public void HandleParticipant(string mode, int messageID, string objectType, int partID, string partType, string sendMail, string note)
+		/// <param name="state"></param>
+		/// <param name="confirmed"></param>
+		public void SetScheduleParticipant(string mode, int messageID, string objectType, int partID, string partType
+								, string sendMail, string note, int state, string confirmed)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -195,7 +198,9 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@part_id", SqlDbType.Int, 4, partID),
 				ParamSet.Add4Sql("@part_type", SqlDbType.Char, 1, partType),
 				ParamSet.Add4Sql("@sendmail", SqlDbType.Char, 1, sendMail),
-				ParamSet.Add4Sql("@note", SqlDbType.NVarChar, 255, note)
+				ParamSet.Add4Sql("@note", SqlDbType.NVarChar, 255, note),
+				ParamSet.Add4Sql("@state", SqlDbType.SmallInt, 1, state),
+				ParamSet.Add4Sql("@confirmed", SqlDbType.Char, 1, confirmed)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_ScheduleSetParticipant", parameters);
@@ -212,7 +217,7 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="mode"></param>
 		/// <param name="messageID"></param>
 		/// <param name="xmlData"></param>
-		public void CreateParticipants(string mode, int messageID, string xmlData)
+		public void SetScheduleParticipant(string mode, int messageID, string xmlData)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
