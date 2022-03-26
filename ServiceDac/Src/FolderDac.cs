@@ -928,7 +928,7 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@outParam", SqlDbType.VarChar, 1000, ParameterDirection.Output)
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_GetInheritedEnvironmentFolderID", parameters);
+			ParamData pData = new ParamData("admin.ph_up_GetFolderEnvironmentOneOfAttribute", parameters);
 
 			using (DbBase db = new DbBase())
 			{
