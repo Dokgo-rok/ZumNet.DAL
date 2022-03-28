@@ -346,10 +346,13 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="isPopup"></param>
 		/// <param name="replyMail"></param>
 		/// <param name="topLine"></param>
-		public void CreateTemporaryMessage(string xfAlias, int messageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType
+		/// <returns></returns>
+		public int CreateTemporaryMessage(string xfAlias, int messageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType
 								, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate
 								, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine)
 		{
+			int iReturn = 0;
+
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@XfAlias", SqlDbType.NVarChar, 30, xfAlias),
@@ -372,15 +375,19 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@AttachFile", SqlDbType.Char, 1, fileCount),
 				ParamSet.Add4Sql("@FileInfo", SqlDbType.NText, fileInfo),
 				ParamSet.Add4Sql("@IsHot", SqlDbType.Char, 1, isHot),
-				ParamSet.Add4Sql("@Reserved1", SqlDbType.NVarChar, 100, reserved1)
+				ParamSet.Add4Sql("@Reserved1", SqlDbType.NVarChar, 100, reserved1),
+
+				ParamSet.Add4Sql("@OutMessageID", SqlDbType.Int, 4, ParameterDirection.Output)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_MsgSetTemporaryWrite", parameters);
 
 			using (DbBase db = new DbBase())
 			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				iReturn = Convert.ToInt32(db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData));
 			}
+
+			return iReturn;
 		}
 
 		/// <summary>

@@ -2311,7 +2311,7 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 포탈의 최근 게시물 리스트를 가져온다.
+		/// 최근 게시물 리스트를 가져온다.
 		/// </summary>
 		/// <param name="ctID"></param>
 		/// <param name="pageIndex"></param>
@@ -2322,9 +2322,10 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
+		/// <param name="userId"></param>
 		/// <returns></returns>
 		public DataSet GetRecentlyMessageListOfCT(int ctID, int pageIndex, int pageCount, string sortColum, string sortType
-											, string searchColum, string searchText, string searchStartDate, string searchEndDate)
+									, string searchColum, string searchText, string searchStartDate, string searchEndDate, int userId)
 		{
 			DataSet dsReturn = null;
 
@@ -2339,6 +2340,7 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@searchText", SqlDbType.NVarChar, 200, searchText),
 				ParamSet.Add4Sql("@searchSDate", SqlDbType.VarChar, 10, searchStartDate),
 				ParamSet.Add4Sql("@searchEDate", SqlDbType.VarChar, 10, searchEndDate),
+				ParamSet.Add4Sql("@userID", SqlDbType.Int, 4, userId),
 				ParamSet.Add4Sql("@totalMsg", SqlDbType.Int, 4, ParameterDirection.Output)
 			};
 
@@ -2488,6 +2490,74 @@ namespace ZumNet.DAL.ServiceDac
 			return dsReturn;
 		}
 
-		
+		/// <summary>
+		/// 임시저장함 목록
+		/// </summary>
+		/// <param name="ctID"></param>
+		/// <param name="userID"></param>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageCount"></param>
+		/// <param name="sortColum"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchColum"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchStartDate"></param>
+		/// <param name="searchEndDate"></param>
+		/// <returns></returns>
+		public DataSet GetTemporaryMessageListOfCT(int ctID, int userID, int pageIndex, int pageCount, string sortColum
+					, string sortType, string searchColum, string searchText, string searchStartDate, string searchEndDate)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ctid", SqlDbType.Int, 4, ctID),
+				ParamSet.Add4Sql("@urid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@pageidx", SqlDbType.Int, 4, pageIndex),
+				ParamSet.Add4Sql("@pagecnt", SqlDbType.Int, 4, pageCount),
+				ParamSet.Add4Sql("@sortcol", SqlDbType.VarChar, 20, sortColum),
+				ParamSet.Add4Sql("@sorttype", SqlDbType.VarChar, 20, sortType),
+				ParamSet.Add4Sql("@searchcol", SqlDbType.VarChar, 20, searchColum),
+				ParamSet.Add4Sql("@searchtext", SqlDbType.NVarChar, 200, searchText),
+				ParamSet.Add4Sql("@searchsdate", SqlDbType.VarChar, 10, searchStartDate),
+				ParamSet.Add4Sql("@searchedate", SqlDbType.VarChar, 10, searchEndDate),
+				ParamSet.Add4Sql("@totalmsg", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_MsgGetTemporaryMessageListOfCT", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 임시저장 게시물에 대한 정보
+		/// </summary>
+		/// <param name="messageID"></param>
+		/// <param name="xfAlias"></param>
+		/// <returns></returns>
+		public DataSet GetTemporaryMessage(string messageID, string xfAlias)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 33, messageID),
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_MsgGetTemporaryMessageView", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
 	}
 }
