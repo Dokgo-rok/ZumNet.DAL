@@ -1186,5 +1186,191 @@ WHERE WnID IN (" + wnIDs + ")";
 			}
 		}
 		#endregion
+
+		#region [VOC 관련]
+		/// <summary>
+		/// AS대장 목록 및 통계 가져오기
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="cond3"></param>
+		/// <param name="cond4"></param>
+		/// <param name="cond5"></param>
+		/// <param name="cond6"></param>
+		/// <param name="cond7"></param>
+		/// <param name="page"></param>
+		/// <param name="pageCount"></param>
+		/// <param name="baseSort"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="searchText"></param>
+		/// <returns></returns>
+		public DataSet GetRegisterVOC(string mode, string from, string to
+						, string cond1, string cond2, string cond3, string cond4, string cond5, string cond6, string cond7
+						, int page, int pageCount, string baseSort, string sortCol, string sortType, string searchCol, string searchText)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetRegisterVOC";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 2, mode),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, from),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, to),
+				ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 50, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 50, cond2),
+				ParamSet.Add4Sql("@cond3", SqlDbType.NVarChar, 50, cond3),
+				ParamSet.Add4Sql("@cond4", SqlDbType.NVarChar, 50, cond4),
+				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, 50, cond5),
+				ParamSet.Add4Sql("@cond6", SqlDbType.NVarChar, 50, cond6),
+				ParamSet.Add4Sql("@cond7", SqlDbType.NVarChar, 50, cond7),
+				ParamSet.Add4Sql("@page", SqlDbType.Int, page),
+				ParamSet.Add4Sql("@count", SqlDbType.SmallInt, pageCount),
+				ParamSet.Add4Sql("@base_sort_col", SqlDbType.NVarChar, 50, baseSort),
+				ParamSet.Add4Sql("@sort_col", SqlDbType.NVarChar, 50, sortCol),
+				ParamSet.Add4Sql("@sort_type", SqlDbType.NVarChar, 5, sortType),
+				ParamSet.Add4Sql("@search_col", SqlDbType.NVarChar, 50, searchCol),
+				ParamSet.Add4Sql("@search_text", SqlDbType.NVarChar, 50, searchText),
+
+				ParamSet.Add4Sql("@total_cnt", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "RegisterVOC", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// AS관리대장 등록
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="regId"></param>
+		/// <param name="request"></param>
+		/// <param name="rctDT"></param>
+		/// <param name="customer"></param>
+		/// <param name="contact"></param>
+		/// <param name="address"></param>
+		/// <param name="modelNmA"></param>
+		/// <param name="modelNmB"></param>
+		/// <param name="modelColor"></param>
+		/// <param name="serialNo"></param>
+		/// <param name="purchDT"></param>
+		/// <param name="kind"></param>
+		/// <param name="result"></param>
+		/// <param name="status"></param>
+		/// <param name="repair"></param>
+		/// <param name="trouble"></param>
+		/// <param name="exptDT"></param>
+		/// <param name="compDT"></param>
+		/// <param name="tat"></param>
+		/// <param name="contents"></param>
+		/// <param name="reason"></param>
+		/// <param name="reasonC"></param>
+		/// <param name="description"></param>
+		/// <param name="etc"></param>
+		/// <param name="memo1"></param>
+		/// <param name="memo2"></param>
+		/// <param name="cgId"></param>
+		/// <param name="cgNm"></param>
+		/// <param name="cgDptId"></param>
+		/// <param name="cgDpt"></param>
+		/// <param name="currentId"></param>
+		/// <param name="currentDn"></param>
+		/// <param name="currentDeptId"></param>
+		/// <param name="currentDept"></param>
+		/// <param name="etcField"></param>
+		public void SetRegisterVOC(string mode, long regId, string request, string rctDT, string customer, string contact, string address
+							, string modelNmA, string modelNmB, string modelColor, string serialNo, string purchDT, string kind, string result, string status, string repair, string trouble
+							, string exptDT, string compDT, string tat, string contents, string reason, string reasonC, string description, string etc, string memo1, string memo2
+							, string cgId, string cgNm, string cgDptId, string cgDpt, string currentId, string currentDn, string currentDeptId, string currentDept, string etcField)
+		{
+
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterVOC";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@regid", SqlDbType.BigInt, regId),
+				ParamSet.Add4Sql("@request", SqlDbType.NVarChar, 20, request),
+				ParamSet.Add4Sql("@rctdt", SqlDbType.VarChar, 10, rctDT),
+				ParamSet.Add4Sql("@customer", SqlDbType.NVarChar, 50, customer),
+				ParamSet.Add4Sql("@contact", SqlDbType.NVarChar, 50, contact),
+				ParamSet.Add4Sql("@address", SqlDbType.NVarChar, 200, address),
+				ParamSet.Add4Sql("@modelnma", SqlDbType.NVarChar, 50, modelNmA),
+				ParamSet.Add4Sql("@modelnmb", SqlDbType.NVarChar, 50, modelNmB),
+				ParamSet.Add4Sql("@modelcolor", SqlDbType.NVarChar, 20, modelColor),
+				ParamSet.Add4Sql("@serialno", SqlDbType.NVarChar, 30, serialNo),
+				ParamSet.Add4Sql("@purchdt", SqlDbType.NVarChar, 20, purchDT),
+				ParamSet.Add4Sql("@kind", SqlDbType.NVarChar, 100, kind),
+				ParamSet.Add4Sql("@result", SqlDbType.NVarChar, 20, result),
+				ParamSet.Add4Sql("@status", SqlDbType.NVarChar, 20, status),
+				ParamSet.Add4Sql("@repair", SqlDbType.NVarChar, 100, repair),
+				ParamSet.Add4Sql("@trouble", SqlDbType.NVarChar, 100, trouble),
+				ParamSet.Add4Sql("@exptdt", SqlDbType.VarChar, 10, exptDT),
+				ParamSet.Add4Sql("@compdt", SqlDbType.VarChar, 10, compDT),
+				ParamSet.Add4Sql("@tat", SqlDbType.NVarChar, 20, tat),
+				ParamSet.Add4Sql("@contents", SqlDbType.NVarChar, 1000, contents),
+				ParamSet.Add4Sql("@reason", SqlDbType.NVarChar, 1000, reason),
+				ParamSet.Add4Sql("@reasonc", SqlDbType.NVarChar, 200, reasonC),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 1000, description),
+				ParamSet.Add4Sql("@etc", SqlDbType.NVarChar, 50, etc),
+				ParamSet.Add4Sql("@memo1", SqlDbType.NVarChar, 1000, memo1),
+				ParamSet.Add4Sql("@memo2", SqlDbType.NVarChar, 1000, memo2),
+				ParamSet.Add4Sql("@cgid", SqlDbType.VarChar, 20, cgId),
+				ParamSet.Add4Sql("@cgnm", SqlDbType.NVarChar, 50, cgNm),
+				ParamSet.Add4Sql("@cgdptid", SqlDbType.VarChar, 20, cgDptId),
+				ParamSet.Add4Sql("@cgdpt", SqlDbType.NVarChar, 50, cgDpt),
+				ParamSet.Add4Sql("@currentid", SqlDbType.VarChar, 20, currentId),
+				ParamSet.Add4Sql("@currentdn", SqlDbType.NVarChar, 50, currentDn),
+				ParamSet.Add4Sql("@currentdeptid", SqlDbType.VarChar, 20, currentDeptId),
+				ParamSet.Add4Sql("@currentdept", SqlDbType.NVarChar, 50, currentDept),
+				ParamSet.Add4Sql("@etcfield", SqlDbType.NVarChar, 2000, etcField)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// VOC 정보 불러오기
+		/// </summary>
+		/// <param name="regId"></param>
+		/// <returns></returns>
+		public DataSet GetVOC(long regId)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strQuery = "SELECT * FROM " + strFormDB + ".admin.REGISTER_VOC (NOLOCK) WHERE REGID = @regid";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@regid", SqlDbType.BigInt, 2, regId)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+		#endregion
 	}
 }
