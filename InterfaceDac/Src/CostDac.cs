@@ -354,7 +354,6 @@ namespace ZumNet.DAL.InterfaceDac
         /// <summary>
         /// 기준임율 저장
         /// </summary>
-        /// <param name="cn"></param>
         /// <param name="regId"></param>
         /// <param name="stdDt"></param>
         /// <param name="xcls"></param>
@@ -363,7 +362,7 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="userDn"></param>
         /// <param name="userDeptId"></param>
         /// <param name="userDept"></param>
-        public int InsertSTDPAY(object cn, int regId, string stdDt, string xcls, string state, string userId, string userDn, string userDeptId, string userDept)
+        public int InsertSTDPAY(int regId, string stdDt, string xcls, string state, string userId, string userDn, string userDeptId, string userDept)
         {
             int iReturn = 0;
 
