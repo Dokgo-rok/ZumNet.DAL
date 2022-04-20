@@ -555,6 +555,31 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 지직관리 공유자 읽음 설정
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="folderID"></param>
+		/// <param name="userID"></param>
+		/// <param name="messageID"></param>
+		public void SetKmsState(string xfAlias, int folderID, int userID, string messageID)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 33, messageID),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_KmsSetState", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
 		/// 파일 및 이미지에 대한 PH_FILE_REPOSITORY의 PREFIX값을 변경
 		/// </summary>
 		/// <param name="prefix"></param>
