@@ -2720,6 +2720,29 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// PH_XFORM_REGISTRANT 해당 메시지 값 삭제
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		public void DeleteXFormRegistrant(string xfAlias, string messageID)
+		{
+			string strQuery = "DELETE admin.PH_XFORM_REGISTRANT WHERE XFAlias = @xfalias AND MessageID = @messageid";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
 		/// 최초 PH_LINKED_DOC 테이블 값 저장
 		/// </summary>
 		/// <param name="xfAlias"></param>
