@@ -1372,5 +1372,307 @@ WHERE WnID IN (" + wnIDs + ")";
 			return dsReturn;
 		}
 		#endregion
+
+		#region [교육관리]
+		/// <summary>
+		/// 교육 메인 저장
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="lcmId"></param>
+		/// <param name="stdYear"></param>
+		/// <param name="applId"></param>
+		/// <param name="applDeptId"></param>
+		/// <param name="applDN"></param>
+		/// <param name="applEmpNo"></param>
+		/// <param name="applGrade"></param>
+		/// <param name="applDept"></param>
+		/// <param name="applCorp"></param>
+		/// <param name="clsDN1"></param>
+		/// <param name="clsDN2"></param>
+		/// <param name="clsDN3"></param>
+		/// <param name="clsDN4"></param>
+		/// <param name="clsDN5"></param>
+		/// <param name="clsCD1"></param>
+		/// <param name="clsCD2"></param>
+		/// <param name="clsCD3"></param>
+		/// <param name="clsCD4"></param>
+		/// <param name="clsCD5"></param>
+		/// <param name="courseId"></param>
+		/// <param name="instId"></param>
+		/// <param name="courseDN"></param>
+		/// <param name="instDN"></param>
+		/// <param name="place"></param>
+		/// <param name="fromDate"></param>
+		/// <param name="toDate"></param>
+		/// <param name="durDay"></param>
+		/// <param name="durTime"></param>
+		/// <param name="point"></param>
+		/// <param name="cost"></param>
+		/// <param name="contents"></param>
+		/// <param name="summary"></param>
+		/// <param name="remark"></param>
+		/// <param name="currentId"></param>
+		/// <param name="currentDN"></param>
+		/// <param name="currentDeptId"></param>
+		/// <param name="currentDept"></param>
+		public void SetLCM(string mode, int lcmId, string stdYear
+							, string applId, string applDeptId, string applDN, string applEmpNo, string applGrade, string applDept, string applCorp
+							, string clsDN1, string clsDN2, string clsDN3, string clsDN4, string clsDN5
+							, string clsCD1, string clsCD2, string clsCD3, string clsCD4, string clsCD5
+							, string courseId, int instId, string courseDN, string instDN, string place
+							, string fromDate, string toDate, string durDay, string durTime, string point
+							, string cost, string contents, string summary, string remark
+							, int currentId, string currentDN, int currentDeptId, string currentDept)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLCM";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@lcmid", SqlDbType.Int, 4, lcmId),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.NVarChar, 20, stdYear),
+				ParamSet.Add4Sql("@applid", SqlDbType.NVarChar, 30, applId),
+				ParamSet.Add4Sql("@appldeptid", SqlDbType.NVarChar, 30, applDeptId),
+				ParamSet.Add4Sql("@appldn", SqlDbType.NVarChar, 100, applDN),
+				ParamSet.Add4Sql("@applempno", SqlDbType.NVarChar, 50, applEmpNo),
+				ParamSet.Add4Sql("@applgrade", SqlDbType.NVarChar, 50, applGrade),
+				ParamSet.Add4Sql("@appldept", SqlDbType.NVarChar, 100, applDept),
+				ParamSet.Add4Sql("@applcorp", SqlDbType.NVarChar, 100, applCorp),
+				ParamSet.Add4Sql("@clsdn1", SqlDbType.NVarChar, 50, clsDN1),
+				ParamSet.Add4Sql("@clsdn2", SqlDbType.NVarChar, 50, clsDN2),
+				ParamSet.Add4Sql("@clsdn3", SqlDbType.NVarChar, 50, clsDN3),
+				ParamSet.Add4Sql("@clsdn4", SqlDbType.NVarChar, 50, clsDN4),
+				ParamSet.Add4Sql("@clsdn5", SqlDbType.NVarChar, 50, clsDN5),
+				ParamSet.Add4Sql("@clscd1", SqlDbType.NVarChar, 20, clsCD1),
+				ParamSet.Add4Sql("@clscd2", SqlDbType.NVarChar, 20, clsCD2),
+				ParamSet.Add4Sql("@clscd3", SqlDbType.NVarChar, 20, clsCD3),
+				ParamSet.Add4Sql("@clscd4", SqlDbType.NVarChar, 20, clsCD4),
+				ParamSet.Add4Sql("@clscd5", SqlDbType.NVarChar, 20, clsCD5),
+				ParamSet.Add4Sql("@courseid", SqlDbType.Int, 4, courseId), //0
+				ParamSet.Add4Sql("@instid", SqlDbType.Int, 4, instId), //0
+				ParamSet.Add4Sql("@coursedn", SqlDbType.NVarChar, 200, courseDN),
+				ParamSet.Add4Sql("@instdn", SqlDbType.NVarChar, 100, instDN),
+				ParamSet.Add4Sql("@place", SqlDbType.NVarChar, 200, place),				
+				ParamSet.Add4Sql("@fromdate", SqlDbType.NVarChar, 20, fromDate),
+				ParamSet.Add4Sql("@todate", SqlDbType.NVarChar, 20, toDate),
+				ParamSet.Add4Sql("@durday", SqlDbType.NVarChar, 20, durDay),
+				ParamSet.Add4Sql("@durtime", SqlDbType.NVarChar, 20, durTime),
+				ParamSet.Add4Sql("@point", SqlDbType.NVarChar, 20, point),
+				ParamSet.Add4Sql("@cost", SqlDbType.NVarChar, 20, cost),
+				ParamSet.Add4Sql("@contents", SqlDbType.NVarChar, 2000, contents),
+				ParamSet.Add4Sql("@summary", SqlDbType.NVarChar, 1000, summary),
+				ParamSet.Add4Sql("@remark", SqlDbType.NVarChar, 2000, remark),
+				ParamSet.Add4Sql("@currentid", SqlDbType.Int, 4, currentId),
+				ParamSet.Add4Sql("@currentdn", SqlDbType.NVarChar, 50, currentDN),
+				ParamSet.Add4Sql("@currentdeptid", SqlDbType.Int, 4, currentDeptId),
+				ParamSet.Add4Sql("@currentdept", SqlDbType.NVarChar, 50, currentDept)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 교육과정 저장, 변경
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="courseId"></param>
+		/// <param name="stdYear"></param>
+		/// <param name="clsDN1"></param>
+		/// <param name="clsDN2"></param>
+		/// <param name="clsDN3"></param>
+		/// <param name="clsDN4"></param>
+		/// <param name="clsDN5"></param>
+		/// <param name="clsCD1"></param>
+		/// <param name="clsCD2"></param>
+		/// <param name="clsCD3"></param>
+		/// <param name="clsCD4"></param>
+		/// <param name="clsCD5"></param>
+		/// <param name="courseDN"></param>
+		/// <param name="instId"></param>
+		/// <param name="instDN"></param>
+		/// <param name="place"></param>
+		/// <param name="csOrder"></param>
+		/// <param name="fromDate"></param>
+		/// <param name="toDate"></param>
+		/// <param name="fromTime"></param>
+		/// <param name="toTime"></param>
+		/// <param name="durDay"></param>
+		/// <param name="durTime"></param>
+		/// <param name="point"></param>
+		/// <param name="limit"></param>
+		/// <param name="stayYN"></param>
+		/// <param name="mealYN"></param>
+		/// <param name="cost1"></param>
+		/// <param name="cost2"></param>
+		/// <param name="cost3"></param>
+		/// <param name="cost4"></param>
+		/// <param name="cost5"></param>
+		/// <param name="instructorId"></param>
+		/// <param name="instructor"></param>
+		/// <param name="instructorInfo1"></param>
+		/// <param name="instructorInfo2"></param>
+		/// <param name="instructorInfo3"></param>
+		/// <param name="contents"></param>
+		/// <param name="etc"></param>
+		/// <param name="startDate"></param>
+		/// <param name="endDate"></param>
+		/// <param name="currentId"></param>
+		/// <param name="currentDN"></param>
+		/// <param name="currentDeptId"></param>
+		/// <param name="currentDept"></param>
+		/// <param name="isFile"></param>
+		/// <param name="fileInfo"></param>
+		public void SetLCMCOURSE(string mode, int courseId, string stdYear
+							, string clsDN1, string clsDN2, string clsDN3, string clsDN4, string clsDN5
+							, string clsCD1, string clsCD2, string clsCD3, string clsCD4, string clsCD5
+							, string courseDN, int instId, string instDN, string place, int csOrder
+							, string fromDate, string toDate, string fromTime, string toTime, string durDay, string durTime, string point, string limit
+							, string stayYN, string mealYN, string cost1, string cost2, string cost3, string cost4, string cost5
+							, string instructorId, string instructor, string instructorInfo1, string instructorInfo2, string instructorInfo3
+							, string contents, string etc, string startDate, string endDate
+							, int currentId, string currentDN, int currentDeptId, string currentDept, string isFile, string fileInfo)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLCMCOURSE";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@courseid", SqlDbType.Int, 4, courseId),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.NVarChar, 20, stdYear),
+				ParamSet.Add4Sql("@clsdn1", SqlDbType.NVarChar, 50, clsDN1),
+				ParamSet.Add4Sql("@clsdn2", SqlDbType.NVarChar, 50, clsDN2),
+				ParamSet.Add4Sql("@clsdn3", SqlDbType.NVarChar, 50, clsDN3),
+				ParamSet.Add4Sql("@clsdn4", SqlDbType.NVarChar, 50, clsDN4),
+				ParamSet.Add4Sql("@clsdn5", SqlDbType.NVarChar, 50, clsDN5),
+				ParamSet.Add4Sql("@clscd1", SqlDbType.NVarChar, 20, clsCD1),
+				ParamSet.Add4Sql("@clscd2", SqlDbType.NVarChar, 20, clsCD2),
+				ParamSet.Add4Sql("@clscd3", SqlDbType.NVarChar, 20, clsCD3),
+				ParamSet.Add4Sql("@clscd4", SqlDbType.NVarChar, 20, clsCD4),
+				ParamSet.Add4Sql("@clscd5", SqlDbType.NVarChar, 20, clsCD5),
+				ParamSet.Add4Sql("@coursedn", SqlDbType.NVarChar, 200, courseDN),
+				ParamSet.Add4Sql("@instid", SqlDbType.Int, 4, instId), //0
+				ParamSet.Add4Sql("@instdn", SqlDbType.NVarChar, 100, instDN),
+				ParamSet.Add4Sql("@place", SqlDbType.NVarChar, 200, place),
+				ParamSet.Add4Sql("@csorder", SqlDbType.SmallInt, 2, csOrder), //차수, 1
+				ParamSet.Add4Sql("@fromdate", SqlDbType.NVarChar, 20, fromDate),
+				ParamSet.Add4Sql("@todate", SqlDbType.NVarChar, 20, toDate),
+				ParamSet.Add4Sql("@formtime", SqlDbType.NVarChar, 20, fromTime),
+				ParamSet.Add4Sql("@totime", SqlDbType.NVarChar, 20, toTime),
+				ParamSet.Add4Sql("@durday", SqlDbType.NVarChar, 20, durDay),
+				ParamSet.Add4Sql("@durtime", SqlDbType.NVarChar, 20, durTime),
+				ParamSet.Add4Sql("@point", SqlDbType.NVarChar, 20, point),
+				ParamSet.Add4Sql("@limit", SqlDbType.NVarChar, 20, limit),
+				ParamSet.Add4Sql("@stayyn", SqlDbType.NVarChar, 20, stayYN),
+				ParamSet.Add4Sql("@mealyn", SqlDbType.NVarChar, 20, mealYN),
+				ParamSet.Add4Sql("@cost1", SqlDbType.NVarChar, 20, cost1),
+				ParamSet.Add4Sql("@cost2", SqlDbType.NVarChar, 20, cost2),
+				ParamSet.Add4Sql("@cost3", SqlDbType.NVarChar, 20, cost3),
+				ParamSet.Add4Sql("@cost4", SqlDbType.NVarChar, 20, cost4),
+				ParamSet.Add4Sql("@cost5", SqlDbType.NVarChar, 20, cost5),
+				ParamSet.Add4Sql("@instructorid", SqlDbType.VarChar, 50, instructorId),
+				ParamSet.Add4Sql("@instructor", SqlDbType.NVarChar, 50, instructor),
+				ParamSet.Add4Sql("@instructorinfo1", SqlDbType.NVarChar, 100, instructorInfo1),
+				ParamSet.Add4Sql("@instructorinfo2", SqlDbType.NVarChar, 100, instructorInfo2),
+				ParamSet.Add4Sql("@instructorinfo3", SqlDbType.NVarChar, 100, instructorInfo3),
+				ParamSet.Add4Sql("@contents", SqlDbType.NVarChar, 2000, contents),
+				ParamSet.Add4Sql("@etc", SqlDbType.NVarChar, 500, etc),
+				ParamSet.Add4Sql("@startdate", SqlDbType.NVarChar, 20, startDate),
+				ParamSet.Add4Sql("@enddate", SqlDbType.NVarChar, 20, endDate),
+				ParamSet.Add4Sql("@currentid", SqlDbType.Int, 4, currentId),
+				ParamSet.Add4Sql("@currentdn", SqlDbType.NVarChar, 50, currentDN),
+				ParamSet.Add4Sql("@currentdeptid", SqlDbType.Int, 4, currentDeptId),
+				ParamSet.Add4Sql("@currentdept", SqlDbType.NVarChar, 50, currentDept),
+				ParamSet.Add4Sql("@isfile", SqlDbType.Char, 1, isFile),
+				ParamSet.Add4Sql("@fileinfo", SqlDbType.NVarChar, -1, fileInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 교육과정 삭제, 복원
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="courseId"></param>
+		/// <param name="currentId"></param>
+		/// <param name="currentDN"></param>
+		/// <param name="currentDeptId"></param>
+		/// <param name="currentDept"></param>
+		public void DeleteLCMCOURSE(string mode, int courseId, int currentId, string currentDN, int currentDeptId, string currentDept)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLCMCOURSE_DEL";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@courseid", SqlDbType.Int, 4, courseId),
+				ParamSet.Add4Sql("@currentid", SqlDbType.Int, 4, currentId),
+				ParamSet.Add4Sql("@currentdn", SqlDbType.NVarChar, 50, currentDN),
+				ParamSet.Add4Sql("@currentdeptid", SqlDbType.Int, 4, currentDeptId),
+				ParamSet.Add4Sql("@currentdept", SqlDbType.NVarChar, 50, currentDept)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 사내교육강사 정보 관리
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="stdYear"></param>
+		/// <param name="instructorId"></param>
+		/// <param name="ePoint"></param>
+		/// <param name="eOpinion"></param>
+		/// <param name="isApproved"></param>
+		/// <param name="currentId"></param>
+		/// <param name="currentDN"></param>
+		/// <param name="currentDeptId"></param>
+		/// <param name="currentDept"></param>
+		public void SetLCMINSTRUCTOR(string mode, string stdYear, string instructorId, string ePoint, string eOpinion
+						, string isApproved, int currentId, string currentDN, int currentDeptId, string currentDept)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLCMINSTRUCTOR";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.NVarChar, 20, stdYear),
+				ParamSet.Add4Sql("@instructorid", SqlDbType.VarChar, 30, instructorId),
+				ParamSet.Add4Sql("@epoint", SqlDbType.NVarChar, 20, ePoint),
+				ParamSet.Add4Sql("@eopinion", SqlDbType.NVarChar, 500, eOpinion),
+				ParamSet.Add4Sql("@isapproved", SqlDbType.Char, 1, isApproved),
+				ParamSet.Add4Sql("@currentid", SqlDbType.Int, 4, currentId),
+				ParamSet.Add4Sql("@currentdn", SqlDbType.NVarChar, 50, currentDN),
+				ParamSet.Add4Sql("@currentdeptid", SqlDbType.Int, 4, currentDeptId),
+				ParamSet.Add4Sql("@currentdept", SqlDbType.NVarChar, 50, currentDept)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
 	}
 }
