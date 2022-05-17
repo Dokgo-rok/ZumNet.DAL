@@ -92,7 +92,7 @@ namespace ZumNet.DAL.ServiceDac
 
 			using (DbBase db = new DbBase())
 			{
-				strReturn = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				//bUsable = pData.GetParamValue("@bUsable").ToString();
 			}
 
