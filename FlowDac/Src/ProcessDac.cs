@@ -296,7 +296,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DefList"];
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
 			}
 			catch (Exception ex)
 			{
@@ -1462,7 +1462,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["DeputyParticipant"];
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
 			}
 			catch (Exception ex)
             {
@@ -2191,7 +2191,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["ActivityParticipants"];
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
 			}
 			catch (Exception ex)
 			{
@@ -2356,7 +2356,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables["ActivityParticipants"];
+				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
 			}
 			catch (Exception ex)
 			{
