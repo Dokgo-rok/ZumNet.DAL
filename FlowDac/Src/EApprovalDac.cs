@@ -1786,7 +1786,7 @@ namespace ZumNet.DAL.FlowDac
         {
             SqlParameter[] parameters = new SqlParameter[]
             {
-                ParamSet.Add4Sql("@mode", SqlDbType.VarChar, 30, mode),
+                ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
                 ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
                 ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
                 ParamSet.Add4Sql("@viewer", SqlDbType.Int, 4, viewer)

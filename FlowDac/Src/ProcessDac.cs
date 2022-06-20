@@ -1404,8 +1404,8 @@ namespace ZumNet.DAL.FlowDac
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
 				ParamSet.Add4Sql("@wid", SqlDbType.VarChar, 33, wID),
-				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, signStatus),
-				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 100, comment)
+				ParamSet.Add4Sql("@signstatus", SqlDbType.Int, 4, signStatus),
+				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 1000, comment)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFSetCurrentWorkItemOnlyOut", "", parameters);
@@ -1462,7 +1462,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+				if (ds != null && ds.Tables.Count > 1) dtReturn = ds.Tables[0]; //Output 있는 경우 테이블수 주위 !!
 			}
 			catch (Exception ex)
             {
@@ -1569,7 +1569,8 @@ namespace ZumNet.DAL.FlowDac
 
 			SqlParameter[] parameters = new SqlParameter[]
 			{
-				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID)
+				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
+				ParamSet.Add4Sql("@return_notice", SqlDbType.Char, 2, ParameterDirection.Output)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFChangeProcessStateComplete", "", parameters);
@@ -1621,7 +1622,7 @@ namespace ZumNet.DAL.FlowDac
 			{
 				ParamSet.Add4Sql("@oid", SqlDbType.Int, 4, oID),
 				ParamSet.Add4Sql("@wids", SqlDbType.VarChar, 3000, wIDs),
-				ParamSet.Add4Sql("@point", SqlDbType.VarChar, 20, optionValue)
+				ParamSet.Add4Sql("@option", SqlDbType.VarChar, 500, optionValue)
 			};
 
 			ParamData pData = new ParamData("admin.ph_up_BFChangeViewStateComplete", "", parameters);
@@ -3267,7 +3268,7 @@ namespace ZumNet.DAL.FlowDac
 					ds = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 				}
 
-				if (ds != null && ds.Tables.Count > 0) dtReturn = ds.Tables[0];
+				if (ds != null && ds.Tables.Count > 1) dtReturn = ds.Tables[0]; //Output 있는 경우 테이블수 주위 !!
 			}
 			catch (Exception ex)
 			{
@@ -4036,6 +4037,38 @@ namespace ZumNet.DAL.FlowDac
 			}
 
 			return rowReturn;
+		}
+
+		/// <summary>
+		/// 배포목록 가져오기
+		/// </summary>
+		/// <param name="msgId"></param>
+		/// <param name="actRole"></param>
+		/// <returns></returns>
+		public DataSet SelectWorkItemCabinet(int msgId, string actRole)
+		{
+			DataSet dsReturn = null;
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@actrole", SqlDbType.VarChar, 50, actRole)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_BFSelectWorkItemCabinet", "", parameters);
+
+			try
+			{
+				using (DbBase db = new DbBase())
+				{
+					dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				}
+			}
+			catch (Exception ex)
+			{
+				Framework.Exception.ExceptionManager.ThrowException(ex, System.Reflection.MethodInfo.GetCurrentMethod(), "", "");
+			}
+
+			return dsReturn;
 		}
 
 		/// <summary>

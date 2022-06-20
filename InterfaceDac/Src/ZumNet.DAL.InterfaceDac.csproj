@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CostDac.cs" />
+    <Compile Include="ExecuteDac.cs" />
     <Compile Include="InterfaceDac.cs" />
     <Compile Include="OracleERP.cs" />
     <Compile Include="PQmDac.cs" />

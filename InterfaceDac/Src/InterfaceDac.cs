@@ -1140,7 +1140,7 @@ END
 
 			using (DbBase db = new DbBase())
 			{
-				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 		}
 
