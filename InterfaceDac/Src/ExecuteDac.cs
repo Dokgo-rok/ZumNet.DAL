@@ -80,6 +80,50 @@ namespace ZumNet.DAL.InterfaceDac
 		}
         #endregion
 
+        #region [문자열 반환]
+        /// <summary>
+        /// 문자열 반환 - 프로시저
+        /// </summary>
+        /// <param name="txRquest"></param>
+        /// <param name="sp"></param>
+        /// <param name="timeout"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string ExecuteScalarProcedure(bool txRquest, string sp, int timeout, SqlParameter[] parameters)
+        {
+            string strReturn = "";
+            ParamData pData = new ParamData(sp, "", timeout, parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                if (txRquest) strReturn = db.ExecuteScalarTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                else strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+            return strReturn;
+        }
+
+        /// <summary>
+        /// 문자열 반환 - 쿼리스트링
+        /// </summary>
+        /// <param name="txRquest"></param>
+        /// <param name="query"></param>
+        /// <param name="timeout"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public string ExecuteScalarQuery(bool txRquest, string query, int timeout, SqlParameter[] parameters)
+        {
+            string strReturn = "";
+            ParamData pData = new ParamData(query, "text", timeout, parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                if (txRquest) strReturn = db.ExecuteScalarTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+                else strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+            return strReturn;
+        }
+        #endregion
+
         #region [NonQuery 실행]
         /// <summary>
         /// NonQuery 실행 - 프로시저
