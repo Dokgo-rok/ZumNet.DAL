@@ -2559,5 +2559,62 @@ namespace ZumNet.DAL.ServiceDac
 
 			return dsReturn;
 		}
+
+		#region []
+		/// <summary>
+		/// 합검색용 검색리스트
+		/// </summary>
+		/// <param name="dnId"></param>
+		/// <param name="fdId"></param>
+		/// <param name="actId"></param>
+		/// <param name="parentAcl"></param>
+		/// <param name="viewer"></param>
+		/// <param name="ctId"></param>
+		/// <param name="admin"></param>
+		/// <param name="page"></param>
+		/// <param name="count"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchSDate"></param>
+		/// <param name="searchEDate"></param>
+		/// <returns></returns>
+		public DataSet SearchTotalXFormList(int dnId, int fdId, int actId, string parentAcl, int viewer, int ctId, string admin, int page, int count
+										, string sortCol, string sortType, string searchCol, string searchText, string searchSDate, string searchEDate)
+		{
+			DataSet dsReturn = null;
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@dn_id", SqlDbType.TinyInt, dnId),
+				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, fdId),
+				ParamSet.Add4Sql("@activity_id", SqlDbType.Int, actId),
+				ParamSet.Add4Sql("@parentACL", SqlDbType.VarChar, 20, parentAcl),
+				ParamSet.Add4Sql("@viewer", SqlDbType.Int, viewer),
+				ParamSet.Add4Sql("@ctid", SqlDbType.Int, ctId),
+				ParamSet.Add4Sql("@bAdminTool", SqlDbType.Char, 1, admin),
+				ParamSet.Add4Sql("@page", SqlDbType.Int, page),
+				ParamSet.Add4Sql("@count", SqlDbType.Int, count),
+				ParamSet.Add4Sql("@sortCol", SqlDbType.VarChar, 20, sortCol),
+				ParamSet.Add4Sql("@sortType", SqlDbType.VarChar, 20, sortType),
+				ParamSet.Add4Sql("@searchCol", SqlDbType.VarChar, 20, searchCol),
+				ParamSet.Add4Sql("@searchText", SqlDbType.VarChar, 200, searchText),
+				ParamSet.Add4Sql("@searchStartDate", SqlDbType.VarChar, 10, searchSDate),
+				ParamSet.Add4Sql("@searchEndDate", SqlDbType.VarChar, 10, searchEDate),
+
+				ParamSet.Add4Sql("@totalMessages", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_TotalSearchGetXFormList", "", "TotalSearch", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+		#endregion
 	}
 }
