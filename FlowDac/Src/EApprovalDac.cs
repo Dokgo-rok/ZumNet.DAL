@@ -1737,7 +1737,7 @@ namespace ZumNet.DAL.FlowDac
             {
                 ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
                 ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
-                ParamSet.Add4Sql("@actor", SqlDbType.Int, 4, actorID)
+                ParamSet.Add4Sql("@editor", SqlDbType.Int, 4, actorID)
             };
 
             ParamData pData = new ParamData("admin.ph_up_InsertEventEdit", "", parameters);
@@ -2490,7 +2490,7 @@ namespace ZumNet.DAL.FlowDac
             string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
 
             if (strFormDB != "") strFormDB += ".";
-            string strSP = strFormDB + "admin.ph_up_SelectFormDataNotEA";
+            string strSP = strFormDB + "admin.ph_up_InsertFormDataNotEA";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
