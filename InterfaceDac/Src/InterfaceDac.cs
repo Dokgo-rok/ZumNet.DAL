@@ -472,25 +472,25 @@ namespace ZumNet.DAL.InterfaceDac
 
 			return dsReturn;
 		}
-		#endregion
+        #endregion
 
-		#region [비동기 ERP 연동 및 대장 등록]
-		/// <summary>
-		/// ERP 연동 호출
-		/// </summary>
-		/// <param name="ifId"></param>
-		/// <param name="dnID"></param>
-		/// <param name="moduleID"></param>
-		/// <param name="companyCode"></param>
-		/// <param name="ifDB"></param>
-		/// <param name="ekpDB"></param>
-		/// <param name="formDB"></param>
-		/// <param name="formTable"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="formID"></param>
-		/// <param name="msgID"></param>
-		/// <param name="oID"></param>
-		public void InvokeErpProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB, string ekpDB
+        #region [비동기 ERP 연동 및 대장 등록]
+        /// <summary>
+        /// ERP 연동 호출
+        /// </summary>
+        /// <param name="ifId"></param>
+        /// <param name="dnID"></param>
+        /// <param name="moduleID"></param>
+        /// <param name="companyCode"></param>
+        /// <param name="ifDB"></param>
+        /// <param name="ekpDB"></param>
+        /// <param name="formDB"></param>
+        /// <param name="formTable"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="formID"></param>
+        /// <param name="msgID"></param>
+        /// <param name="oID"></param>
+        public void InvokeErpProcedure(string ifId, int dnID, string moduleID, string companyCode, string ifDB, string ekpDB
 									, string formDB, string formTable, string xfAlias, string formID, string msgID, string oID)
 		{
 
@@ -1001,6 +1001,132 @@ namespace ZumNet.DAL.InterfaceDac
 				ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 200, subject),
 				ParamSet.Add4Sql("@content", SqlDbType.NVarChar, 4000, content),
 				ParamSet.Add4Sql("@url", SqlDbType.VarChar, 500, url)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
+
+		#region [집계 항목 변경 처리]
+		/// <summary>
+		/// 출장현황 일자 변경
+		/// </summary>
+		/// <param name="msgId"></param>
+		/// <param name="step"></param>
+		/// <param name="urId"></param>
+		/// <param name="deptId"></param>
+		/// <param name="urName"></param>
+		/// <param name="deptName"></param>
+		/// <param name="tripFrom"></param>
+		/// <param name="tripTo"></param>
+		/// <param name="reason"></param>
+		public void InsertRegisterBIZTRIP(int msgId, int step, int urId, int deptId, string urName, string deptName, string tripFrom, string tripTo, string reason)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_InsertRegisterBIZTRIP";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step),
+				ParamSet.Add4Sql("@registrantid", SqlDbType.Int, 4, urId),
+				ParamSet.Add4Sql("@registrantdeptid", SqlDbType.Int, 4, deptId),
+				ParamSet.Add4Sql("@registrant", SqlDbType.NVarChar, 100, urName),
+				ParamSet.Add4Sql("@registrantdept", SqlDbType.NVarChar, 100, deptName),
+				ParamSet.Add4Sql("@tripfrom", SqlDbType.VarChar, 10, tripFrom),
+				ParamSet.Add4Sql("@tripto", SqlDbType.VarChar, 10, tripTo),
+				ParamSet.Add4Sql("@reason", SqlDbType.NVarChar, 200, reason)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 출장현황 일자 변경 정보 가져오기
+		/// </summary>
+		/// <param name="msgId"></param>
+		/// <param name="step"></param>
+		/// <returns></returns>
+		public DataSet SelectRegisterBIZTRIP(int msgId, int step)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SelectRegisterBIZTRIP";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@step", SqlDbType.Int, 4, step)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "RegisterBIZTRIP", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 집계 register_ 테이블 변경되는 필드 정보를 가져오기
+		/// </summary>
+		/// <param name="formTable"></param>
+		/// <param name="msgId"></param>
+		/// <param name="regId"></param>
+		/// <returns></returns>
+		public DataSet SelectRegisterChangeData(string formTable, int msgId, int regId)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SelectRegisterChangeData";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@formtable", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "RegisterChangeData", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 집계 register_ 테이블 데이터 변경
+		/// </summary>
+		/// <param name="formTable"></param>
+		/// <param name="msgId"></param>
+		/// <param name="regId"></param>
+		/// <param name="formData"></param>
+		public void SetRegisterChangeData(string formTable, int msgId, int regId, string formData)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterChangeData";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@formtable", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, msgId),
+				ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId),
+				ParamSet.Add4Sql("@reason", SqlDbType.NVarChar, -1, formData)
 			};
 
 			ParamData pData = new ParamData(strSP, "", parameters);
