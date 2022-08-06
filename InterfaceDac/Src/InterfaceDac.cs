@@ -1136,6 +1136,669 @@ namespace ZumNet.DAL.InterfaceDac
 				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
 		}
+
+		/// <summary>
+		/// 연차관리대장
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="empId"></param>
+		/// <param name="seq"></param>
+		/// <param name="userDn"></param>
+		/// <param name="orgInfo"></param>
+		/// <param name="inDate"></param>
+		/// <param name="numberA"></param>
+		/// <param name="numberB"></param>
+		/// <param name="numberC"></param>
+		/// <returns></returns>
+		public string SetRegisterLEAVE(string stdYear, string empId, string seq, string userDn, string orgInfo, string inDate, string numberA, string numberB, string numberC)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLEAVE";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar,100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@logonid", SqlDbType.VarChar, 30, empId),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@userdn", SqlDbType.NVarChar, 50, userDn),
+				ParamSet.Add4Sql("@orginfo", SqlDbType.NVarChar, 100, orgInfo),
+				ParamSet.Add4Sql("@indate", SqlDbType.VarChar, 10, inDate),
+				ParamSet.Add4Sql("@numbera", SqlDbType.VarChar, 10, numberA),
+				ParamSet.Add4Sql("@numberb", SqlDbType.VarChar, 10, numberB),
+				ParamSet.Add4Sql("@numberc", SqlDbType.VarChar, 10, numberC),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 휴가 설정
+		/// </summary>
+		/// <param name="empId"></param>
+		/// <param name="leaveDate"></param>
+		/// <param name="leaveClass"></param>
+		/// <param name="fromTime"></param>
+		/// <param name="leaveDn"></param>
+		/// <param name="isDel"></param>
+		/// <returns></returns>
+		public string SetRegisterLEAVEEVENT(string empId, string leaveDate, string leaveClass, string fromTime, string leaveDn, string isDel)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLEAVEEVENT";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@objecttype", SqlDbType.Char, 2, "UR"),
+				ParamSet.Add4Sql("@logonid", SqlDbType.VarChar, 30, empId),
+				ParamSet.Add4Sql("@leavedate", SqlDbType.VarChar, 10, leaveDate),
+				ParamSet.Add4Sql("@leaveclass", SqlDbType.NVarChar, 10, leaveClass),
+				ParamSet.Add4Sql("@fromtime", SqlDbType.VarChar, 5, fromTime),
+				ParamSet.Add4Sql("@leavedn", SqlDbType.NVarChar, 20, leaveDn),
+				ParamSet.Add4Sql("@isdel", SqlDbType.Char, 1, isDel),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 계획연차
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="empId"></param>
+		/// <param name="seq"></param>
+		/// <param name="userDn"></param>
+		/// <param name="orgInfo"></param>
+		/// <param name="inDate"></param>
+		/// <param name="numberA"></param>
+		/// <param name="numberB"></param>
+		/// <returns></returns>
+		public string SetRegisterLEAVEUSE(string stdYear, string empId, string seq, string userDn, string orgInfo, string inDate, string numberA, string numberB)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterLEAVEUSE";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@logonid", SqlDbType.VarChar, 30, empId),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@userdn", SqlDbType.NVarChar, 50, userDn),
+				ParamSet.Add4Sql("@orginfo", SqlDbType.NVarChar, 100, orgInfo),
+				ParamSet.Add4Sql("@indate", SqlDbType.VarChar, 10, inDate),
+				ParamSet.Add4Sql("@numbera", SqlDbType.VarChar, 10, numberA),
+				ParamSet.Add4Sql("@numberb", SqlDbType.VarChar, 10, numberB),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 계획휴가 설정
+		/// </summary>
+		/// <param name="empId"></param>
+		/// <param name="leaveDate"></param>
+		/// <param name="leaveClass"></param>
+		/// <param name="fromTime"></param>
+		/// <param name="leaveDn"></param>
+		/// <param name="isDel"></param>
+		/// <returns></returns>
+		public string SetRegisterLEAVEUSEEVENT(string empId, string leaveDate, string leaveClass, string fromTime, string leaveDn, string isDel)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.SetRegisterLEAVEUSEEVENT";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@objecttype", SqlDbType.Char, 2, "UR"),
+				ParamSet.Add4Sql("@empid", SqlDbType.VarChar, 30, empId),
+				ParamSet.Add4Sql("@leavedate", SqlDbType.VarChar, 10, leaveDate),
+				ParamSet.Add4Sql("@leaveclass", SqlDbType.NVarChar, 10, leaveClass),
+				ParamSet.Add4Sql("@fromtime", SqlDbType.VarChar, 5, fromTime),
+				ParamSet.Add4Sql("@leavedn", SqlDbType.NVarChar, 20, leaveDn),
+				ParamSet.Add4Sql("@isdel", SqlDbType.Char, 1, isDel),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 승진포인트
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="regId"></param>
+		/// <param name="desc"></param>
+		/// <param name="header"></param>
+		/// <param name="rowInfo"></param>
+		public void SetRegisterPROMOTIONPOINT(string mode, int regId, string desc, string header, string rowInfo)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterPROMOTIONPOINT";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 200, desc),
+				ParamSet.Add4Sql("@headername", SqlDbType.NText, header),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, rowInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 퇴근현황
+		/// </summary>
+		/// <param name="stdDept"></param>
+		/// <param name="stdPerson"></param>
+		/// <param name="logonId"></param>
+		/// <param name="stdDate"></param>
+		/// <param name="stdTime"></param>
+		/// <returns></returns>
+		public string SetRegisterINANDOUT(string stdDept, string stdPerson, string logonId, string stdDate, string stdTime)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterINANDOUT";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stddept", SqlDbType.NVarChar, 30, stdDept),
+				ParamSet.Add4Sql("@stdperson", SqlDbType.NVarChar, 30, stdPerson),
+				ParamSet.Add4Sql("@logonid", SqlDbType.NVarChar, 30, logonId),
+				ParamSet.Add4Sql("@stddate", SqlDbType.NVarChar, 30, stdDate),
+				ParamSet.Add4Sql("@stdtime", SqlDbType.NVarChar, 30, stdTime),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 유류현황
+		/// </summary>
+		/// <param name="stdDate"></param>
+		/// <param name="normal"></param>
+		/// <param name="gas"></param>
+		/// <param name="lpg"></param>
+		/// <returns></returns>
+		public string SetRegisterGAS(string stdDate, string normal, string gas, string lpg)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterGAS";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stddate", SqlDbType.NVarChar, 30, stdDate),
+				ParamSet.Add4Sql("@normal", SqlDbType.NVarChar, 30, normal),
+				ParamSet.Add4Sql("@gas", SqlDbType.NVarChar, 30, gas),
+				ParamSet.Add4Sql("@lpg", SqlDbType.NVarChar, 30, lpg),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 교육포인트
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="regId"></param>
+		/// <param name="desc"></param>
+		/// <param name="header"></param>
+		/// <param name="rowInfo"></param>
+		public void SetRegisterEDUCATIONPOINT(string mode, int regId, string desc, string header, string rowInfo)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterEDUCATIONPOINT";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 200, desc),
+				ParamSet.Add4Sql("@headername", SqlDbType.NText, header),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, rowInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 환율정보
+		/// </summary>
+		/// <param name="exDate"></param>
+		/// <param name="exType"></param>
+		/// <param name="exTypeDesc"></param>
+		/// <param name="currency01"></param>
+		/// <param name="currency02"></param>
+		/// <param name="currency03"></param>
+		/// <param name="currency04"></param>
+		/// <param name="currency05"></param>
+		/// <param name="currency06"></param>
+		/// <param name="currency07"></param>
+		/// <param name="currency08"></param>
+		/// <param name="currency09"></param>
+		/// <param name="currency10"></param>
+		/// <returns></returns>
+		public string SetRegisterEXCHANGEINFO(string exDate, string exType, string exTypeDesc, string currency01, string currency02, string currency03
+							, string currency04, string currency05, string currency06, string currency07, string currency08, string currency09, string currency10)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterEXCHANGEINFO";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@exdate", SqlDbType.VarChar, 10, exDate),
+				ParamSet.Add4Sql("@extype", SqlDbType.Char, 1, exType),
+				ParamSet.Add4Sql("@extypedesc", SqlDbType.NVarChar, 50, exTypeDesc),
+				ParamSet.Add4Sql("@currency01", SqlDbType.VarChar, 20, currency01),
+				ParamSet.Add4Sql("@currency02", SqlDbType.VarChar, 20, currency02),
+				ParamSet.Add4Sql("@currency03", SqlDbType.VarChar, 20, currency03),
+				ParamSet.Add4Sql("@currency04", SqlDbType.VarChar, 20, currency04),
+				ParamSet.Add4Sql("@currency05", SqlDbType.VarChar, 20, currency05),
+				ParamSet.Add4Sql("@currency06", SqlDbType.VarChar, 20, currency06),
+				ParamSet.Add4Sql("@currency07", SqlDbType.VarChar, 20, currency07),
+				ParamSet.Add4Sql("@currency08", SqlDbType.VarChar, 20, currency08),
+				ParamSet.Add4Sql("@currency09", SqlDbType.VarChar, 20, currency09),
+				ParamSet.Add4Sql("@currency10", SqlDbType.VarChar, 20, currency10),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 전화번호리스트
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="regId"></param>
+		/// <param name="desc"></param>
+		/// <param name="header"></param>
+		/// <param name="rowInfo"></param>
+		public void SetRegisterTELLNUMLIST(string mode, int regId, string desc, string header, string rowInfo)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterTELLNUMLIST";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 1, mode),
+				ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId),
+				ParamSet.Add4Sql("@description", SqlDbType.NVarChar, 200, desc),
+				ParamSet.Add4Sql("@headername", SqlDbType.NText, header),
+				ParamSet.Add4Sql("@xmlinfo", SqlDbType.NText, rowInfo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
+		/// 연봉
+		/// </summary>
+		/// <param name="stdYeaar"></param>
+		/// <param name="salaryType"></param>
+		/// <param name="empId"></param>
+		/// <param name="seq"></param>
+		/// <param name="userDn"></param>
+		/// <param name="orgInfo"></param>
+		/// <param name="inDate"></param>
+		/// <param name="contractDate"></param>
+		/// <param name="periodFrom"></param>
+		/// <param name="periodTo"></param>
+		/// <param name="payMonth"></param>
+		/// <param name="payTime"></param>
+		/// <param name="payA"></param>
+		/// <param name="payB"></param>
+		/// <param name="payC"></param>
+		/// <param name="payD"></param>
+		/// <param name="payE"></param>
+		/// <returns></returns>
+		public string SetRegisterSALARY(string stdYeaar, string salaryType, string empId, string seq, string userDn, string orgInfo, string inDate, string contractDate
+						, string periodFrom, string periodTo, string payMonth, string payTime, string payA, string payB, string payC, string payD, string payE)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterSALARY";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYeaar),
+				ParamSet.Add4Sql("@salarytype", SqlDbType.Char, 1, salaryType),
+				ParamSet.Add4Sql("@empid", SqlDbType.VarChar, 30, empId),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@userdn", SqlDbType.NVarChar, 50, userDn),
+				ParamSet.Add4Sql("@orginfo", SqlDbType.NVarChar, 100, orgInfo),
+				ParamSet.Add4Sql("@indate", SqlDbType.VarChar, 10, inDate),
+				ParamSet.Add4Sql("@contractdate", SqlDbType.VarChar, 10, contractDate),
+				ParamSet.Add4Sql("@periodfrom", SqlDbType.VarChar, 10, periodFrom),
+				ParamSet.Add4Sql("@periodto", SqlDbType.VarChar, 10, periodTo),
+				ParamSet.Add4Sql("@paymonth", SqlDbType.VarChar, 10, payMonth),
+				ParamSet.Add4Sql("@paytime", SqlDbType.VarChar, 10, payTime),
+				ParamSet.Add4Sql("@paya", SqlDbType.VarChar, 10, payA),
+				ParamSet.Add4Sql("@payb", SqlDbType.VarChar, 10, payB),
+				ParamSet.Add4Sql("@payc", SqlDbType.VarChar, 10, payC),
+				ParamSet.Add4Sql("@payd", SqlDbType.VarChar, 10, payD),
+				ParamSet.Add4Sql("@paye", SqlDbType.VarChar, 10, payE),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 윤리
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="logonId"></param>
+		/// <param name="seq"></param>
+		/// <param name="userDn"></param>
+		/// <param name="orgInfo"></param>
+		/// <returns></returns>
+		public string SetRegisterETHICAL(string stdYear, string logonId, string seq, string userDn, string orgInfo)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterETHICAL";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@logonid", SqlDbType.NVarChar, 30, logonId),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@userdn", SqlDbType.NVarChar, 50, userDn),
+				ParamSet.Add4Sql("@orginfo", SqlDbType.NVarChar, 100, orgInfo),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 근태관리
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="userID"></param>
+		/// <param name="stdDate"></param>
+		/// <param name="stdTime"></param>
+		/// <param name="status"></param>
+		/// <param name="ip"></param>
+		/// <param name="etc"></param>
+		/// <param name="reg"></param>
+		/// <returns></returns>
+		public string SetRegisterWORKSTATUS(string stdYear, string userID, string stdDate, string stdTime, string status, string ip, string etc, string reg)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterWORKSTATUS";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@stddate", SqlDbType.Char, 10, stdDate),
+				ParamSet.Add4Sql("@stdtime", SqlDbType.VarChar, 30, stdTime),
+				ParamSet.Add4Sql("@stdstatus", SqlDbType.Char, 1, status),
+				ParamSet.Add4Sql("@stdip", SqlDbType.VarChar, 20, ip),
+				ParamSet.Add4Sql("@stdetc", SqlDbType.VarChar, 30, etc),
+				ParamSet.Add4Sql("@stdreg", SqlDbType.VarChar, 30, reg),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 사용자현황
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="userID"></param>
+		/// <param name="handPhone"></param>
+		/// <param name="emgPhone"></param>
+		/// <param name="comPhone"></param>
+		/// <param name="stdWork"></param>
+		/// <param name="startDate"></param>
+		/// <param name="endDate"></param>
+		/// <returns></returns>
+		public string SetRegisterRegisteruserinfo(string stdYear, string userID, string handPhone, string emgPhone, string comPhone, string stdWork, string startDate, string endDate)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterRegisteruserinfo";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@userid", SqlDbType.Int, 4, userID),
+				ParamSet.Add4Sql("@stdhandphone", SqlDbType.VarChar, 20, handPhone),
+				ParamSet.Add4Sql("@stdemgphone", SqlDbType.VarChar, 20, emgPhone),
+				ParamSet.Add4Sql("@stdcomphone", SqlDbType.VarChar, 20, comPhone),
+				ParamSet.Add4Sql("@stdwork", SqlDbType.VarChar, 20, stdWork),
+				ParamSet.Add4Sql("@stdstrdate", SqlDbType.Char, 10, startDate),
+				ParamSet.Add4Sql("@stdenddate", SqlDbType.Char, 10, endDate),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 사용자현황
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="userID"></param>
+		/// <param name="school"></param>
+		/// <returns></returns>
+		public string SetRegisterRegisteruserinfoDETAIL(string stdYear, string userID, string school)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterRegisteruserinfoDETAIL";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@userid", SqlDbType.VarChar, 20, userID),
+				ParamSet.Add4Sql("@stdschool", SqlDbType.VarChar, 100, school),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 공동연차
+		/// </summary>
+		/// <param name="stdYear"></param>
+		/// <param name="logonId"></param>
+		/// <param name="seq"></param>
+		/// <param name="userDn"></param>
+		/// <param name="orgInfo"></param>
+		/// <param name="strday"></param>
+		/// <param name="strdate1"></param>
+		/// <param name="strtype1"></param>
+		/// <param name="strdate2"></param>
+		/// <param name="strtype2"></param>
+		/// <param name="strdate3"></param>
+		/// <param name="strtype3"></param>
+		/// <param name="strdate4"></param>
+		/// <param name="strtype4"></param>
+		/// <param name="strdate5"></param>
+		/// <param name="strtype5"></param>
+		/// <returns></returns>
+		public string SetRegisterGONGGA(string stdYear, string logonId, string seq, string userDn, string orgInfo, string strday, string strdate1, string strtype1
+							, string strdate2, string strtype2, string strdate3, string strtype3, string strdate4, string strtype4, string strdate5, string strtype5)
+		{
+			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterGONGGA";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 100, strEkpDB),
+				ParamSet.Add4Sql("@stdyear", SqlDbType.Char, 4, stdYear),
+				ParamSet.Add4Sql("@logonid", SqlDbType.NVarChar, 30, logonId),
+				ParamSet.Add4Sql("@seq", SqlDbType.Int, 4, seq),
+				ParamSet.Add4Sql("@userdn", SqlDbType.NVarChar, 50, userDn),
+				ParamSet.Add4Sql("@orginfo", SqlDbType.NVarChar, 100, orgInfo),
+				ParamSet.Add4Sql("@strday", SqlDbType.NVarChar, 50, strday),
+				ParamSet.Add4Sql("@strdate1", SqlDbType.NVarChar, 10, strdate1),
+				ParamSet.Add4Sql("@strtype1", SqlDbType.NVarChar, 10, strtype1),
+				ParamSet.Add4Sql("@strdate2", SqlDbType.NVarChar, 10, strdate2),
+				ParamSet.Add4Sql("@strtype2", SqlDbType.NVarChar, 10, strtype2),
+				ParamSet.Add4Sql("@strdate3", SqlDbType.NVarChar, 10, strdate3),
+				ParamSet.Add4Sql("@strtype3", SqlDbType.NVarChar, 10, strtype3),
+				ParamSet.Add4Sql("@strdate4", SqlDbType.NVarChar, 10, strdate4),
+				ParamSet.Add4Sql("@strtype4", SqlDbType.NVarChar, 10, strtype4),
+				ParamSet.Add4Sql("@strdate5", SqlDbType.NVarChar, 10, strdate5),
+				ParamSet.Add4Sql("@strtype5", SqlDbType.NVarChar, 10, strtype5),
+
+				ParamSet.Add4Sql("@return", SqlDbType.Char, 1, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
 		#endregion
 
 		#region [나의할일 (결재문서, ECN, 금형) 조회기록]
@@ -1798,6 +2461,35 @@ WHERE WnID IN (" + wnIDs + ")";
 			{
 				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
 			}
+		}
+
+		/// <summary>
+		/// 교육관리에서 사번으로 사용자 정보 가져오기
+		/// </summary>
+		/// <param name="empId"></param>
+		/// <returns></returns>
+		public DataSet GetFormEDUREPORTA(string empId)
+		{
+			DataSet dsReturn = null;
+			string strQuery = @"
+SELECT UserID, GR_ID, DisplayName, EmpID, Grade1, GroupName,
+(SELECT TOP 1 DN FROM admin.ph_fn_GetParentGRTableForEA(1, 'D', GR_ID, CONVERT(CHAR(10), GETDATE(), 121)) ORDER BY Lev DESC) AS Belong
+FROM admin.ph_VIEW_OBJECT_UR_LIST WHERE EmpID = @empid AND Role IN ('chief', 'regular')
+";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@empid", SqlDbType.VarChar, 50, empId)
+			};
+
+			ParamData pData = new ParamData(strQuery, "text", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
 		}
 		#endregion
 	}
