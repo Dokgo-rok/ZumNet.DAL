@@ -3019,7 +3019,7 @@ namespace ZumNet.DAL.FlowDac
 		}
 		#endregion
 
-		#region [첨언 및 댓글 작업]
+		#region [첨언, 댓글 및 알림 작업]
 		/// <summary>
 		/// 첨언,댓글 가져오기
 		/// </summary>
@@ -3115,6 +3115,30 @@ namespace ZumNet.DAL.FlowDac
 			return iReturn;
 		}
 
+		/// <summary>
+		/// 알림 생성
+		/// </summary>
+		/// <param name="tgtId"></param>
+		/// <param name="noticeClass"></param>
+		/// <param name="contents"></param>
+		/// <param name="linkInfo"></param>
+		public void CreateNotice(int tgtId, string noticeClass, string contents, string linkInfo)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@tgtid", SqlDbType.Int, 4, tgtId),
+				ParamSet.Add4Sql("@noticls", SqlDbType.NVarChar, 50, noticeClass),
+				ParamSet.Add4Sql("@contents", SqlDbType.NVarChar, 1000, contents),
+				ParamSet.Add4Sql("@linkinfo", SqlDbType.NVarChar, 1000, linkInfo)
+			};
+
+			ParamData pData = new ParamData("dbo.zp_BT_insertNOTICE", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
 		#endregion
 
 		#region [문서번호, 알림대상자, 결재선 및 기타]

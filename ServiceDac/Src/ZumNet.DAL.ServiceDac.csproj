@@ -55,6 +55,7 @@
     <Compile Include="FolderDac.cs" />
     <Compile Include="GroupDac.cs" />
     <Compile Include="HistoryDac.cs" />
+    <Compile Include="NoticeDac.cs" />
     <Compile Include="ReferenceDac.cs" />
     <Compile Include="RelationDac.cs" />
     <Compile Include="ResourceDac.cs" />
