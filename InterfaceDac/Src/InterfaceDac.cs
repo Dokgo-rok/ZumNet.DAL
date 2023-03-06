@@ -2492,5 +2492,204 @@ FROM admin.ph_VIEW_OBJECT_UR_LIST WHERE EmpID = @empid AND Role IN ('chief', 're
 			return dsReturn;
 		}
 		#endregion
+
+		#region [품번채번]
+		/// <summary>
+		/// 품번채번 목록 가져오기
+		/// </summary>
+		/// <param name="mode"></param>
+		/// <param name="formTable"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="page"></param>
+		/// <param name="pageSize"></param>
+		/// <param name="baseSort"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="search"></param>
+		/// <returns></returns>
+		public DataSet GetRegisterNumberList(string mode, string formTable, string cond1, string cond2, int page, int pageSize
+									, string baseSort, string sortCol, string sortType, string searchCol, string search)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetRegisterNUMBERLIST";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@mode", SqlDbType.Char, 2, mode),
+				ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
+				ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 50, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 50, cond2),
+				ParamSet.Add4Sql("@page", SqlDbType.Int, page),
+				ParamSet.Add4Sql("@count", SqlDbType.Int, pageSize),
+				ParamSet.Add4Sql("@base_sort_col", SqlDbType.NVarChar, 100, baseSort),
+				ParamSet.Add4Sql("@sort_col", SqlDbType.NVarChar, 50, sortCol),
+				ParamSet.Add4Sql("@sort_type", SqlDbType.NVarChar, 5, sortType),
+				ParamSet.Add4Sql("@search_col", SqlDbType.NVarChar, 50, searchCol),
+				ParamSet.Add4Sql("@search_text", SqlDbType.NVarChar, 50, search),
+
+				ParamSet.Add4Sql("@total_cnt", SqlDbType.Int, 4, ParameterDirection.Output)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "NumberList", 60, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 채번표
+		/// </summary>
+		/// <param name="sheetCat"></param>
+		/// <returns></returns>
+		public DataSet GetRegisterNumberSheet(string sheetCat)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetRegisterNUMBERSHEET";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@sheetcat", SqlDbType.NVarChar, 100, sheetCat)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "NumberSheet", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 채번표 코드
+		/// </summary>
+		/// <param name="sheetCat"></param>
+		/// <returns></returns>
+		public DataSet GetRegisterNumberSheetCode(string sheetCat)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetRegisterNUMBERSHEET_DDL";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@sheetcat", SqlDbType.NVarChar, 100, sheetCat)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "NumberSheetCode", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 품번가져오기
+		/// </summary>
+		/// <param name="category"></param>
+		/// <param name="useNo"></param>
+		/// <returns></returns>
+		public DataSet GetRegisterNumber(string category, string useNo)
+		{
+			DataSet dsReturn = null;
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_GetRegisterNUMBERING_MECHANISM";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@category", SqlDbType.NVarChar, 20, category),
+				ParamSet.Add4Sql("@useno", SqlDbType.NVarChar, 100, useNo)
+			};
+
+			ParamData pData = new ParamData(strSP, "", "NumberSheet", 30, parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+
+			return dsReturn;
+		}
+
+		/// <summary>
+		/// 품번 목록 추가
+		/// </summary>
+		/// <param name="category"></param>
+		/// <param name="number"></param>
+		/// <param name="urId"></param>
+		/// <param name="urName"></param>
+		/// <param name="deptId"></param>
+		/// <param name="deptName"></param>
+		/// <param name="model"></param>
+		/// <param name="item"></param>
+		/// <param name="etc"></param>
+		/// <returns></returns>
+		public string SetRegisterNumber(string category, string number, int urId, string urName
+							, int deptId, string deptName, string model, string item, string etc)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetRegisterNumber";
+			string strReturn = "";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@category", SqlDbType.NVarChar, 20, category),
+				ParamSet.Add4Sql("@number", SqlDbType.NVarChar, 20, number),
+				ParamSet.Add4Sql("@uid", SqlDbType.Int, urId),
+				ParamSet.Add4Sql("@urnm", SqlDbType.NVarChar, 20, urName),
+				ParamSet.Add4Sql("@deptid", SqlDbType.Int, deptId),
+				ParamSet.Add4Sql("@deptnm", SqlDbType.NVarChar, 20, deptName),
+				ParamSet.Add4Sql("@model", SqlDbType.NVarChar, 20, model),
+				ParamSet.Add4Sql("@item", SqlDbType.NVarChar, 20, item),
+				ParamSet.Add4Sql("@etc", SqlDbType.NVarChar, 100, etc)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+			return strReturn;
+		}
+
+		/// <summary>
+		/// 품번표 변경
+		/// </summary>
+		/// <param name="sheetCat"></param>
+		/// <param name="colNm"></param>
+		/// <param name="colValue"></param>
+		public void SetRegisterNumberSheet(string sheetCat, string colNm, string colValue)
+		{
+			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
+			string strSP = strFormDB + ".admin.ph_up_SetNumberingSheet";
+
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@sheetcat", SqlDbType.NVarChar, 100, sheetCat),
+				ParamSet.Add4Sql("@colnm", SqlDbType.NVarChar, 10, colNm),
+				ParamSet.Add4Sql("@colval", SqlDbType.NVarChar, 100, colValue)
+			};
+
+			ParamData pData = new ParamData(strSP, "", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+		#endregion
 	}
 }
