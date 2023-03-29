@@ -2871,6 +2871,31 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
+		/// 최초 PH_EVENT_RESTORE 테이블 값 저장
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="messageID"></param>
+		/// <param name="actorID"></param>
+		/// <param name="actType"></param>
+		public void InsertEventRestore(string xfAlias, int messageID, int actorID, string actType)
+		{
+			SqlParameter[] parameters = new SqlParameter[]
+			{
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
+				ParamSet.Add4Sql("@actor", SqlDbType.Int, 4, actorID),
+				ParamSet.Add4Sql("@acttype", SqlDbType.Char, 1, actType),
+			};
+
+			ParamData pData = new ParamData("admin.ph_up_InsertEventRestore", parameters);
+
+			using (DbBase db = new DbBase())
+			{
+				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+			}
+		}
+
+		/// <summary>
 		/// XFormMainData 쿼리
 		/// </summary>
 		/// <param name="xfAlias"></param>
