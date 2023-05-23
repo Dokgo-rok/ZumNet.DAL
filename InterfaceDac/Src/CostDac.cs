@@ -1423,6 +1423,7 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="orgid"></param>
         /// <param name="orgsubid"></param>
         /// <param name="orgcd"></param>
+        /// <param name="periodNm"></param>
         /// <param name="model"></param>
         /// <param name="modelid"></param>
         /// <param name="itemcls"></param>
@@ -1454,7 +1455,8 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="ctbprofit"></param>
         /// <param name="ctbprofitrt"></param>
         /// <param name="stdtime"></param>
-        public void InsertMCSUMMARY_EXCEL(int orgid, int orgsubid, string orgcd, string model, int modelid
+        /// <returns></returns>
+        public string InsertMCSUMMARY_EXCEL(int orgid, int orgsubid, string orgcd, string periodNm, string model, int modelid
                                 , string itemcls, string buyer, string xratedt, string stdpaydt, string outpaydt
                                 , string mtrcost, string mtrcostrt, string pccost, string pccostrt, string splex, string splexrt
                                 , string varcost, string varcostrt, string fixcost, string fixcostrt, string fixcostb, string fixcostbrt
@@ -1467,6 +1469,7 @@ namespace ZumNet.DAL.InterfaceDac
                 ParamSet.Add4Sql("@orgid", SqlDbType.Int, 4, orgid),
                 ParamSet.Add4Sql("@orgsubid", SqlDbType.Int, 4, orgsubid),
                 ParamSet.Add4Sql("@orgcd", SqlDbType.VarChar, 20, orgcd),
+                ParamSet.Add4Sql("@periodnm", SqlDbType.VarChar, 10, periodNm),
                 ParamSet.Add4Sql("@model", SqlDbType.VarChar, 50, model),
                 ParamSet.Add4Sql("@modelid", SqlDbType.Int, 4, modelid),
 
@@ -1510,6 +1513,7 @@ namespace ZumNet.DAL.InterfaceDac
             {
                 strReturn = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
+            return strReturn;
         }
         #endregion
     }
