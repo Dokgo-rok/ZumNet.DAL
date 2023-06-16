@@ -292,10 +292,9 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="searchText"></param>
 		/// <param name="searchStartDate"></param>
 		/// <param name="searchEndDate"></param>
-		/// <param name="totalMessage"></param>
 		/// <returns></returns>
 		public DataSet GetAnonymousMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
-						, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate, out int totalMessage)
+						, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;
 
@@ -323,20 +322,21 @@ namespace ZumNet.DAL.ServiceDac
 			using (DbBase db = new DbBase())
 			{
 				dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-				totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
+				//totalMessage = Convert.ToInt32(pData.GetParamValue("@totalMsg").ToString());
 			}
 
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// 익명 게시물 정보
-		/// </summary>
-		/// <param name="folderID"></param>
-		/// <param name="messageID"></param>
-		/// <param name="xfAlias"></param>
-		/// <returns></returns>
-		public DataSet GetAnonymousMessage(int folderID, string messageID, string xfAlias)
+        /// <summary>
+        /// 익명 게시물 정보
+        /// </summary>
+        /// <param name="folderID"></param>
+        /// <param name="messageID"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="viewer"></param>
+        /// <returns></returns>
+        public DataSet GetAnonymousMessage(int folderID, string messageID, string xfAlias, string viewer)
 		{
 			DataSet dsReturn = null;
 
@@ -344,8 +344,9 @@ namespace ZumNet.DAL.ServiceDac
 			{
 				ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
 				ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 33, messageID),
-				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
-			};
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@viewer", SqlDbType.VarChar, 50, viewer)
+            };
 
 			ParamData pData = new ParamData("admin.ph_up_AnonymousGetView", parameters);
 
@@ -357,25 +358,51 @@ namespace ZumNet.DAL.ServiceDac
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// 게시 리스트
+        /// <summary>
+		/// 익명 게시물 비밀번호 조회
 		/// </summary>
-		/// <param name="domainID"></param>
-		/// <param name="categoryID"></param>
-		/// <param name="folderID"></param>
-		/// <param name="userID"></param>
-		/// <param name="isAdmin"></param>
-		/// <param name="permission"></param>
-		/// <param name="pageIndex"></param>
-		/// <param name="pageCount"></param>
-		/// <param name="sortColumn"></param>
-		/// <param name="sortType"></param>
-		/// <param name="searchColumn"></param>
-		/// <param name="searchText"></param>
-		/// <param name="searchStartDate"></param>
-		/// <param name="searchEndDate"></param>
+		/// <param name="messageID"></param>
+		/// <param name="xfAlias"></param>
 		/// <returns></returns>
-		public DataSet GetBoardMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
+		public string GetAnonymousMessagePwd(string messageID, string xfAlias)
+        {
+            string strReturn = "";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@msgid", SqlDbType.VarChar, 33, messageID),
+                ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_AnonymousGetPwd", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                strReturn = db.ExecuteScalarNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// 게시 리스트
+        /// </summary>
+        /// <param name="domainID"></param>
+        /// <param name="categoryID"></param>
+        /// <param name="folderID"></param>
+        /// <param name="userID"></param>
+        /// <param name="isAdmin"></param>
+        /// <param name="permission"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageCount"></param>
+        /// <param name="sortColumn"></param>
+        /// <param name="sortType"></param>
+        /// <param name="searchColumn"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchStartDate"></param>
+        /// <param name="searchEndDate"></param>
+        /// <returns></returns>
+        public DataSet GetBoardMessageList(int domainID, int categoryID, int folderID, int userID, string isAdmin, string permission, int pageIndex, int pageCount
 					, string sortColumn, string sortType, string searchColumn, string searchText, string searchStartDate, string searchEndDate)
 		{
 			DataSet dsReturn = null;

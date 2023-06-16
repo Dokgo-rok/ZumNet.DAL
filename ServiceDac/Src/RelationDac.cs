@@ -194,22 +194,22 @@ namespace ZumNet.DAL.ServiceDac
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// 익명게시판 덧글 입력
-		/// </summary>
-		/// <param name="xfAlias"></param>
-		/// <param name="messageID"></param>
-		/// <param name="creatorID"></param>
-		/// <param name="password"></param>
-		/// <param name="comment"></param>
-		/// <param name="seqID"></param>
-		public void CreateAnonymousCommentMessage(string xfAlias, string messageID, string creatorID, string password, string comment, int seqID)
+        /// <summary>
+        /// 익명게시판 덧글 입력
+        /// </summary>
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="creator"></param>
+        /// <param name="password"></param>
+        /// <param name="comment"></param>
+        /// <param name="seqID"></param>
+        public void CreateAnonymousCommentMessage(string xfAlias, string messageID, string creator, string password, string comment, int seqID)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
 				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 20, xfAlias),
 				ParamSet.Add4Sql("@messageid", SqlDbType.VarChar, 30, messageID),
-				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 50, creatorID),
+				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 50, creator),
 				ParamSet.Add4Sql("@password", SqlDbType.NVarChar, 100, password),
 				ParamSet.Add4Sql("@comment", SqlDbType.NVarChar, 1000, comment),
 				ParamSet.Add4Sql("@seqid", SqlDbType.Int, 4, seqID)
@@ -527,7 +527,7 @@ namespace ZumNet.DAL.ServiceDac
 			return iReturn;
 		}
 
-		/// <summary>
+        /// <summary>
 		/// 조회 기록 입력 및 조회수 수정
 		/// </summary>
 		/// <param name="xfAlias"></param>
@@ -536,6 +536,20 @@ namespace ZumNet.DAL.ServiceDac
 		/// <param name="messageID"></param>
 		/// <param name="ipAddress"></param>
 		public void CreateViewingNumber(string xfAlias, int folderID, int userID, int messageID, string ipAddress)
+        {
+			CreateViewingNumber(xfAlias, folderID, userID, messageID, ipAddress, "");
+        }
+
+        /// <summary>
+		/// 조회 기록 입력 및 조회수 수정
+		/// </summary>
+		/// <param name="xfAlias"></param>
+		/// <param name="folderID"></param>
+		/// <param name="userID"></param>
+		/// <param name="messageID"></param>
+		/// <param name="ipAddress"></param>
+		/// <param name="viewer"></param>
+        public void CreateViewingNumber(string xfAlias, int folderID, int userID, int messageID, string ipAddress, string viewer)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
@@ -543,8 +557,9 @@ namespace ZumNet.DAL.ServiceDac
 				ParamSet.Add4Sql("@FD_ID", SqlDbType.Int, 4, folderID),
 				ParamSet.Add4Sql("@UserID", SqlDbType.Int, 4, userID),
 				ParamSet.Add4Sql("@MessageID", SqlDbType.Int, 4, messageID),
-				ParamSet.Add4Sql("@IP", SqlDbType.VarChar, 30, ipAddress)
-			};
+				ParamSet.Add4Sql("@IP", SqlDbType.VarChar, 30, ipAddress),
+                ParamSet.Add4Sql("@viewer", SqlDbType.VarChar, 50, viewer)
+            };
 
 			ParamData pData = new ParamData("admin.ph_up_MsgSetViewEvent", parameters);
 
@@ -554,14 +569,39 @@ namespace ZumNet.DAL.ServiceDac
 			}
 		}
 
-		/// <summary>
-		/// 지직관리 공유자 읽음 설정
+        /// <summary>
+		/// 게시물 좋아요 기록
 		/// </summary>
 		/// <param name="xfAlias"></param>
-		/// <param name="folderID"></param>
-		/// <param name="userID"></param>
 		/// <param name="messageID"></param>
-		public void SetKmsState(string xfAlias, int folderID, int userID, string messageID)
+		/// <param name="actor"></param>
+		/// <param name="point"></param>
+		public void SetMsgLikeEvent(string xfAlias, int messageID, string actor, int point)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+				ParamSet.Add4Sql("@xfalias", SqlDbType.VarChar, 30, xfAlias),                  
+				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
+				ParamSet.Add4Sql("@actor", SqlDbType.VarChar, 50, actor),
+                ParamSet.Add4Sql("@point", SqlDbType.Int, 4, point)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_MsgSetLikeEvent", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 지직관리 공유자 읽음 설정
+        /// </summary>
+        /// <param name="xfAlias"></param>
+        /// <param name="folderID"></param>
+        /// <param name="userID"></param>
+        /// <param name="messageID"></param>
+        public void SetKmsState(string xfAlias, int folderID, int userID, string messageID)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
