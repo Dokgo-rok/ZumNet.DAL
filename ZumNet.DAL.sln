@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29230.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZumNet.DAL.ServiceDac", "ServiceDac\Src\ZumNet.DAL.ServiceDac.csproj", "{387E3AFE-8D34-4257-BDEC-1FFAD46FB111}"
 EndProject
