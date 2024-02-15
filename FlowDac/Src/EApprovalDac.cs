@@ -1162,6 +1162,9 @@ namespace ZumNet.DAL.FlowDac
         {
             DataSet dsReturn = null;
 
+            if (dbName != "") dbName += ".";
+            string strSP = dbName + "admin.ph_up_SelectFormDataForDraft";
+
             SqlParameter[] parameters = new SqlParameter[]
             {
                 ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, formTable),
@@ -1174,7 +1177,7 @@ namespace ZumNet.DAL.FlowDac
                 ParamSet.Add4Sql("@key5", SqlDbType.NVarChar, 50, key5)
             };
 
-            ParamData pData = new ParamData("admin.ph_up_SelectFormDataForDraft", "", parameters);
+            ParamData pData = new ParamData(strSP, "", parameters);
 
             using (DbBase db = new DbBase())
             {
