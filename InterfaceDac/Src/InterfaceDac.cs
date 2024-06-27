@@ -1999,8 +1999,8 @@ WHERE WnID IN (" + wnIDs + ")";
 		/// <param name="searchText"></param>
 		/// <returns></returns>
 		public DataSet GetRegisterVOC(string mode, string from, string to
-						, string cond1, string cond2, string cond3, string cond4, string cond5, string cond6, string cond7
-						, int page, int pageCount, string baseSort, string sortCol, string sortType, string searchCol, string searchText)
+						, string cond1, string cond2, string cond3, string cond4, string cond5, string cond6, string cond7, string cond8, string cond9
+                        , int page, int pageCount, string baseSort, string sortCol, string sortType, string searchCol, string searchText)
 		{
 			DataSet dsReturn = null;
 			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
@@ -2018,7 +2018,9 @@ WHERE WnID IN (" + wnIDs + ")";
 				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, 50, cond5),
 				ParamSet.Add4Sql("@cond6", SqlDbType.NVarChar, 50, cond6),
 				ParamSet.Add4Sql("@cond7", SqlDbType.NVarChar, 50, cond7),
-				ParamSet.Add4Sql("@page", SqlDbType.Int, page),
+                ParamSet.Add4Sql("@cond8", SqlDbType.NVarChar, 50, cond8),
+                ParamSet.Add4Sql("@cond9", SqlDbType.NVarChar, 50, cond9),
+                ParamSet.Add4Sql("@page", SqlDbType.Int, page),
 				ParamSet.Add4Sql("@count", SqlDbType.SmallInt, pageCount),
 				ParamSet.Add4Sql("@base_sort_col", SqlDbType.NVarChar, 50, baseSort),
 				ParamSet.Add4Sql("@sort_col", SqlDbType.NVarChar, 50, sortCol),
@@ -2039,48 +2041,51 @@ WHERE WnID IN (" + wnIDs + ")";
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// AS관리대장 등록
-		/// </summary>
-		/// <param name="mode"></param>
-		/// <param name="regId"></param>
-		/// <param name="request"></param>
-		/// <param name="rctDT"></param>
-		/// <param name="customer"></param>
-		/// <param name="contact"></param>
-		/// <param name="address"></param>
-		/// <param name="modelNmA"></param>
-		/// <param name="modelNmB"></param>
-		/// <param name="modelColor"></param>
-		/// <param name="serialNo"></param>
-		/// <param name="purchDT"></param>
-		/// <param name="kind"></param>
-		/// <param name="result"></param>
-		/// <param name="status"></param>
-		/// <param name="repair"></param>
-		/// <param name="trouble"></param>
-		/// <param name="exptDT"></param>
-		/// <param name="compDT"></param>
-		/// <param name="tat"></param>
-		/// <param name="contents"></param>
-		/// <param name="reason"></param>
-		/// <param name="reasonC"></param>
-		/// <param name="description"></param>
-		/// <param name="etc"></param>
-		/// <param name="memo1"></param>
-		/// <param name="memo2"></param>
-		/// <param name="cgId"></param>
-		/// <param name="cgNm"></param>
-		/// <param name="cgDptId"></param>
-		/// <param name="cgDpt"></param>
-		/// <param name="currentId"></param>
-		/// <param name="currentDn"></param>
-		/// <param name="currentDeptId"></param>
-		/// <param name="currentDept"></param>
-		/// <param name="etcField"></param>
-		public void SetRegisterVOC(string mode, long regId, string request, string rctDT, string customer, string contact, string address
-							, string modelNmA, string modelNmB, string modelColor, string serialNo, string purchDT, string kind, string result, string status, string repair, string trouble
-							, string exptDT, string compDT, string tat, string contents, string reason, string reasonC, string description, string etc, string memo1, string memo2
+        /// <summary>
+        /// AS관리대장 등록
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="regId"></param>
+        /// <param name="request"></param>
+        /// <param name="rctDT"></param>
+        /// <param name="customer"></param>
+        /// <param name="contact"></param>
+        /// <param name="address"></param>
+        /// <param name="modelNmA"></param>
+        /// <param name="modelNmB"></param>
+        /// <param name="modelColor"></param>
+        /// <param name="serialNo"></param>
+        /// <param name="purchDT"></param>
+        /// <param name="kind"></param>
+        /// <param name="result"></param>
+        /// <param name="status"></param>
+        /// <param name="repair"></param>
+        /// <param name="trouble"></param>
+        /// <param name="brand"></param>
+        /// <param name="usage"></param>
+        /// <param name="exptDT"></param>
+        /// <param name="compDT"></param>
+        /// <param name="tat"></param>
+        /// <param name="contents"></param>
+        /// <param name="reason"></param>
+        /// <param name="reasonC"></param>
+        /// <param name="description"></param>
+        /// <param name="etc"></param>
+        /// <param name="memo1"></param>
+        /// <param name="memo2"></param>
+        /// <param name="cgId"></param>
+        /// <param name="cgNm"></param>
+        /// <param name="cgDptId"></param>
+        /// <param name="cgDpt"></param>
+        /// <param name="currentId"></param>
+        /// <param name="currentDn"></param>
+        /// <param name="currentDeptId"></param>
+        /// <param name="currentDept"></param>
+        /// <param name="etcField"></param>
+        public void SetRegisterVOC(string mode, long regId, string request, string rctDT, string customer, string contact, string address
+							, string modelNmA, string modelNmB, string modelColor, string serialNo, string purchDT, string kind, string result
+							, string status, string repair, string trouble, string brand, string usage, string exptDT, string compDT
+                            , string tat, string contents, string reason, string reasonC, string description, string etc, string memo1, string memo2
 							, string cgId, string cgNm, string cgDptId, string cgDpt, string currentId, string currentDn, string currentDeptId, string currentDept, string etcField)
 		{
 
@@ -2106,7 +2111,9 @@ WHERE WnID IN (" + wnIDs + ")";
 				ParamSet.Add4Sql("@status", SqlDbType.NVarChar, 20, status),
 				ParamSet.Add4Sql("@repair", SqlDbType.NVarChar, 100, repair),
 				ParamSet.Add4Sql("@trouble", SqlDbType.NVarChar, 100, trouble),
-				ParamSet.Add4Sql("@exptdt", SqlDbType.VarChar, 10, exptDT),
+                ParamSet.Add4Sql("@brand", SqlDbType.NVarChar, 100, brand),
+                ParamSet.Add4Sql("@usage", SqlDbType.NVarChar, 100, usage),
+                ParamSet.Add4Sql("@exptdt", SqlDbType.VarChar, 10, exptDT),
 				ParamSet.Add4Sql("@compdt", SqlDbType.VarChar, 10, compDT),
 				ParamSet.Add4Sql("@tat", SqlDbType.NVarChar, 20, tat),
 				ParamSet.Add4Sql("@contents", SqlDbType.NVarChar, 1000, contents),
