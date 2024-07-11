@@ -401,6 +401,8 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="dir_cost"></param>
         /// <param name="smt_cost"></param>
         /// <param name="fl_cost"></param>
+        /// <param name="idlb_cost"></param>
+        /// <param name="idfx_cost"></param>
         /// <param name="im_rt"></param>
         /// <param name="cs_rt"></param>
         /// <param name="ind_fx"></param>
@@ -414,9 +416,9 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="fl_sga"></param>
         /// <param name="costrt"></param>
         public void InsertSTDPAYITEM(int regId, string corp, string buyer, string itemCls, int rowSeq, string currecny
-                                , string dir_cost, string smt_cost, string fl_cost, string im_rt, string cs_rt
-                                , string ind_fx, string ind_lb, string dpc_rt, string st_em, string corp_sga
-                                , string sl_lgt, string sgc_rt, string cn_sga, string fl_sga, string costrt)
+                                , string dir_cost, string smt_cost, string fl_cost, string idlb_cost, string idfx_cost
+                                , string im_rt, string cs_rt, string ind_fx, string ind_lb, string dpc_rt, string st_em
+                                , string corp_sga, string sl_lgt, string sgc_rt, string cn_sga, string fl_sga, string costrt)
         {
             SqlParameter[] parameters = new SqlParameter[] {
                 ParamSet.Add4Sql("@regid", SqlDbType.Int, 4, regId),
@@ -428,6 +430,8 @@ namespace ZumNet.DAL.InterfaceDac
                 ParamSet.Add4Sql("@dir_cost", SqlDbType.VarChar, 20, dir_cost),
                 ParamSet.Add4Sql("@smt_cost", SqlDbType.VarChar, 20, smt_cost),
                 ParamSet.Add4Sql("@fl_cost", SqlDbType.VarChar, 20, fl_cost),
+                ParamSet.Add4Sql("@idlb_cost", SqlDbType.VarChar, 20, idlb_cost),
+                ParamSet.Add4Sql("@idfx_cost", SqlDbType.VarChar, 20, idfx_cost),
                 ParamSet.Add4Sql("@im_rt", SqlDbType.VarChar, 20, im_rt),
                 ParamSet.Add4Sql("@cs_rt", SqlDbType.VarChar, 20, cs_rt),
                 //ParamSet.Add4Sql("@fx_em", SqlDbType.VarChar, 20, fx_em),
@@ -1418,7 +1422,7 @@ namespace ZumNet.DAL.InterfaceDac
         }
 
         /// <summary>
-        /// 모델별원가 개발원가견적 엑셀 저장
+        /// 모델별원가 개발원가견적/모델별원가실적 엑셀 저장
         /// </summary>
         /// <param name="orgid"></param>
         /// <param name="orgsubid"></param>
@@ -1426,6 +1430,7 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="periodNm"></param>
         /// <param name="model"></param>
         /// <param name="modelid"></param>
+        /// <param name="xcls"></param>
         /// <param name="itemcls"></param>
         /// <param name="buyer"></param>
         /// <param name="xratedt"></param>
@@ -1455,13 +1460,14 @@ namespace ZumNet.DAL.InterfaceDac
         /// <param name="ctbprofit"></param>
         /// <param name="ctbprofitrt"></param>
         /// <param name="stdtime"></param>
+        /// <param name="psales"></param>
         /// <returns></returns>
         public string InsertMCSUMMARY_EXCEL(int orgid, int orgsubid, string orgcd, string periodNm, string model, int modelid
-                                , string itemcls, string buyer, string xratedt, string stdpaydt, string outpaydt
+                                , string xcls, string itemcls, string buyer, string xratedt, string stdpaydt, string outpaydt
                                 , string mtrcost, string mtrcostrt, string pccost, string pccostrt, string splex, string splexrt
                                 , string varcost, string varcostrt, string fixcost, string fixcostrt, string fixcostb, string fixcostbrt
                                 , string prodcost, string prodcostrt, string sgacost, string sgacostrt, string totalcost, string totalcostrt
-                                , string saleprice, string opprofit, string opprofitrt, string ctbprofit, string ctbprofitrt, string stdtime)
+                                , string saleprice, string opprofit, string opprofitrt, string ctbprofit, string ctbprofitrt, string stdtime, string psales)
         {
             string strReturn = "";
 
@@ -1473,6 +1479,7 @@ namespace ZumNet.DAL.InterfaceDac
                 ParamSet.Add4Sql("@model", SqlDbType.VarChar, 50, model),
                 ParamSet.Add4Sql("@modelid", SqlDbType.Int, 4, modelid),
 
+                ParamSet.Add4Sql("@xcls", SqlDbType.Char, 1, xcls),
                 ParamSet.Add4Sql("@itemcls", SqlDbType.NVarChar, 20, itemcls),
                 ParamSet.Add4Sql("@buyer", SqlDbType.NVarChar, 50, buyer),
                 ParamSet.Add4Sql("@xratedt", SqlDbType.VarChar, 10, xratedt),
@@ -1503,6 +1510,7 @@ namespace ZumNet.DAL.InterfaceDac
                 ParamSet.Add4Sql("@ctbprofit", SqlDbType.VarChar, 20, ctbprofit),
                 ParamSet.Add4Sql("@ctbprofitrt", SqlDbType.VarChar, 20, ctbprofitrt),
                 ParamSet.Add4Sql("@stdtime", SqlDbType.VarChar, 20, stdtime),
+                ParamSet.Add4Sql("@psales", SqlDbType.VarChar, 20, psales),
 
                 ParamSet.Add4Sql("@out", SqlDbType.Char, 2, ParameterDirection.Output)
             };
