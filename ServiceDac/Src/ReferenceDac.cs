@@ -246,14 +246,67 @@ namespace ZumNet.DAL.ServiceDac
 		}
 
 		/// <summary>
-		/// 앨범 조회
+		/// 사진리스트
 		/// </summary>
-		/// <param name="userID"></param>
+		/// <param name="domainID"></param>
 		/// <param name="folderID"></param>
-		/// <param name="messageID"></param>
-		/// <param name="xfAlias"></param>
+		/// <param name="isAdmin"></param>
+		/// <param name="isScope"></param>
+		/// <param name="parentACL"></param>
+		/// <param name="page"></param>
+		/// <param name="count"></param>
+		/// <param name="sortCol"></param>
+		/// <param name="sortType"></param>
+		/// <param name="searchCol"></param>
+		/// <param name="searchText"></param>
+		/// <param name="searchStart"></param>
+		/// <param name="searchEnd"></param>
+		/// <param name="viewer"></param>
 		/// <returns></returns>
-		public DataSet GetAlbumMessage(int userID, int folderID, int messageID, string xfAlias)
+        public DataSet GetAlbumMessageListEx(int domainID, int folderID, string isAdmin, string isScope, string parentACL, int page, int count
+                            , string sortCol, string sortType, string searchCol, string searchText, string searchStart, string searchEnd, int viewer)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@dn_id", SqlDbType.Int, 4, domainID),
+                ParamSet.Add4Sql("@fd_id", SqlDbType.Int, 4, folderID),
+                ParamSet.Add4Sql("@isAdmin", SqlDbType.Char, 1, isAdmin),
+                ParamSet.Add4Sql("@isScope", SqlDbType.Char, 1, isScope),
+                ParamSet.Add4Sql("@parentACL", SqlDbType.VarChar, 20, parentACL),
+                ParamSet.Add4Sql("@page", SqlDbType.Int, 4, page),
+                ParamSet.Add4Sql("@count", SqlDbType.SmallInt, 2, count),
+                ParamSet.Add4Sql("@sort_col", SqlDbType.VarChar, 50, sortCol),
+                ParamSet.Add4Sql("@sort_type", SqlDbType.VarChar, 5, sortType),
+                ParamSet.Add4Sql("@search_col", SqlDbType.VarChar, 50, searchCol),
+                ParamSet.Add4Sql("@search_text", SqlDbType.NVarChar, 100, searchText),
+                ParamSet.Add4Sql("@search_sdate", SqlDbType.VarChar, 10, searchStart),
+                ParamSet.Add4Sql("@search_edate", SqlDbType.VarChar, 10, searchEnd),
+                ParamSet.Add4Sql("@viewer", SqlDbType.Int, 4, viewer),
+
+                ParamSet.Add4Sql("@total_cnt", SqlDbType.Int, 4, ParameterDirection.Output)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_AlbumGetListEx", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
+        /// 앨범 조회
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="folderID"></param>
+        /// <param name="messageID"></param>
+        /// <param name="xfAlias"></param>
+        /// <returns></returns>
+        public DataSet GetAlbumMessage(int userID, int folderID, int messageID, string xfAlias)
 		{
 			DataSet dsReturn = null;
 

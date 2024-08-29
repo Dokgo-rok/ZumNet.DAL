@@ -196,93 +196,111 @@ namespace ZumNet.DAL.ServiceDac
 			}
 		}
 
-		/// <summary>
-		/// 앨범 등록 / 수정
-		/// </summary>
-		/// <param name="folderID"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="messageID"></param>
-		/// <param name="parentMessageID"></param>
-		/// <param name="creator"></param>
-		/// <param name="creatorID"></param>
-		/// <param name="creatorDeptID"></param>
-		/// <param name="creatorDeptName"></param>
-		/// <param name="subject"></param>
-		/// <param name="bodyText"></param>
-		/// <param name="inherited"></param>
-		/// <param name="expiredDate"></param>
-		/// <param name="imgID"></param>
-		/// <param name="isFile"></param>
-		/// <param name="fileName"></param>
-		/// <param name="savedName"></param>
-		/// <param name="fileSize"></param>
-		/// <param name="fileType"></param>
-		/// <param name="prefix"></param>
-		/// <param name="location"></param>
-		public void CreateAlbumMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string subject, string bodyText, string inherited, string expiredDate, int imgID, string isFile, string fileName, string savedName, string fileSize, string fileType, string prefix, string location)
+        /// <summary>
+        /// 앨범 등록 / 수정
+        /// </summary>
+        public void CreateAlbumMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID
+						, string creatorDeptName, string subject, string bodyText, string inherited, string expiredDate, int imgID, string isFile
+						, string fileName, string savedName, string fileSize, string fileType, string prefix, string location)
 		{
-			SqlParameter[] parameters = new SqlParameter[]
-			{
-				ParamSet.Add4Sql("@folderid", SqlDbType.Int, 4, folderID),
-				ParamSet.Add4Sql("@xfalias", SqlDbType.NVarChar, 30, xfAlias),
-				ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
-				ParamSet.Add4Sql("@parentmsgid", SqlDbType.Int, 4, parentMessageID),
-				ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
-				ParamSet.Add4Sql("@creatorid", SqlDbType.Int, 4, creatorID),
-				ParamSet.Add4Sql("@creatordeptid", SqlDbType.Int, 4, creatorDeptID),
-				ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 200, creatorDeptName),
-				ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 100, subject),
-				ParamSet.Add4Sql("@bodytext", SqlDbType.NVarChar, 1000, bodyText),
-				ParamSet.Add4Sql("@inherited", SqlDbType.Char, 1, inherited),
-				ParamSet.Add4Sql("@expireddate", SqlDbType.VarChar, 10, expiredDate),
-				ParamSet.Add4Sql("@imgid", SqlDbType.Int, 4, imgID),
-				ParamSet.Add4Sql("@isfile", SqlDbType.Char, 1, isFile),
-				ParamSet.Add4Sql("@filename", SqlDbType.NVarChar, 100, fileName),
-				ParamSet.Add4Sql("@savedname", SqlDbType.NVarChar, 100, savedName),
-				ParamSet.Add4Sql("@filesize", SqlDbType.VarChar, 20, fileSize),
-				ParamSet.Add4Sql("@filetype", SqlDbType.VarChar, 10, fileType),
-				ParamSet.Add4Sql("@prefix", SqlDbType.VarChar, 15, prefix),
-				ParamSet.Add4Sql("@locationfolder", SqlDbType.VarChar, 15, location)
-			};
+			CreateAlbumMessage(folderID, xfAlias, messageID, parentMessageID, creator, creatorID, creatorDeptID, creatorDeptName, subject, bodyText
+							, inherited, expiredDate, imgID, isFile, fileName, savedName, fileSize, fileType, prefix, location, "", "");
 
-			ParamData pData = new ParamData("admin.ph_up_AlbumSetWrite", parameters);
+        }
 
-			using (DbBase db = new DbBase())
-			{
-				string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
-			}
-		}
+        /// <summary>
+        /// 앨범 등록 / 수정
+        /// </summary>
+        /// <param name="folderID"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="parentMessageID"></param>
+        /// <param name="creator"></param>
+        /// <param name="creatorID"></param>
+        /// <param name="creatorDeptID"></param>
+        /// <param name="creatorDeptName"></param>
+        /// <param name="subject"></param>
+        /// <param name="bodyText"></param>
+        /// <param name="inherited"></param>
+        /// <param name="expiredDate"></param>
+        /// <param name="imgID"></param>
+        /// <param name="isFile"></param>
+        /// <param name="fileName"></param>
+        /// <param name="savedName"></param>
+        /// <param name="fileSize"></param>
+        /// <param name="fileType"></param>
+        /// <param name="prefix"></param>
+        /// <param name="location"></param>
+		/// <param name="msgType"></param>
+		/// <param name="storageFolder"></param>
+        public void CreateAlbumMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID
+                        , string creatorDeptName, string subject, string bodyText, string inherited, string expiredDate, int imgID, string isFile
+                        , string fileName, string savedName, string fileSize, string fileType, string prefix, string location, string msgType, string storageFolder)
+        {
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@folderid", SqlDbType.Int, 4, folderID),
+                ParamSet.Add4Sql("@xfalias", SqlDbType.NVarChar, 30, xfAlias),
+                ParamSet.Add4Sql("@messageid", SqlDbType.Int, 4, messageID),
+                ParamSet.Add4Sql("@parentmsgid", SqlDbType.Int, 4, parentMessageID),
+                ParamSet.Add4Sql("@creator", SqlDbType.NVarChar, 100, creator),
+                ParamSet.Add4Sql("@creatorid", SqlDbType.Int, 4, creatorID),
+                ParamSet.Add4Sql("@creatordeptid", SqlDbType.Int, 4, creatorDeptID),
+                ParamSet.Add4Sql("@creatordept", SqlDbType.NVarChar, 200, creatorDeptName),
+                ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 100, subject),
+                ParamSet.Add4Sql("@bodytext", SqlDbType.NVarChar, 1000, bodyText),
+                ParamSet.Add4Sql("@inherited", SqlDbType.Char, 1, inherited),
+                ParamSet.Add4Sql("@expireddate", SqlDbType.VarChar, 10, expiredDate),
+                ParamSet.Add4Sql("@imgid", SqlDbType.Int, 4, imgID),
+                ParamSet.Add4Sql("@isfile", SqlDbType.Char, 1, isFile),
+                ParamSet.Add4Sql("@filename", SqlDbType.NVarChar, 100, fileName),
+                ParamSet.Add4Sql("@savedname", SqlDbType.NVarChar, 100, savedName),
+                ParamSet.Add4Sql("@filesize", SqlDbType.VarChar, 20, fileSize),
+                ParamSet.Add4Sql("@filetype", SqlDbType.VarChar, 10, fileType),
+                ParamSet.Add4Sql("@prefix", SqlDbType.VarChar, 15, prefix),
+                ParamSet.Add4Sql("@locationfolder", SqlDbType.VarChar, 15, location),
+                ParamSet.Add4Sql("@msgtype", SqlDbType.NVarChar, 30, msgType),
+                ParamSet.Add4Sql("@storagefolder", SqlDbType.NVarChar, 250, storageFolder)
+            };
 
-		/// <summary>
-		/// 게시물 등록
-		/// </summary>
-		/// <param name="folderID"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="messageID"></param>
-		/// <param name="parentMessageID"></param>
-		/// <param name="creator"></param>
-		/// <param name="creatorID"></param>
-		/// <param name="creatorDeptID"></param>
-		/// <param name="creatorDeptName"></param>
-		/// <param name="messageType"></param>
-		/// <param name="subject"></param>
-		/// <param name="body"></param>
-		/// <param name="bodyText"></param>
-		/// <param name="inherited"></param>
-		/// <param name="expiredDate"></param>
-		/// <param name="popupDate"></param>
-		/// <param name="publishDate"></param>
-		/// <param name="fileCount"></param>
-		/// <param name="fileInfo"></param>
-		/// <param name="isHot"></param>
-		/// <param name="reserved1"></param>
-		/// <param name="isPopup"></param>
-		/// <param name="replyMail"></param>
-		/// <param name="topLine"></param>
-		/// <param name="taskid"></param>
-		/// <param name="taskactivity"></param>
-		/// <param name="salesstep"></param>
-		public void CreateBoardMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine, string taskid, string taskactivity, int salesstep)
+            ParamData pData = new ParamData("admin.ph_up_AlbumSetWrite", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
+
+        /// <summary>
+        /// 게시물 등록
+        /// </summary>
+        /// <param name="folderID"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="messageID"></param>
+        /// <param name="parentMessageID"></param>
+        /// <param name="creator"></param>
+        /// <param name="creatorID"></param>
+        /// <param name="creatorDeptID"></param>
+        /// <param name="creatorDeptName"></param>
+        /// <param name="messageType"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        /// <param name="bodyText"></param>
+        /// <param name="inherited"></param>
+        /// <param name="expiredDate"></param>
+        /// <param name="popupDate"></param>
+        /// <param name="publishDate"></param>
+        /// <param name="fileCount"></param>
+        /// <param name="fileInfo"></param>
+        /// <param name="isHot"></param>
+        /// <param name="reserved1"></param>
+        /// <param name="isPopup"></param>
+        /// <param name="replyMail"></param>
+        /// <param name="topLine"></param>
+        /// <param name="taskid"></param>
+        /// <param name="taskactivity"></param>
+        /// <param name="salesstep"></param>
+        public void CreateBoardMessage(int folderID, string xfAlias, int messageID, int parentMessageID, string creator, int creatorID, int creatorDeptID, string creatorDeptName, string messageType, string subject, string body, string bodyText, string inherited, string expiredDate, string popupDate, string publishDate, string fileCount, string fileInfo, string isHot, string reserved1, string isPopup, string replyMail, string topLine, string taskid, string taskactivity, int salesstep)
 		{
 			SqlParameter[] parameters = new SqlParameter[]
 			{
