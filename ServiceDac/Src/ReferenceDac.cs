@@ -299,6 +299,32 @@ namespace ZumNet.DAL.ServiceDac
         }
 
         /// <summary>
+		/// 구분값으로 사진 정보 가져오기
+		/// </summary>
+		/// <param name="msgType"></param>
+		/// <param name="subject"></param>
+		/// <returns></returns>
+		public DataSet GetAlbumListByMsgType(string msgType, string subject)
+        {
+            DataSet dsReturn = null;
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@msgtype", SqlDbType.NVarChar, 30, msgType),
+                ParamSet.Add4Sql("@subject", SqlDbType.NVarChar, 100, subject)
+            };
+
+            ParamData pData = new ParamData("admin.ph_up_AlbumGetListByMsgType", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+        /// <summary>
         /// 앨범 조회
         /// </summary>
         /// <param name="userID"></param>
