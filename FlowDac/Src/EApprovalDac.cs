@@ -475,6 +475,9 @@ namespace ZumNet.DAL.FlowDac
         public DataSet SelectFormData(string dbName, int messageID, string tableName, int version, int subTableCount)
         {
             DataSet dsReturn = null;
+
+            string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
+
             if (dbName != "") dbName += ".";
             string strSP = dbName + "admin.ph_up_SelectFormData";
 
@@ -483,7 +486,8 @@ namespace ZumNet.DAL.FlowDac
                 ParamSet.Add4Sql("@msgid", SqlDbType.Int, 4, messageID),
                 ParamSet.Add4Sql("@table_name", SqlDbType.VarChar, 100, tableName),
                 ParamSet.Add4Sql("@version", SqlDbType.Int, 4, version),
-                ParamSet.Add4Sql("@subtable_cnt", SqlDbType.Int, 4, subTableCount)
+                ParamSet.Add4Sql("@subtable_cnt", SqlDbType.Int, 4, subTableCount),
+                ParamSet.Add4Sql("@ekpdb", SqlDbType.VarChar, 50, strEkpDB)
             };
 
             ParamData pData = new ParamData(strSP, "", "FormData", 30, parameters);
