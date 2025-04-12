@@ -1165,7 +1165,7 @@ namespace ZumNet.DAL.FlowDac
 				ParamSet.Add4Sql("@part_deptcode", SqlDbType.NVarChar, 63, partDeptCode),
 			};
 
-			ParamData pData = new ParamData("admin.ph_up_BFCreateWorkItemWithAttributes", "", parameters);
+			ParamData pData = new ParamData("admin.ph_up_BFCreateDeputyParticipant", "", parameters);
 
 			using (DbBase db = new DbBase())
 			{
