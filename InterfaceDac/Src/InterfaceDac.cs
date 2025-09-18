@@ -1633,7 +1633,7 @@ namespace ZumNet.DAL.InterfaceDac
 		/// <param name="etc"></param>
 		/// <param name="reg"></param>
 		/// <returns></returns>
-		public string SetRegisterWORKSTATUS(string stdYear, string userID, string stdDate, string stdTime, string status, string ip, string etc, string reg)
+		public string SetRegisterWORKSTATUS(string stdYear, int userID, string stdDate, string stdTime, string status, string ip, string etc, string reg)
 		{
 			string strEkpDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_BASE);
 			string strFormDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_FORM);
