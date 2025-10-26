@@ -1116,7 +1116,7 @@ namespace ZumNet.DAL.InterfaceDac
                 {
                     strWhere = " WHERE CONVERSION_TYPE = 1000  AND TO_CURRENCY = '" + toCurrency + "'  AND (TO_CHAR(CONVERSION_DATE,'yyyy-mm-dd')) >= '" + searchSDate + "'  AND (TO_CHAR(CONVERSION_DATE,'yyyy-mm-dd')) <= '" + searchEDate + "'";
                 }
-                string strQuery = "SELECT  CASE FROM_CURRENCY WHEN 'USD' THEN '1'WHEN 'EUR' THEN '2'WHEN 'JPY' THEN '3'WHEN 'CNY' THEN '4'WHEN 'HKD' THEN '5'WHEN 'IDR' THEN '6' WHEN 'VND' THEN '7' ELSE '8'  END AS SORT"
+                string strQuery = "SELECT  CASE FROM_CURRENCY WHEN 'USD' THEN '1'WHEN 'EUR' THEN '2'WHEN 'JPY' THEN '3'WHEN 'CNY' THEN '4'WHEN 'HKD' THEN '5'WHEN 'IDR' THEN '6' WHEN 'VND' THEN '7' WHEN 'PHP' THEN '8' ELSE '9'  END AS SORT"
                        + ",'CHQ_Corporate' AS CONVERSION_TYPE, TO_CHAR(CONVERSION_DATE,'yyyy-mm-dd') as CONVERSION_DATE, FROM_CURRENCY,TO_CURRENCY"
                        + ", CASE WHEN FROM_CURRENCY ='JPY' OR  FROM_CURRENCY ='IDR' OR  FROM_CURRENCY ='VND' THEN  ROUND(CONVERSION_RATE,10) *100  ELSE  ROUND(CONVERSION_RATE,10) END AS CONVERSION_RATE"
                        + " FROM GL_DAILY_RATES"
