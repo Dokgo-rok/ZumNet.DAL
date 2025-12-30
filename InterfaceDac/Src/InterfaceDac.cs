@@ -415,28 +415,78 @@ namespace ZumNet.DAL.InterfaceDac
 			return dsReturn;
 		}
 
-		/// <summary>
-		/// 외부연동을 위한 사전 데이타 가져오기
+        /// <summary>
+		/// JDE ERP 조회
 		/// </summary>
-		/// <param name="dnID"></param>
-		/// <param name="moduleID"></param>
-		/// <param name="companyCode"></param>
-		/// <param name="ifDB"></param>
-		/// <param name="ekpDB"></param>
-		/// <param name="formDB"></param>
-		/// <param name="formTable"></param>
-		/// <param name="version"></param>
-		/// <param name="xfAlias"></param>
-		/// <param name="formID"></param>
-		/// <param name="msgID"></param>
-		/// <param name="oID"></param>
-		/// <param name="curWIId"></param>
-		/// <param name="curPartId"></param>
-		/// <param name="status"></param>
-		/// <param name="col1"></param>
-		/// <param name="col2"></param>
+		/// <param name="mode"></param>
+		/// <param name="reqClass"></param>
+		/// <param name="from"></param>
+		/// <param name="to"></param>
+		/// <param name="page"></param>
+		/// <param name="count"></param>
+		/// <param name="cond1"></param>
+		/// <param name="cond2"></param>
+		/// <param name="cond3"></param>
+		/// <param name="cond4"></param>
+		/// <param name="cond5"></param>
 		/// <returns></returns>
-		public DataSet GetIFInfo(int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB, string formTable, int version
+        public DataSet GetJDEERP(string mode, string reqClass, string from, string to, int page, int count
+                                , string cond1, string cond2, string cond3, string cond4, string cond5)
+        {
+            DataSet dsReturn = null;
+            string strIFDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_INTERFACE);
+            string strSP = strIFDB + ".dbo.up_IF_getJDEERP";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+				ParamSet.Add4Sql("@mode", SqlDbType.VarChar, 2, mode),
+				ParamSet.Add4Sql("@reqcls", SqlDbType.VarChar, 50, reqClass),
+				ParamSet.Add4Sql("@from", SqlDbType.VarChar, 10, from),
+				ParamSet.Add4Sql("@to", SqlDbType.VarChar, 10, to),
+                ParamSet.Add4Sql("@page", SqlDbType.Int, 4, page),
+                ParamSet.Add4Sql("@count", SqlDbType.Int, 4, count),
+                ParamSet.Add4Sql("@cond1", SqlDbType.NVarChar, 100, cond1),
+				ParamSet.Add4Sql("@cond2", SqlDbType.NVarChar, 100, cond2),
+				ParamSet.Add4Sql("@cond3", SqlDbType.NVarChar, 100, cond3),
+				ParamSet.Add4Sql("@cond4", SqlDbType.NVarChar, 100, cond4),
+				ParamSet.Add4Sql("@cond5", SqlDbType.NVarChar, 100, cond5),
+
+                ParamSet.Add4Sql("@total_cnt", SqlDbType.Int, 4, ParameterDirection.Output)
+            };
+
+            ParamData pData = new ParamData(strSP, "", "JDEERP", 60, parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                dsReturn = db.ExecuteDatasetNTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+
+            return dsReturn;
+        }
+
+
+        /// <summary>
+        /// 외부연동을 위한 사전 데이타 가져오기
+        /// </summary>
+        /// <param name="dnID"></param>
+        /// <param name="moduleID"></param>
+        /// <param name="companyCode"></param>
+        /// <param name="ifDB"></param>
+        /// <param name="ekpDB"></param>
+        /// <param name="formDB"></param>
+        /// <param name="formTable"></param>
+        /// <param name="version"></param>
+        /// <param name="xfAlias"></param>
+        /// <param name="formID"></param>
+        /// <param name="msgID"></param>
+        /// <param name="oID"></param>
+        /// <param name="curWIId"></param>
+        /// <param name="curPartId"></param>
+        /// <param name="status"></param>
+        /// <param name="col1"></param>
+        /// <param name="col2"></param>
+        /// <returns></returns>
+        public DataSet GetIFInfo(int dnID, string moduleID, string companyCode, string ifDB, string ekpDB, string formDB, string formTable, int version
 								, string xfAlias, string formID, string msgID, string oID, string curWIId, string curPartId, int status, string col1, string col2)
 		{
 			DataSet dsReturn = null;
