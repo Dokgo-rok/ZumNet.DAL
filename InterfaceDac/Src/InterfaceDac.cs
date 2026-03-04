@@ -2805,7 +2805,7 @@ FROM admin.ph_VIEW_OBJECT_UR_LIST WHERE EmpID = @empid AND Role IN ('chief', 're
                 ParamSet.Add4Sql("@isudate", SqlDbType.VarChar, 30, isuDate),
                 ParamSet.Add4Sql("@rtndate", SqlDbType.VarChar, 30, rtnDate),
                 ParamSet.Add4Sql("@cardstat", SqlDbType.VarChar, 1, cardState),
-                ParamSet.Add4Sql("@isustate", SqlDbType.VarChar, 1, isuDate),
+                ParamSet.Add4Sql("@isustate", SqlDbType.VarChar, 1, isuState),
                 ParamSet.Add4Sql("@usenm", SqlDbType.NVarChar, 100, useNm),
                 ParamSet.Add4Sql("@useid", SqlDbType.Int, 4, useId),
                 ParamSet.Add4Sql("@useempid", SqlDbType.VarChar, 20, useEmpId),
