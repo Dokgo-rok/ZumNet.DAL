@@ -2928,6 +2928,30 @@ FROM admin.ph_VIEW_OBJECT_UR_LIST WHERE EmpID = @empid AND Role IN ('chief', 're
                 string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
             }
         }
+
+        /// <summary>
+        /// 카드정보 삭제
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="ccId"></param>
+        public void DeleteCARDINFO(string mode, int ccId)
+        {
+            string strInterfacerDB = Framework.Configuration.ConfigINI.GetValue(Framework.Configuration.Sections.SECTION_DBNAME, Framework.Configuration.Property.INIKEY_DB_INTERFACE);
+            string strSP = strInterfacerDB + ".dbo.up_IF_deleteCARDINFO";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                ParamSet.Add4Sql("@mode", SqlDbType.VarChar, 1, mode),
+                ParamSet.Add4Sql("@ccid", SqlDbType.Int, 4, ccId)
+            };
+
+            ParamData pData = new ParamData(strSP, "", parameters);
+
+            using (DbBase db = new DbBase())
+            {
+                string rt = db.ExecuteNonQueryTx(this.ConnectionString, MethodInfo.GetCurrentMethod(), pData);
+            }
+        }
         #endregion
     }
 }
